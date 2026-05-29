@@ -58,6 +58,8 @@ Follow the spec:
 
 Generate sitemaps dynamically from your content source, not by crawling your own site — that way you cannot accidentally include orphaned or redirected URLs.
 
+**This site ships it.** `specification.website` generates [`/sitemap-index.xml`](/sitemap-index.xml) at build time from the content collection, and sets each `<lastmod>` from the entry's `updated` front matter — the same field the [RSS feed](/rss.xml) uses — rather than the build timestamp, so the date only moves when the content actually changes.
+
 ## Common mistakes
 
 - Listing non-canonical URLs (parameters, session IDs, alternate-case paths).
