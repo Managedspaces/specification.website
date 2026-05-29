@@ -2,7 +2,7 @@
 title: "Lazy loading images and iframes"
 slug: lazy-loading
 category: performance
-summary: "Native lazy loading defers off-screen images and iframes until the user scrolls near them. Use loading=\"lazy\" — but never on the LCP image."
+summary: 'Native lazy loading defers off-screen images and iframes until the user scrolls near them. Use loading="lazy" — but never on the LCP image.'
 status: recommended
 order: 30
 appliesTo: [all]

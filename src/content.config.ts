@@ -37,16 +37,4 @@ const spec = defineCollection({
   }),
 });
 
-const category = defineCollection({
-  loader: glob({ pattern: '*.{md,mdx}', base: './src/content/categories' }),
-  schema: z.object({
-    title: z.string(),
-    slug: z.string(),
-    summary: z.string(),
-    description: z.string(),
-    icon: z.string().optional(),
-    order: z.number().default(100),
-  }),
-});
-
-export const collections = { spec, category };
+export const collections = { spec };

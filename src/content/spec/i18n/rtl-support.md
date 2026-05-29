@@ -2,7 +2,7 @@
 title: "RTL and bidirectional text"
 slug: rtl-support
 category: i18n
-summary: "Sites that serve Arabic, Hebrew, Persian, or Urdu must set dir=\"rtl\" and use CSS logical properties so layouts mirror correctly without hard-coded left and right."
+summary: 'Sites that serve Arabic, Hebrew, Persian, or Urdu must set dir="rtl" and use CSS logical properties so layouts mirror correctly without hard-coded left and right.'
 status: recommended
 order: 30
 appliesTo: [all]
