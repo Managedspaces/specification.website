@@ -6,7 +6,7 @@ summary: "Expose every documentation page's raw Markdown source at a predictable
 status: recommended
 order: 35
 appliesTo: [all]
-relatedSlugs: [llms-txt, llms-full-txt, machine-readable-formats, structured-data-for-agents, agent-readiness-overview]
+relatedSlugs: [llms-txt, llms-full-txt, machine-readable-formats, structured-data-for-agents, agent-readiness-overview, agent-skills-discovery]
 updated: "2026-05-29"
 sources:
   - title: "RFC 9110 — HTTP Semantics §12 (Content Negotiation), §8.7 (Vary), §8.7.1 (Content-Location)"

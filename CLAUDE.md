@@ -93,6 +93,27 @@ npm run assets   # regenerate icons + OG image
 
 **Do not** also edit `/checklist/`, `/llms.txt`, or any other derived surface. They will rebuild.
 
+## When the site itself gains a capability, ship the spec page too
+
+The site is a *worked example* of the spec, not just documentation that lives next to it. Divergence between what we ship and what we recommend is a bug. Whenever you implement a new capability on the site that fits a spec topic, the same PR has to make the spec match.
+
+Trigger this rule when you ship any of:
+
+- a new HTTP response header (CSP directive, `Link` rel, `Vary`, custom security header);
+- a new `/.well-known/` file (`security.txt`, `api-catalog`, `mcp/server-card.json`, `agent-skills/...`);
+- a new agent-discovery surface (MCP server, agent skills, DNS-AID records, server card, Linkset entry);
+- a new content endpoint (`.md` mirror, JSON API, RSS, JSON Feed, alternate format);
+- a new accessibility, performance, privacy, SEO, or i18n behaviour worth recommending elsewhere.
+
+The same PR must do **one** of:
+
+1. **Add a new spec page** under `src/content/spec/<category>/` documenting the underlying standard or convention. Cite primary sources (IETF, W3C, WHATWG, MDN — see [Cardinal rules](#cardinal-rules-for-content)). Pick a status honestly: `required` only if the platform contract breaks without it, otherwise `recommended` or `optional`. Add a one-line "this site ships it; see [X]" callout pointing at our implementation or asset.
+2. **Update an existing spec page** to incorporate the new convention, add the new sources, or add the worked-example callout. Bump `updated`. Add the new page (or new section) to `relatedSlugs` on adjacent topics so the cross-graph stays correct.
+
+Also update the [api-catalog Linkset](public/.well-known/api-catalog) if the capability adds a discoverable resource, and the global `Link` header in [`public/_headers`](public/_headers) if it has a registered IANA `rel`. Both should match what the new spec page describes.
+
+The reverse holds too: **do not promote a convention to spec status without us shipping a working implementation first.** The site is the proof-of-feasibility. If the underlying convention turns out non-existent or defunct (see the `/.well-known/ai.txt` deletion history), remove the asset *and* the spec page in the same PR — don't leave the page documenting something we no longer ship.
+
 ## When changing a status
 
 1. Edit the `status` field on the spec entry.

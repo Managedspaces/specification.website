@@ -6,7 +6,7 @@ summary: "The Model Context Protocol is an emerging way for sites to expose quer
 status: optional
 order: 80
 appliesTo: [all]
-relatedSlugs: [agent-readiness-overview, machine-readable-formats, llms-txt, link-headers, api-catalog]
+relatedSlugs: [agent-readiness-overview, machine-readable-formats, llms-txt, link-headers, api-catalog, agent-skills-discovery]
 updated: "2026-05-29"
 sources:
   - title: "Model Context Protocol"

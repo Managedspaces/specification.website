@@ -6,7 +6,7 @@ summary: "Agent readiness is the set of choices that make a site legible to AI a
 status: recommended
 order: 10
 appliesTo: [all]
-relatedSlugs: [llms-txt, markdown-source-endpoints, robots-for-ai-crawlers, stable-urls, structured-data-for-agents, machine-readable-formats]
+relatedSlugs: [llms-txt, markdown-source-endpoints, robots-for-ai-crawlers, stable-urls, structured-data-for-agents, machine-readable-formats, agent-skills-discovery, mcp-and-tool-discovery]
 updated: "2026-05-29"
 sources:
   - title: "Is It Agent Ready?"
