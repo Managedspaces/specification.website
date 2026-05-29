@@ -16,6 +16,8 @@ interface Props {
   bare?: boolean;
   /** Absolute URL of the markdown source for this page, if one exists. */
   markdownUrl?: string;
+  /** Absolute URL of the JSON-LD graph endpoint for this page, if one exists. */
+  jsonldUrl?: string;
 }
 
 const {
@@ -27,6 +29,7 @@ const {
   jsonLd,
   bare = false,
   markdownUrl,
+  jsonldUrl,
 } = Astro.props;
 
 const websiteJsonLd = {
@@ -59,6 +62,7 @@ const finalJsonLd = jsonLd
       noindex={noindex}
       jsonLd={finalJsonLd}
       markdownUrl={markdownUrl}
+      jsonldUrl={jsonldUrl}
     />
     {import.meta.env.PROD && (
       <script

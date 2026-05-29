@@ -6,7 +6,7 @@ summary: "An XML file listing the canonical URLs of a site, with optional metada
 status: recommended
 order: 20
 appliesTo: [all]
-relatedSlugs: [sitemap-index, image-sitemaps, robots-txt, canonical-url]
+relatedSlugs: [sitemap-index, image-sitemaps, robots-txt, canonical-url, schemamap]
 updated: "2026-05-29"
 sources:
   - title: "Sitemaps XML format"

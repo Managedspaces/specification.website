@@ -9,6 +9,7 @@ interface Props {
   noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   markdownUrl?: string;
+  jsonldUrl?: string;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   noindex = false,
   jsonLd,
   markdownUrl,
+  jsonldUrl,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site.url).toString();
@@ -60,7 +62,11 @@ const ogImage = new URL('/og-default.png', site.url).toString();
 {markdownUrl && (
   <link rel="alternate" type="text/markdown" title={`${title} — Markdown source`} href={markdownUrl} />
 )}
+{jsonldUrl && (
+  <link rel="alternate" type="application/ld+json" title={`${title} — JSON-LD graph`} href={jsonldUrl} />
+)}
 <link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="schemamap" type="application/xml" title="Schemamap index" href="/schemamap.xml" />
 <link rel="author" href="/humans.txt" />
 
 {jsonLd && (

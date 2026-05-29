@@ -6,7 +6,7 @@ summary: "JSON-LD with schema.org types gives agents typed facts about your page
 status: recommended
 order: 60
 appliesTo: [all]
-relatedSlugs: [agent-readiness-overview, llms-txt, stable-urls]
+relatedSlugs: [agent-readiness-overview, llms-txt, stable-urls, schemamap]
 updated: "2026-05-29"
 sources:
   - title: "schema.org"

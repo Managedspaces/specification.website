@@ -32,6 +32,7 @@ const {
 const cat = categoryFor(category);
 const canonical = new URL(`/spec/${category}/${slug}/`, site.url).toString();
 const markdownUrl = new URL(`/spec/${category}/${slug}.md`, site.url).toString();
+const jsonldUrl = new URL(`/spec/${category}/${slug}.jsonld`, site.url).toString();
 
 const articleJsonLd = {
   '@context': 'https://schema.org',
@@ -71,6 +72,7 @@ const breadcrumbJsonLd = {
   type="article"
   jsonLd={[articleJsonLd, breadcrumbJsonLd]}
   markdownUrl={markdownUrl}
+  jsonldUrl={jsonldUrl}
 >
   <article
     class="mx-auto max-w-4xl px-4 py-10"
