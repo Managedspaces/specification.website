@@ -6,7 +6,7 @@ summary: "Dates, numbers, currency, and units should be formatted in the user's 
 status: recommended
 order: 40
 appliesTo: [all]
-relatedSlugs: [hreflang, lang-attribute, rtl-support]
+relatedSlugs: [hreflang, lang-attribute, rtl-support, plural-rules]
 updated: "2026-05-29"
 sources:
   - title: "MDN — Intl"
@@ -61,7 +61,7 @@ new Intl.ListFormat(locale, { type: "conjunction" }).format(["a", "b", "c"]);
 - Dates and times — always with a timezone, and prefer `dateStyle`/`timeStyle` over manual patterns.
 - Numbers, currency, percentages — `Intl.NumberFormat`.
 - Sorting and search — `Intl.Collator`.
-- Plurals — `Intl.PluralRules` (English has 2 forms, Arabic has 6).
+- Plurals — `Intl.PluralRules` (English has 2 forms, Arabic has 6). Covered in detail in [plural-rules](/i18n/plural-rules).
 - Lists — `Intl.ListFormat`.
 
 ## Common mistakes

@@ -6,7 +6,7 @@ summary: "Open Graph tags control how pages look when shared on social platforms
 status: recommended
 order: 100
 appliesTo: [all]
-relatedSlugs: [title, meta-description, canonical-url, favicons]
+relatedSlugs: [title, meta-description, canonical-url, favicons, localised-metadata]
 updated: "2026-05-29"
 sources:
   - title: "The Open Graph protocol"
@@ -24,6 +24,15 @@ sources:
   - title: "WhatsApp — Link previews"
     url: "https://developers.facebook.com/documentation/business-messaging/whatsapp/link-previews/"
     publisher: "Meta"
+  - title: "Slack — Unfurling links in messages"
+    url: "https://docs.slack.dev/messaging/unfurling-links-in-messages/"
+    publisher: "Slack"
+  - title: "Open Graph Plus — Slack unfurl tags"
+    url: "https://opengraphplus.com/consumers/slack/tags"
+    publisher: "Open Graph Plus"
+  - title: "Open Graph Plus — How Slack crawls your page"
+    url: "https://opengraphplus.com/consumers/slack/crawling"
+    publisher: "Open Graph Plus"
 ---
 
 ## What it is
@@ -50,13 +59,14 @@ A good preview card gives the link a thumbnail, a headline, and a one-line descr
 
 ## How to implement
 
-Five tags do most of the work:
+Six tags do most of the work:
 
 - **`og:title`** — the headline. Usually shorter than the HTML `<title>` (no site suffix needed; the platform shows the domain separately).
 - **`og:description`** — the snippet under the title. 60–200 characters reads well on most platforms.
 - **`og:image`** — an absolute URL to the preview image.
 - **`og:url`** — the canonical absolute URL of the page. Match your `<link rel="canonical">`.
 - **`og:type`** — the kind of object: `website` for the homepage, `article` for posts, `product` for shop items.
+- **`og:site_name`** — the human-readable site name. Slack renders it as the small label above the title; Facebook and LinkedIn also use it when present.
 
 For the image, there are two sensible sizes:
 
@@ -83,7 +93,30 @@ For X (Twitter), add Twitter Card tags as a fallback. X prefers them when presen
 
 If you skip the Twitter Card tags, X will fall back to your OG tags, which is fine. The one extra value worth adding is `twitter:card` set to `summary_large_image` so the preview shows the full-width image instead of a small thumbnail.
 
+Two more Twitter Card tags are worth setting because **Slack** renders them as extra key–value rows below the description in the unfurl card:
+
+```html
+<meta name="twitter:label1" content="Reading time" />
+<meta name="twitter:data1" content="6 min" />
+<meta name="twitter:label2" content="Written by" />
+<meta name="twitter:data2" content="Jane Doe" />
+```
+
+Up to two pairs are shown. Keep each value short — roughly 25 characters fits without truncation. Good uses are reading time, author, price, publication date, category, or rating. Slack is currently the main consumer of these tags; X used to render them on a now-deprecated card type, and most other platforms ignore them, so treat them as a Slack-specific bonus, not a replacement for `og:description`.
+
+Slack also checks for **[oEmbed](https://oembed.com/) discovery** before falling back to OG/Twitter Card tags — either a `<link rel="alternate" type="application/json+oembed">` in the head or an `application/json+oembed` link in the HTTP `Link` header. If you ship oEmbed (most CMSes do for video and rich embeds), Slack uses it first; OG tags are the fallback. The two should describe the same page.
+
 Generate the image per page when you can. A unique illustration or screenshot per article is more engaging than a single site-wide card. Many sites generate them on-demand at build time or with an edge function.
+
+**Locale tags for multilingual sites.** If your page has translated versions, declare them with `og:locale` (this page) and `og:locale:alternate` (every other locale). Use the underscored `language_TERRITORY` form, not the BCP 47 hyphenated form used by `lang` and `hreflang`:
+
+```html
+<meta property="og:locale" content="en_GB" />
+<meta property="og:locale:alternate" content="fr_FR" />
+<meta property="og:locale:alternate" content="de_DE" />
+```
+
+Without `og:locale`, social platforms guess from the crawler's `Accept-Language` and may render the wrong-language card. The full set of head changes for a translated page — title, description, OG, JSON-LD `inLanguage`, image alt — is covered in [localised-metadata](/i18n/localised-metadata).
 
 ## Common mistakes
 
@@ -96,6 +129,9 @@ Generate the image per page when you can. A unique illustration or screenshot pe
 - Missing `og:image:width` and `og:image:height`. Some platforms skip the image entirely without them.
 - One generic OG image reused on every page. Works, but missing an opportunity.
 - `og:url` that does not match the canonical URL. The two should agree.
+- Missing `og:site_name`. Slack and Facebook fall back to the bare domain, which looks unbranded.
+- Stuffing a sentence into `twitter:data1`. The field is for a short value, not a description — long strings get truncated in the Slack card.
+- Burying OG tags below 32 KB of inline CSS or scripts in the `<head>`. Slackbot only fetches the first 32 KB with a `Range` request; meta tags past that cut-off are never seen and the link silently fails to unfurl. Put OG tags near the top of `<head>`, above any large inline blocks.
 
 ## Verification
 

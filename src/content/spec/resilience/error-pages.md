@@ -52,6 +52,8 @@ For a **500**:
 
 Configure both pages at the server or edge layer (Nginx `error_page`, Apache `ErrorDocument`, Cloudflare custom error pages, Netlify `_redirects` with status overrides) so they work even when the application is down.
 
+**Localise error pages too.** On a multilingual site, the 404 a French visitor lands on should be in French — the URL prefix (`/fr/this-page-does-not-exist`) already tells the server which locale to render. Match the page's `lang` attribute, translate the heading and copy, and keep the search box and home link pointed at the same locale.
+
 ## Common mistakes
 
 - Returning `200 OK` for a "page not found" message — the classic soft 404.
