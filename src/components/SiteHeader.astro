@@ -100,27 +100,28 @@ const { pathname } = Astro.url;
     </details>
   </div>
 
-  {pathname !== '/' && (
-    <div class="hidden border-t border-ink-100 bg-ink-50 md:block">
-      <nav aria-label="Categories" class="mx-auto max-w-6xl overflow-x-auto px-4">
-        <ul class="flex items-center gap-1 py-2 text-sm whitespace-nowrap">
-          {categories.map((c) => (
+  <div class="hidden border-t border-ink-100 md:block">
+    <nav aria-label="Categories" class="mx-auto max-w-6xl overflow-x-auto px-4">
+      <ul class="-mb-px flex items-center gap-5 text-sm whitespace-nowrap">
+        {categories.map((c) => {
+          const active = pathname.startsWith(`/spec/${c.slug}`);
+          return (
             <li>
               <a
                 href={`/spec/${c.slug}/`}
                 class:list={[
-                  'rounded-md px-3 py-1.5 hover:bg-white hover:text-accent-700',
-                  pathname.startsWith(`/spec/${c.slug}`)
-                    ? 'bg-white text-accent-700 shadow-sm ring-1 ring-ink-200'
-                    : 'text-ink-700',
+                  'inline-flex items-center border-b-2 px-0.5 py-2.5 transition-colors',
+                  active
+                    ? 'border-accent-600 font-medium text-accent-800'
+                    : 'border-transparent text-ink-600 hover:border-ink-300 hover:text-ink-900',
                 ]}
               >
                 {c.title}
               </a>
             </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
-  )}
+          );
+        })}
+      </ul>
+    </nav>
+  </div>
 </header>
