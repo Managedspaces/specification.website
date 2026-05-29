@@ -18,6 +18,9 @@ sources:
   - title: "W3C WAI — ARIA Landmarks"
     url: "https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions/"
     publisher: "W3C WAI"
+  - title: "WP Accessibility — Frontend code"
+    url: "https://wpaccessibility.org/"
+    publisher: "WP Accessibility"
 ---
 
 ## What it is

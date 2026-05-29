@@ -203,6 +203,47 @@ body {
   body { font-size: 11pt; }
 }
 
+/* Mobile hamburger menu (native <details>) */
+.mobile-menu {
+  position: relative;
+}
+.mobile-menu > summary {
+  list-style: none;
+}
+.mobile-menu > summary::-webkit-details-marker {
+  display: none;
+}
+.mobile-menu > summary::marker {
+  display: none;
+}
+.mobile-menu[open] > summary {
+  background: var(--color-ink-50);
+  border-color: var(--color-ink-300);
+}
+.mobile-menu .mobile-menu__icon-close {
+  display: none;
+}
+.mobile-menu[open] .mobile-menu__icon-open {
+  display: none;
+}
+.mobile-menu[open] .mobile-menu__icon-close {
+  display: inline;
+}
+.mobile-menu__panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  left: auto;
+  width: min(20rem, calc(100vw - 2rem));
+  background: white;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px -5px rgba(14, 14, 19, 0.18);
+  z-index: 50;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+}
+
 /* ⌘K search overlay */
 .search-overlay {
   border: 0;

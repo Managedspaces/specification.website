@@ -18,6 +18,9 @@ sources:
   - title: "Accessibility Checker — Missing Form Label"
     url: "https://equalizedigital.com/accessibility-checker/documentation/missing-form-label/"
     publisher: "Equalize Digital"
+  - title: "WP Accessibility — Web Forms"
+    url: "https://wpaccessibility.org/"
+    publisher: "WP Accessibility"
 ---
 
 ## What it is

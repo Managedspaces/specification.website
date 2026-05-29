@@ -1,43 +1,97 @@
-# Astro Starter Kit: Minimal
+# The Website Specification
 
-```sh
-npm create astro@latest -- --template minimal
+A platform-agnostic specification of what a good website should do. From `<title>` to `/.well-known/security.txt`, from WCAG contrast to `llms.txt` — written for humans and agents, MIT licensed, open for pull requests.
+
+**Live site:** <https://specification.website>
+**MCP server:** <https://mcp.specification.website/mcp>
+
+## What this is
+
+The web is a layer cake of standards: WHATWG defines HTML, W3C ratifies WCAG, the IETF publishes the RFCs behind security headers and `/.well-known/` URIs, IANA registers the namespaces, search engines publish their own rules, browsers add quirks. Almost nobody carries the whole picture.
+
+This site collects the slices into one platform-agnostic specification — sources cited on every page.
+
+It is *not* a framework. It is *not* a tutorial. It is a spec, in the same way the HTML Living Standard is a spec: outcomes, requirements, references.
+
+## What this is not
+
+- Not platform-specific. No "use this Next.js plugin" advice — the spec describes the outcome, you choose the implementation.
+- Not opinion. Where there is no settled standard, the spec says so.
+- Not a marketing site. No newsletter capture. No cookies. Aggregate Plausible analytics; that's it.
+
+## Categories
+
+- **Foundations** — HTML, head, document basics.
+- **SEO** — search visibility.
+- **Accessibility** — WCAG-aligned rules.
+- **Security** — headers, transport, policies.
+- **Well-Known URIs** — agreed paths under `/.well-known/`.
+- **Agent Readiness** — making a site legible to AI agents.
+- **Performance** — Core Web Vitals, caching, fonts.
+- **Privacy** — consent, signals, respecting choice.
+- **Resilience** — graceful failure.
+- **Internationalisation** — language, locale, direction.
+
+## Development
+
+Requirements: Node.js 22.12+, npm.
+
+```bash
+npm install
+npm run dev      # http://localhost:31337
+npm run build    # static output in ./dist
+npm run preview  # serve ./dist on port 31337
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The dev server runs on port `31337` by convention (because of course it does).
 
-## 🚀 Project Structure
+## Adding or changing a spec page
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Find the right category under `src/content/spec/<category>/`.
+2. Copy an existing `.md` file — for example, `src/content/spec/foundations/title.md`.
+3. Fill in the front matter (see schema in [`src/content.config.ts`](src/content.config.ts)). At minimum: `title`, `summary`, `category`, `status`, `order`, and `sources`.
+4. Write the body. Sections: `## What it is`, `## Why it matters`, `## How to implement`, `## Common mistakes`, `## Verification`.
+5. Open a PR.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+The build will fail if the schema is invalid — that is intentional.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Everything derived from the spec content updates automatically: `/spec/`, `/checklist/`, `/llms.txt`, `/llms-full.txt`, `/sitemap-index.xml`, `/rss.xml`, per-page `.md` endpoints, the Pagefind search index, and the MCP server's bundled data. Never hand-edit those; edit the source markdown.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Status levels
 
-Any static assets, like images, can be placed in the `public/` directory.
+- **Required** — the web platform contract breaks without it.
+- **Recommended** — modern sites should do it.
+- **Optional** — depends on context.
+- **Avoid** — outdated, harmful, or actively superseded.
 
-## 🧞 Commands
+## Sources
 
-All commands are run from the root of the project, from a terminal:
+Every page cites at least one source. The site draws on:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- [WHATWG HTML Living Standard](https://html.spec.whatwg.org/)
+- [MDN Web Docs](https://developer.mozilla.org/)
+- [WCAG 2.2](https://www.w3.org/TR/WCAG22/) and the Understanding documents
+- [IETF RFCs](https://www.rfc-editor.org/) for protocol-level items
+- [sitemaps.org](https://www.sitemaps.org/), [schema.org](https://schema.org/), [llmstxt.org](https://llmstxt.org/)
+- [Google Search Central](https://developers.google.com/search), [web.dev](https://web.dev/)
+- [Yoast Developer Portal](https://developer.yoast.com/)
+- [Equalize Digital Accessibility Checker docs](https://equalizedigital.com/accessibility-checker/documentation/)
+- [WP Accessibility Knowledge Base](https://wpaccessibility.org/)
+- [Is It Agent Ready?](https://isitagentready.com/)
+- [Overlay Fact Sheet](https://overlayfactsheet.com/)
 
-## 👀 Want to learn more?
+## MCP server
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+A separate Cloudflare Worker in [`mcp/`](mcp/) exposes the spec to MCP-aware agents. See [`mcp/README.md`](mcp/README.md) for tools, the connection config, and how to deploy.
+
+## Licence
+
+Content is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Code is licensed under [MIT](LICENSE). Use it, fork it, ship it.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Three rules: cite your sources, stay platform-agnostic, be honest about status.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) or [/.well-known/security.txt](https://specification.website/.well-known/security.txt).

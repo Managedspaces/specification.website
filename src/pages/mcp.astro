@@ -1,0 +1,104 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
+import { site } from '~/lib/site';
+
+const desktopConfig = {
+  mcpServers: {
+    'specification-website': {
+      transport: 'http',
+      url: site.mcp.endpoint,
+    },
+  },
+};
+const claudeJson = JSON.stringify(desktopConfig, null, 2);
+---
+
+<BaseLayout
+  title="MCP server"
+  description="Query The Website Specification from any MCP-aware agent. Tools for search, list, fetch, and audit; no auth; cookieless; CC BY 4.0 content."
+>
+  <div class="mx-auto max-w-3xl px-4 py-10">
+    <Breadcrumbs crumbs={[{ label: 'Home', href: '/' }, { label: 'MCP' }]} />
+
+    <header class="mt-5 border-b border-ink-200 pb-6">
+      <p class="inline-flex items-center gap-2 rounded-full bg-accent-50 px-3 py-1 text-xs font-medium text-accent-800 ring-1 ring-inset ring-accent-200">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent-500"></span>
+        Open MCP server · read-only · no auth
+      </p>
+      <h1 class="mt-3 text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl">MCP server</h1>
+      <p class="mt-2 max-w-2xl text-lg text-ink-600">
+        Connect any <a class="underline" href="https://modelcontextprotocol.io/" rel="external">Model Context Protocol</a>–aware agent
+        and query the whole spec — by keyword, by category, by status, or page by page.
+      </p>
+    </header>
+
+    <article class="prose-spec mt-8">
+      <h2 id="endpoint">Endpoint</h2>
+      <p>
+        Streamable HTTP MCP, 2025-03-26 protocol revision. Stateless. Wide-open CORS. No authentication.
+      </p>
+      <pre><code>{site.mcp.endpoint}</code></pre>
+      <p>
+        Server card: <a href={site.mcp.serverCard}><code>{site.mcp.serverCard}</code></a>.
+        Landing page: <a href={site.mcp.landing} rel="external">{site.mcp.landing.replace('https://','')}</a>.
+      </p>
+
+      <h2 id="tools">Tools</h2>
+      <table>
+        <thead><tr><th>Tool</th><th>What it returns</th></tr></thead>
+        <tbody>
+          <tr><td><code>search(query, limit?)</code></td><td>Ranked spec pages with title, status, category, URL, and body excerpts.</td></tr>
+          <tr><td><code>list_topics({'{ category?, status?, limit? }'})</code></td><td>Filtered index — slug, title, status, summary, URL.</td></tr>
+          <tr><td><code>get_topic({'{ slug }'})</code></td><td>Full canonical Markdown for one page — frontmatter, sources, body.</td></tr>
+          <tr><td><code>get_checklist({'{ category?, status? }'})</code></td><td>Tickable Markdown checklist grouped by category.</td></tr>
+          <tr><td><code>get_categories()</code></td><td>The ten top-level categories with topic counts.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="prompts">Prompts</h2>
+      <table>
+        <thead><tr><th>Prompt</th><th>What it generates</th></tr></thead>
+        <tbody>
+          <tr><td><code>audit_url(url, focus?)</code></td><td>An audit plan for a target URL against required spec items, optionally narrowed to a category (e.g. <code>security</code>).</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="connect-claude">Connect from Claude Desktop</h2>
+      <p>
+        Edit <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS) or
+        <code>%APPDATA%\Claude\claude_desktop_config.json</code> (Windows) and add:
+      </p>
+      <pre><code>{claudeJson}</code></pre>
+      <p>Restart Claude Desktop; the tools appear under the connector menu.</p>
+
+      <h2 id="connect-other">Other MCP clients</h2>
+      <p>
+        Any client that speaks Streamable HTTP MCP (2025-03-26 revision) connects with one URL. There is no client SDK to install
+        and no token to manage. <a href="https://github.com/modelcontextprotocol/inspector" rel="external">MCP Inspector</a> is
+        the fastest way to poke at the schema.
+      </p>
+
+      <h2 id="example">Quick example — raw JSON-RPC</h2>
+      <pre><code>{`curl -sX POST ${site.mcp.endpoint} \\
+  -H 'Content-Type: application/json' \\
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"search","arguments":{"query":"CSP","limit":3}}}'`}</code></pre>
+
+      <h2 id="design-notes">Design notes</h2>
+      <ul>
+        <li><strong>Single source of truth.</strong> Both this site and the MCP server build from the same Markdown files in <code>src/content/spec/</code>. The Worker bundles a JSON manifest at build time so there is no runtime parsing and no drift.</li>
+        <li><strong>Stateless.</strong> No sessions, no SSE. Every request is independent.</li>
+        <li><strong>No auth, no PII.</strong> Public read-only data; no cookies; no logs that identify individual callers beyond Cloudflare's standard request metadata.</li>
+        <li><strong>It is itself a worked example</strong> of the <a href="/spec/agent-readiness/mcp-and-tool-discovery/">MCP and tool discovery</a> spec page. Source under <a href={`${site.repo}/tree/main/mcp`} rel="external">mcp/ in the repo</a> (~600 lines of TypeScript).</li>
+      </ul>
+
+      <h2 id="discoverability">Discoverability surfaces</h2>
+      <ul>
+        <li>Server card at <a href={site.mcp.serverCard}><code>{site.mcp.serverCard}</code></a>.</li>
+        <li><code>Link: …; rel="mcp"</code> response header on every page on this site.</li>
+        <li>Entry in <a href="/.well-known/api-catalog"><code>/.well-known/api-catalog</code></a> (RFC 9727).</li>
+        <li>Cross-linked from the <a href="/spec/agent-readiness/mcp-and-tool-discovery/">MCP and tool discovery</a> spec page.</li>
+      </ul>
+    </article>
+  </div>
+</BaseLayout>

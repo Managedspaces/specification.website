@@ -18,6 +18,9 @@ sources:
   - title: "Accessibility Checker — Ambiguous Anchor Text"
     url: "https://equalizedigital.com/accessibility-checker/documentation/ambiguous-anchor-text/"
     publisher: "Equalize Digital"
+  - title: "WP Accessibility — Content and images: Links"
+    url: "https://wpaccessibility.org/"
+    publisher: "WP Accessibility"
 ---
 
 ## What it is

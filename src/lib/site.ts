@@ -15,6 +15,11 @@ export const site = {
   twitter: '@jdevalk',
   plausibleDomain: 'specification.website',
   plausibleHost: 'https://plausible.io',
+  mcp: {
+    endpoint: 'https://mcp.specification.website/mcp',
+    landing: 'https://mcp.specification.website/',
+    serverCard: '/.well-known/mcp/server-card.json',
+  },
 } as const;
 
 export const categories = [

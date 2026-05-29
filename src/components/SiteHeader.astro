@@ -4,10 +4,10 @@ const { pathname } = Astro.url;
 ---
 
 <header class="border-b border-ink-200 bg-white">
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-4">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
     <a href="/" class="flex items-center gap-3 font-semibold text-ink-900 no-underline">
       <svg
-        class="h-9 w-9 rounded-md bg-accent-700"
+        class="h-9 w-9 shrink-0 rounded-md bg-accent-700"
         viewBox="0 0 64 64"
         role="img"
         aria-hidden="true"
@@ -24,13 +24,16 @@ const { pathname } = Astro.url;
       </svg>
       <span class="leading-tight">
         <span class="block text-base">{site.shortName}</span>
-        <span class="block text-xs font-normal text-ink-500">specification.website</span>
+        <span class="hidden text-xs font-normal text-ink-500 sm:block">What a good website does.</span>
       </span>
     </a>
+
+    {/* Desktop primary nav (≥ md) */}
     <nav aria-label="Primary" class="hidden md:block">
       <ul class="flex items-center gap-5 text-sm">
         <li><a class="text-ink-700 hover:text-accent-700" href="/spec/">All topics</a></li>
         <li><a class="text-ink-700 hover:text-accent-700" href="/checklist/">Checklist</a></li>
+        <li><a class="text-ink-700 hover:text-accent-700" href="/mcp/">MCP</a></li>
         <li><a class="text-ink-700 hover:text-accent-700" href="/about/">About</a></li>
         <li><a class="text-ink-700 hover:text-accent-700" href="/contribute/">Contribute</a></li>
         <li>
@@ -53,9 +56,52 @@ const { pathname } = Astro.url;
         </li>
       </ul>
     </nav>
+
+    {/* Mobile hamburger (< md) — uses native <details> so no JS, no CSP allowance needed. */}
+    <details class="mobile-menu md:hidden">
+      <summary
+        class="grid h-10 w-10 cursor-pointer place-items-center rounded-md border border-ink-200 text-ink-700 hover:border-ink-300"
+        aria-label="Open menu"
+      >
+        <svg class="mobile-menu__icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg class="mobile-menu__icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </summary>
+      <div class="mobile-menu__panel">
+        <nav aria-label="Mobile primary" class="border-b border-ink-100 px-4 py-3">
+          <ul class="space-y-1 text-sm">
+            <li><a class="block rounded-md px-2 py-2 text-ink-800 hover:bg-ink-50" href="/spec/">All topics</a></li>
+            <li><a class="block rounded-md px-2 py-2 text-ink-800 hover:bg-ink-50" href="/checklist/">Checklist</a></li>
+            <li><a class="block rounded-md px-2 py-2 text-ink-800 hover:bg-ink-50" href="/search/">Search</a></li>
+            <li><a class="block rounded-md px-2 py-2 text-ink-800 hover:bg-ink-50" href="/mcp/">MCP server</a></li>
+            <li><a class="block rounded-md px-2 py-2 text-ink-800 hover:bg-ink-50" href="/about/">About</a></li>
+            <li><a class="block rounded-md px-2 py-2 text-ink-800 hover:bg-ink-50" href="/contribute/">Contribute</a></li>
+            <li><a class="block rounded-md px-2 py-2 text-ink-800 hover:bg-ink-50" href={site.repo} rel="external">GitHub</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Mobile categories" class="px-4 py-3">
+          <p class="mb-1.5 text-xs font-semibold tracking-wide text-ink-500 uppercase">Categories</p>
+          <ul class="grid grid-cols-2 gap-1 text-sm">
+            {categories.map((c) => (
+              <li>
+                <a
+                  href={`/spec/${c.slug}/`}
+                  class:list={[
+                    'block rounded-md px-2 py-2',
+                    pathname.startsWith(`/spec/${c.slug}`)
+                      ? 'bg-accent-50 text-accent-800 ring-1 ring-inset ring-accent-200'
+                      : 'text-ink-800 hover:bg-ink-50',
+                  ]}
+                >{c.title}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </details>
   </div>
+
   {pathname !== '/' && (
-    <div class="border-t border-ink-100 bg-ink-50">
+    <div class="hidden border-t border-ink-100 bg-ink-50 md:block">
       <nav aria-label="Categories" class="mx-auto max-w-6xl overflow-x-auto px-4">
         <ul class="flex items-center gap-1 py-2 text-sm whitespace-nowrap">
           {categories.map((c) => (
