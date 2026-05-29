@@ -7,7 +7,7 @@ status: optional
 order: 35
 appliesTo: [all]
 relatedSlugs: [rtl-support, lang-attribute, locale-content]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "CSS Writing Modes Level 3"
     url: "https://www.w3.org/TR/css-writing-modes-3/"

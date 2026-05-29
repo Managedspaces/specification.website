@@ -7,7 +7,7 @@ status: optional
 order: 80
 appliesTo: [all]
 relatedSlugs: [well-known-overview, speculation-rules, no-vary-search, core-web-vitals]
-updated: "2026-05-29"
+updated: "2026-05-29T17:54:33.000Z"
 sources:
   - title: "Traffic Advice — formal specification"
     url: "https://buettner.github.io/private-prefetch-proxy/traffic-advice.html"

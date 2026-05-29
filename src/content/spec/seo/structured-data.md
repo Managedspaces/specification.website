@@ -7,7 +7,7 @@ status: recommended
 order: 100
 appliesTo: [all]
 relatedSlugs: [breadcrumbs, heading-hierarchy, xml-sitemaps, canonical-url, schemamap]
-updated: "2026-05-29"
+updated: "2026-05-29T14:13:42.000Z"
 sources:
   - title: "Schema.org"
     url: "https://schema.org/"

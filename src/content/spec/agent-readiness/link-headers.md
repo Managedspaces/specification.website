@@ -7,7 +7,7 @@ status: recommended
 order: 75
 appliesTo: [all]
 relatedSlugs: [llms-txt, llms-full-txt, markdown-source-endpoints, machine-readable-formats, agent-readiness-overview, feed-discovery, agent-skills-discovery, a2a-agent-cards, schemamap]
-updated: "2026-05-29"
+updated: "2026-05-29T14:13:42.000Z"
 sources:
   - title: "RFC 8288 — Web Linking"
     url: "https://www.rfc-editor.org/rfc/rfc8288"

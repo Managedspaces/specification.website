@@ -7,7 +7,7 @@ status: recommended
 order: 160
 appliesTo: [all]
 relatedSlugs: [form-errors, form-labels, focus-indicators, semantic-html]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "W3C Selectors Level 4 — Relational selector `:has()`"
     url: "https://www.w3.org/TR/selectors-4/#relational"

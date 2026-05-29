@@ -7,7 +7,7 @@ status: recommended
 order: 45
 appliesTo: [all]
 relatedSlugs: [locale-content, lang-attribute, hreflang]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "Unicode CLDR — Language Plural Rules"
     url: "https://cldr.unicode.org/index/cldr-spec/plural-rules"

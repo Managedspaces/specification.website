@@ -7,7 +7,7 @@ status: optional
 order: 90
 appliesTo: [all]
 relatedSlugs: [structured-data-for-agents, structured-data, markdown-source-endpoints, link-headers, xml-sitemaps, llms-txt]
-updated: "2026-05-29"
+updated: "2026-05-29T14:13:42.000Z"
 sources:
   - title: "JSON-LD 1.1 Specification"
     url: "https://www.w3.org/TR/json-ld11/"

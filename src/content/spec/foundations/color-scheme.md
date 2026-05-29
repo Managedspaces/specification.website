@@ -7,7 +7,7 @@ status: recommended
 order: 95
 appliesTo: [all]
 relatedSlugs: [theme-color, favicons, pwa-manifest]
-updated: "2026-05-29"
+updated: "2026-05-29T17:40:31.000Z"
 sources:
   - title: "HTML Living Standard — Standard metadata names: color-scheme"
     url: "https://html.spec.whatwg.org/multipage/semantics.html#meta-color-scheme"

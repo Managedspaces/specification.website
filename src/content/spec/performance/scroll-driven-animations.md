@@ -7,7 +7,7 @@ status: optional
 order: 125
 appliesTo: [all]
 relatedSlugs: [view-transitions, core-web-vitals, visibility-aware-rendering, reduced-motion]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "CSS Scroll-driven Animations Module Level 1"
     url: "https://drafts.csswg.org/scroll-animations-1/"

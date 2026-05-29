@@ -7,7 +7,7 @@ status: recommended
 order: 120
 appliesTo: [all]
 relatedSlugs: [feed-discovery, canonical-url, machine-readable-formats, llms-txt]
-updated: "2026-05-29"
+updated: "2026-05-29T15:19:28.000Z"
 sources:
   - title: "RSS 2.0 Specification"
     url: "https://www.rssboard.org/rss-specification"

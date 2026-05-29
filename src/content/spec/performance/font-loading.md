@@ -7,7 +7,7 @@ status: recommended
 order: 70
 appliesTo: [all]
 relatedSlugs: [preload-prefetch-preconnect, critical-css, core-web-vitals]
-updated: "2026-05-29"
+updated: "2026-05-29T09:13:20.000Z"
 sources:
   - title: "MDN — @font-face"
     url: "https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face"

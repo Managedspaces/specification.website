@@ -7,7 +7,7 @@ status: optional
 order: 120
 appliesTo: [all]
 relatedSlugs: [core-web-vitals, critical-css, visibility-aware-rendering]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "CSS Containment Module Level 2"
     url: "https://drafts.csswg.org/css-contain-2/"

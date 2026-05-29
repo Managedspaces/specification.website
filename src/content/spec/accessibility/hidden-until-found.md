@@ -7,7 +7,7 @@ status: recommended
 order: 150
 appliesTo: [all]
 relatedSlugs: [semantic-html, keyboard-navigation, aria-usage, heading-hierarchy]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "HTML Standard — The hidden attribute"
     url: "https://html.spec.whatwg.org/multipage/interaction.html#the-hidden-attribute"

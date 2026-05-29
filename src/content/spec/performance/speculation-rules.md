@@ -7,7 +7,7 @@ status: recommended
 order: 95
 appliesTo: [all]
 relatedSlugs: [core-web-vitals, preload-prefetch-preconnect, view-transitions, http3, resource-hints, no-vary-search]
-updated: "2026-05-30"
+updated: "2026-05-29T19:23:20.283Z"
 sources:
   - title: "MDN — Speculation Rules API"
     url: "https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API"

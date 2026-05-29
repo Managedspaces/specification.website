@@ -1,16 +1,17 @@
 import type { APIRoute } from 'astro';
-import { categories, site } from '~/lib/site';
-import { loadSpecLastmod, renderSitemapIndex, xmlResponse } from '~/lib/sitemap';
+import { categories } from '~/lib/site';
+import { loadSpecLastmod, renderSitemapIndex, siteOrigin, xmlResponse } from '~/lib/sitemap';
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (context) => {
   const { perCategory, newest } = await loadSpecLastmod();
+  const origin = siteOrigin(context);
 
   const sitemaps = [
-    { loc: `${site.url}/sitemap-pages.xml`, lastmod: newest || undefined },
+    { loc: `${origin}/sitemap-pages.xml`, lastmod: newest || undefined },
     ...categories
       .filter((c) => perCategory.has(c.slug))
       .map((c) => ({
-        loc: `${site.url}/sitemap-${c.slug}.xml`,
+        loc: `${origin}/sitemap-${c.slug}.xml`,
         lastmod: perCategory.get(c.slug),
       })),
   ];

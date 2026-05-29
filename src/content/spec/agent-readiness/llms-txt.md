@@ -7,7 +7,7 @@ status: recommended
 order: 20
 appliesTo: [all]
 relatedSlugs: [llms-full-txt, markdown-source-endpoints, agent-readiness-overview, robots-for-ai-crawlers, agent-skills-discovery, schemamap]
-updated: "2026-05-29"
+updated: "2026-05-29T14:13:42.000Z"
 sources:
   - title: "The /llms.txt proposal"
     url: "https://llmstxt.org/"

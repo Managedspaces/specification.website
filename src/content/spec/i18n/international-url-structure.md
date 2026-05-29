@@ -7,7 +7,7 @@ status: recommended
 order: 5
 appliesTo: [all]
 relatedSlugs: [hreflang, sitemap-hreflang, language-switcher, avoid-auto-geo-redirects, url-structure]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "Google Search Central — Managing multi-regional and multilingual sites"
     url: "https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites"

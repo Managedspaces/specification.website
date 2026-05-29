@@ -7,7 +7,7 @@ status: recommended
 order: 130
 appliesTo: [all]
 relatedSlugs: [semantic-html, aria-usage, keyboard-navigation, focus-indicators]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "HTML Standard — Popover"
     url: "https://html.spec.whatwg.org/multipage/popover.html"

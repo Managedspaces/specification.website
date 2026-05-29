@@ -7,7 +7,7 @@ status: recommended
 order: 105
 appliesTo: [all]
 relatedSlugs: [speculation-rules, core-web-vitals, critical-css]
-updated: "2026-05-29"
+updated: "2026-05-29T17:40:31.000Z"
 sources:
   - title: "MDN — View Transition API"
     url: "https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API"

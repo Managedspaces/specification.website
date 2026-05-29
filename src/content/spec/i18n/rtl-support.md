@@ -7,7 +7,7 @@ status: recommended
 order: 30
 appliesTo: [all]
 relatedSlugs: [lang-attribute, hreflang, locale-content, writing-modes]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "W3C i18n — Structural markup and right-to-left text in HTML"
     url: "https://www.w3.org/International/questions/qa-html-dir"

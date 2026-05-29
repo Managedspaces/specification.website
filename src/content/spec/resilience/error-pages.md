@@ -7,7 +7,7 @@ status: required
 order: 10
 appliesTo: [all]
 relatedSlugs: [soft-404, monitoring-uptime, maintenance-pages]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "RFC 9110 — HTTP Semantics: 404 Not Found"
     url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-404-not-found"

@@ -7,7 +7,7 @@ status: required
 order: 10
 appliesTo: [all]
 relatedSlugs: [image-optimization, critical-css, lazy-loading]
-updated: "2026-05-29"
+updated: "2026-05-29T09:13:20.000Z"
 sources:
   - title: "web.dev — Web Vitals"
     url: "https://web.dev/articles/vitals"

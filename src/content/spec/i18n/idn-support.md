@@ -7,7 +7,7 @@ status: optional
 order: 50
 appliesTo: [all]
 relatedSlugs: [hreflang, lang-attribute, locale-content, international-url-structure]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "RFC 5891 — IDNA 2008: Protocol"
     url: "https://www.rfc-editor.org/rfc/rfc5891"

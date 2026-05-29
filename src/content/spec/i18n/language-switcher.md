@@ -7,7 +7,7 @@ status: recommended
 order: 25
 appliesTo: [all]
 relatedSlugs: [hreflang, lang-attribute, avoid-auto-geo-redirects, international-url-structure]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "W3C i18n — Using language selectors"
     url: "https://www.w3.org/International/questions/qa-navigation-select"

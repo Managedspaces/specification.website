@@ -7,7 +7,7 @@ status: recommended
 order: 110
 appliesTo: [all]
 relatedSlugs: [core-web-vitals, cache-control, script-loading, speculation-rules]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "WHATWG HTML — Navigation and session history"
     url: "https://html.spec.whatwg.org/multipage/nav-history-apis.html"

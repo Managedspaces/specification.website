@@ -7,7 +7,7 @@ status: recommended
 order: 155
 appliesTo: [all]
 relatedSlugs: [semantic-html, aria-usage, keyboard-navigation, hidden-until-found]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "WHATWG HTML — The details element"
     url: "https://html.spec.whatwg.org/multipage/interactive-elements.html#the-details-element"

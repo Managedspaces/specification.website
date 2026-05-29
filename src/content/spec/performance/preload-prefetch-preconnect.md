@@ -7,7 +7,7 @@ status: recommended
 order: 40
 appliesTo: [all]
 relatedSlugs: [resource-hints, core-web-vitals, font-loading]
-updated: "2026-05-29"
+updated: "2026-05-29T09:13:20.000Z"
 sources:
   - title: "MDN — <link>: The External Resource Link element"
     url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link"

@@ -7,7 +7,7 @@ status: recommended
 order: 130
 appliesTo: [all]
 relatedSlugs: [view-transitions, core-web-vitals, color-scheme]
-updated: "2026-05-29"
+updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "CSS Overflow Module Level 3 — scrollbar-gutter"
     url: "https://drafts.csswg.org/css-overflow-3/#scrollbar-gutter-property"

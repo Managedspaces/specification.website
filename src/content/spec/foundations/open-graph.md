@@ -7,7 +7,7 @@ status: recommended
 order: 100
 appliesTo: [all]
 relatedSlugs: [title, meta-description, canonical-url, favicons, localised-metadata]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "The Open Graph protocol"
     url: "https://ogp.me/"

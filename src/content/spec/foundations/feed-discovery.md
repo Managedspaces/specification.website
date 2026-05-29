@@ -7,7 +7,7 @@ status: recommended
 order: 110
 appliesTo: [all]
 relatedSlugs: [feed-hygiene, open-graph, canonical-url, machine-readable-formats, llms-txt, markdown-source-endpoints]
-updated: "2026-05-29"
+updated: "2026-05-29T15:19:28.000Z"
 sources:
   - title: "HTML Living Standard — Link types: alternate"
     url: "https://html.spec.whatwg.org/multipage/links.html#link-type-alternate"

@@ -7,7 +7,7 @@ status: recommended
 order: 12
 appliesTo: [all]
 relatedSlugs: [hreflang, locale-content, language-switcher, lang-attribute]
-updated: "2026-05-29"
+updated: "2026-05-29T18:54:03.000Z"
 sources:
   - title: "Google Search Central — Tell Google about localized versions"
     url: "https://developers.google.com/search/docs/specialty/international/localized-versions"
