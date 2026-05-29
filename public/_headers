@@ -12,7 +12,7 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-site
   X-Frame-Options: DENY
-  Link: </llms.txt>; rel="describedby"; type="text/markdown"; title="Site index for LLMs", </llms-full.txt>; rel="alternate"; type="text/markdown"; title="Full content as Markdown", </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/mcp/server-card.json>; rel="mcp"; type="application/json"; title="MCP server card", <https://mcp.specification.website/mcp>; rel="related"; title="MCP endpoint", </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"; title="Agent Skills discovery index", </sitemap-index.xml>; rel="sitemap"; type="application/xml", </rss.xml>; rel="alternate"; type="application/rss+xml", </.well-known/security.txt>; rel="security"; type="text/plain"
+  Link: </llms.txt>; rel="describedby"; type="text/markdown"; title="Site index for LLMs", </llms-full.txt>; rel="alternate"; type="text/markdown"; title="Full content as Markdown", </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/mcp/server-card.json>; rel="mcp"; type="application/json"; title="MCP server card", <https://mcp.specification.website/mcp>; rel="related"; title="MCP endpoint", </.well-known/agent-card.json>; rel="service-desc"; type="application/json"; title="A2A agent card", <https://mcp.specification.website/a2a/v1>; rel="related"; title="A2A endpoint", </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"; title="Agent Skills discovery index", </sitemap-index.xml>; rel="sitemap"; type="application/xml", </rss.xml>; rel="alternate"; type="application/rss+xml", </.well-known/security.txt>; rel="security"; type="text/plain"
 
 # Long cache for fingerprinted assets
 /_astro/*
@@ -50,6 +50,12 @@
 
 # MCP server card discovery
 /.well-known/mcp/server-card.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
+
+# A2A agent card discovery (a2a-protocol.org)
+/.well-known/agent-card.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=3600
   Access-Control-Allow-Origin: *

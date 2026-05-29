@@ -20,6 +20,7 @@ import {
   getCategoriesTool,
   buildAuditPrompt,
 } from './tools';
+import { handleA2aRpc, AGENT_CARD } from './a2a';
 import type { Manifest, RpcRequest, RpcResponse } from './types';
 
 const manifest = data as unknown as Manifest;
@@ -177,10 +178,14 @@ function htmlLanding(): Response {
   <li><code>audit_url(url, focus?)</code> — generates an audit plan for a target URL</li>
 </ul>
 
+<h2>Also speaks A2A</h2>
+<p>Agent-to-Agent JSON-RPC endpoint at <code>POST /a2a/v1</code>; agent card at <a href="/.well-known/agent-card.json"><code>/.well-known/agent-card.json</code></a>. <code>message/send</code> wraps the same search; other A2A methods return method-not-found.</p>
+
 <h2>Discovery</h2>
 <ul>
-  <li>Server card: <a href="https://specification.website/.well-known/mcp/server-card.json">specification.website/.well-known/mcp/server-card.json</a></li>
-  <li>Spec page: <a href="https://specification.website/spec/agent-readiness/mcp-and-tool-discovery/">spec/agent-readiness/mcp-and-tool-discovery</a></li>
+  <li>MCP server card: <a href="https://specification.website/.well-known/mcp/server-card.json">specification.website/.well-known/mcp/server-card.json</a></li>
+  <li>A2A agent card: <a href="https://specification.website/.well-known/agent-card.json">specification.website/.well-known/agent-card.json</a></li>
+  <li>Spec pages: <a href="https://specification.website/spec/agent-readiness/mcp-and-tool-discovery/">mcp-and-tool-discovery</a>, <a href="https://specification.website/spec/agent-readiness/a2a-agent-cards/">a2a-agent-cards</a></li>
   <li>Source: <a href="https://github.com/jdevalk/specification.website">github.com/jdevalk/specification.website</a></li>
 </ul>
 </body>
@@ -220,6 +225,39 @@ function metadata(): Response {
     ),
     { headers: JSON_HEADERS },
   );
+}
+
+function agentCardResponse(): Response {
+  return new Response(JSON.stringify(AGENT_CARD, null, 2), { headers: JSON_HEADERS });
+}
+
+async function handleA2a(request: Request): Promise<Response> {
+  if (request.method !== 'POST') {
+    return new Response(
+      JSON.stringify(err(null, -32600, 'A2A endpoint requires POST with a JSON-RPC body.')),
+      { status: 405, headers: JSON_HEADERS },
+    );
+  }
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(JSON.stringify(err(null, -32700, 'Parse error: invalid JSON')), {
+      status: 400,
+      headers: JSON_HEADERS,
+    });
+  }
+  if (Array.isArray(body)) {
+    const responses = body
+      .map((r) => handleA2aRpc(manifest, r as RpcRequest))
+      .filter((r): r is RpcResponse => r !== null);
+    return new Response(JSON.stringify(responses), { headers: JSON_HEADERS });
+  }
+  const response = handleA2aRpc(manifest, body as RpcRequest);
+  if (response === null) {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+  }
+  return new Response(JSON.stringify(response), { headers: JSON_HEADERS });
 }
 
 async function handleMcp(request: Request): Promise<Response> {
@@ -268,8 +306,13 @@ export default {
       case '/mcp':
       case '/mcp/':
         return handleMcp(request);
+      case '/a2a/v1':
+      case '/a2a/v1/':
+        return handleA2a(request);
       case '/.well-known/mcp/server-card.json':
         return metadata();
+      case '/.well-known/agent-card.json':
+        return agentCardResponse();
       case '/health':
         return new Response('ok', { headers: { 'Content-Type': 'text/plain', ...CORS_HEADERS } });
       default:

@@ -6,7 +6,7 @@ summary: "A well-known URI that lists Agent Skills — short, scoped instruction
 status: recommended
 order: 85
 appliesTo: [all]
-relatedSlugs: [mcp-and-tool-discovery, llms-txt, link-headers, markdown-source-endpoints, api-catalog]
+relatedSlugs: [mcp-and-tool-discovery, llms-txt, link-headers, markdown-source-endpoints, api-catalog, a2a-agent-cards]
 updated: "2026-05-29"
 sources:
   - title: "Agent Skills Discovery via Well-Known URIs (RFC draft)"

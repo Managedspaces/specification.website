@@ -38,6 +38,11 @@
           "href": "https://specification.website/.well-known/agent-skills/index.json",
           "type": "application/json",
           "title": "Agent Skills discovery index (RFC v0.2.0)"
+        },
+        {
+          "href": "https://specification.website/.well-known/agent-card.json",
+          "type": "application/json",
+          "title": "A2A agent card"
         }
       ],
       "license": [
@@ -87,6 +92,28 @@
           "href": "https://mcp.specification.website/",
           "type": "text/html",
           "title": "MCP server landing page"
+        }
+      ]
+    },
+    {
+      "anchor": "https://mcp.specification.website/a2a/v1",
+      "service-desc": [
+        {
+          "href": "https://specification.website/.well-known/agent-card.json",
+          "type": "application/json",
+          "title": "A2A agent card"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://specification.website/spec/agent-readiness/a2a-agent-cards/",
+          "type": "text/html",
+          "title": "Spec page on A2A agent cards"
+        },
+        {
+          "href": "https://a2a-protocol.org/latest/specification/",
+          "type": "text/html",
+          "title": "A2A protocol specification"
         }
       ]
     }

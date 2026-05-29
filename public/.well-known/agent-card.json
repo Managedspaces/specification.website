@@ -1,0 +1,67 @@
+{
+  "protocolVersion": "1.0",
+  "name": "The Website Specification",
+  "description": "Read-only agent that answers natural-language questions about The Website Specification — a platform-agnostic checklist of what a good website does. Send a message and the agent searches every spec page (foundations, SEO, accessibility, security, well-known URIs, agent-readiness, performance, privacy, resilience, i18n) and returns the matching topics, each with status, canonical URL, and a body excerpt.",
+  "version": "0.1.0",
+  "documentationUrl": "https://specification.website/spec/agent-readiness/a2a-agent-cards/",
+  "iconUrl": "https://specification.website/icon-512.png",
+  "provider": {
+    "organization": "Joost de Valk",
+    "url": "https://joost.blog"
+  },
+  "supportedInterfaces": [
+    {
+      "url": "https://mcp.specification.website/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "extendedAgentCard": false
+  },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/markdown", "text/plain"],
+  "skills": [
+    {
+      "id": "search-spec",
+      "name": "Search the spec",
+      "description": "Free-text search across every spec page. Returns ranked results with title, status, category, canonical URL, and a body excerpt.",
+      "tags": ["search", "discovery", "web-standards"],
+      "examples": [
+        "what is content security policy",
+        "how do I implement llms.txt",
+        "required SEO topics"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/markdown"]
+    },
+    {
+      "id": "get-topic",
+      "name": "Fetch a spec topic",
+      "description": "Fetch the full canonical Markdown of one spec page by slug. Send a text part of the form `topic:<slug>` — for example `topic:content-security-policy` or `topic:llms-txt`.",
+      "tags": ["fetch", "markdown", "reference"],
+      "examples": [
+        "topic:content-security-policy",
+        "topic:meta-robots",
+        "topic:llms-txt"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/markdown"]
+    },
+    {
+      "id": "audit-against-spec",
+      "name": "Audit a website against the spec",
+      "description": "Pair this agent with a browsing agent: ask it for the relevant required and recommended topics for a category (security, seo, accessibility, performance, privacy, i18n, resilience, agent-readiness, well-known, foundations) and the audit plan falls out.",
+      "tags": ["audit", "checklist", "compliance"],
+      "examples": [
+        "list every required SEO topic",
+        "what should a static blog ship for accessibility",
+        "security topics I should verify on a payment site"
+      ],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/markdown"]
+    }
+  ]
+}

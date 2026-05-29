@@ -64,8 +64,8 @@ These mirror `CONTRIBUTING.md`. Enforce them in your own writing and when review
 | `src/pages/llms.txt.ts`, `src/pages/llms-full.txt.ts`, `src/pages/rss.xml.ts` | Derived endpoints. |
 | `functions/_middleware.ts` | Cloudflare Pages middleware. Does `Accept: text/markdown` content negotiation on canonical spec URLs and on `/`. |
 | `public/_headers` | Cloudflare response headers — strict CSP, HSTS, Permissions-Policy, Vary on .md, content types for well-known files, the discovery `Link` header. |
-| `public/.well-known/` | Static well-known URIs (security.txt, change-password, api-catalog, mcp/server-card.json, agent-skills/index.json + agent-skills/<name>/SKILL.md per the Agent Skills Discovery RFC v0.2.0 — if you edit a SKILL.md, recompute its sha256 and update the `digest` in index.json). |
-| `mcp/` | Cloudflare Worker exposing the spec as an MCP server at `mcp.specification.website`. Has its own `package.json`, `wrangler.toml`, build script. Reads from the same `src/content/spec/` source of truth at build time. |
+| `public/.well-known/` | Static well-known URIs (security.txt, change-password, api-catalog, mcp/server-card.json, agent-card.json for A2A discovery, agent-skills/index.json + agent-skills/<name>/SKILL.md per the Agent Skills Discovery RFC v0.2.0 — if you edit a SKILL.md, recompute its sha256 and update the `digest` in index.json). |
+| `mcp/` | Cloudflare Worker exposing the spec at `mcp.specification.website`. Serves the MCP transport at `/mcp`, an A2A (Agent-to-Agent) JSON-RPC endpoint at `/a2a/v1`, and mirrors both discovery cards under `/.well-known/`. Has its own `package.json`, `wrangler.toml`, build script. Reads from the same `src/content/spec/` source of truth at build time. |
 | `public/search-overlay.js` | ⌘K overlay logic. CSP-safe (no inline JS). |
 | `public/search-init.js` | `/search/` page Pagefind initialiser. CSP-safe. |
 | `scripts/generate-assets.mjs` | Generates icons + OG image from inline SVGs via `sharp`. Wired through `prebuild`/`predev`. |

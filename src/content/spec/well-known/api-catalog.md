@@ -6,7 +6,7 @@ summary: "RFC 9727 publishes a machine-readable index of the APIs and resources 
 status: recommended
 order: 35
 appliesTo: [all]
-relatedSlugs: [well-known-overview, link-headers, llms-txt, machine-readable-formats]
+relatedSlugs: [well-known-overview, link-headers, llms-txt, machine-readable-formats, a2a-agent-cards]
 updated: "2026-05-29"
 sources:
   - title: "RFC 9727 — Publishing Organisation API Information"
