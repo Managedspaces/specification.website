@@ -1,0 +1,20 @@
+# Cloudflare Worker — The Website Specification MCP server.
+# Deploy with: `npm run deploy` (after `wrangler login` once).
+#
+# Point the custom_domain at mcp.specification.website. The first deploy
+# automatically registers the subdomain with Cloudflare's edge as long as
+# the parent zone (specification.website) is on Cloudflare.
+
+name = "specification-website-mcp"
+main = "src/index.ts"
+compatibility_date = "2026-05-29"
+compatibility_flags = ["nodejs_compat"]
+
+# Production: bind the public hostname.
+[[routes]]
+pattern = "mcp.specification.website"
+custom_domain = true
+
+# Observability — Workers Analytics + tail logs.
+[observability]
+enabled = true

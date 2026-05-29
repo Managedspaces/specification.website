@@ -1,0 +1,6 @@
+node_modules/
+.wrangler/
+.dev.vars
+
+# Build artefact — regenerated on every install/dev/deploy
+src/data.json

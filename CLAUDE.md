@@ -62,9 +62,10 @@ These mirror `CONTRIBUTING.md`. Enforce them in your own writing and when review
 | `src/pages/spec/[category]/[slug].astro` | The dynamic HTML route. |
 | `src/pages/spec/[category]/[slug].md.ts` | The dynamic Markdown route. |
 | `src/pages/llms.txt.ts`, `src/pages/llms-full.txt.ts`, `src/pages/rss.xml.ts` | Derived endpoints. |
-| `functions/_middleware.ts` | Cloudflare Pages middleware. Does `Accept: text/markdown` content negotiation on canonical spec URLs. |
-| `public/_headers` | Cloudflare response headers — strict CSP, HSTS, Permissions-Policy, Vary on .md, content types for well-known files. |
-| `public/.well-known/` | Static well-known URIs (security.txt, change-password). |
+| `functions/_middleware.ts` | Cloudflare Pages middleware. Does `Accept: text/markdown` content negotiation on canonical spec URLs and on `/`. |
+| `public/_headers` | Cloudflare response headers — strict CSP, HSTS, Permissions-Policy, Vary on .md, content types for well-known files, the discovery `Link` header. |
+| `public/.well-known/` | Static well-known URIs (security.txt, change-password, api-catalog, mcp/server-card.json). |
+| `mcp/` | Cloudflare Worker exposing the spec as an MCP server at `mcp.specification.website`. Has its own `package.json`, `wrangler.toml`, build script. Reads from the same `src/content/spec/` source of truth at build time. |
 | `public/search-overlay.js` | ⌘K overlay logic. CSP-safe (no inline JS). |
 | `public/search-init.js` | `/search/` page Pagefind initialiser. CSP-safe. |
 | `scripts/generate-assets.mjs` | Generates icons + OG image from inline SVGs via `sharp`. Wired through `prebuild`/`predev`. |
@@ -109,8 +110,9 @@ npm run assets   # regenerate icons + OG image
 ## Deployment
 
 - `main` → Cloudflare Pages, auto-deployed via the Pages dashboard's Git integration. No GitHub Actions deploy workflow (`ci.yml` only runs type-check + build verification).
-- Custom domain: `specification.website` (configure in the Cloudflare Pages dashboard).
+- Custom domain for the site: `specification.website` (configure in the Cloudflare Pages dashboard).
 - Functions live in `/functions/` and ship alongside static assets. The Cloudflare build picks them up automatically.
+- The **MCP server** in `/mcp/` is a separate Cloudflare Worker — `cd mcp && npm run deploy`. It registers `mcp.specification.website` as a custom domain on first deploy. When the spec content changes, redeploy the Worker so its bundled data stays in sync (the predeploy hook regenerates `mcp/src/data.json`).
 
 ## Privacy stance
 

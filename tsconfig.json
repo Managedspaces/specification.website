@@ -7,5 +7,5 @@
     }
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules", "functions"]
+  "exclude": ["dist", "node_modules", "functions", "mcp"]
 }

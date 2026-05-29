@@ -2,11 +2,11 @@
 title: "MCP and tool discovery"
 slug: mcp-and-tool-discovery
 category: agent-readiness
-summary: "The Model Context Protocol is an emerging way for sites with actionable functionality to expose tools agents can call. Relevant for SaaS and app sites, not blogs."
+summary: "The Model Context Protocol is an emerging way for sites to expose queryable tools to agents over JSON-RPC. Relevant whenever your content has structure worth filtering — even for a static reference site like this one."
 status: optional
 order: 80
 appliesTo: [all]
-relatedSlugs: [agent-readiness-overview, machine-readable-formats, llms-txt]
+relatedSlugs: [agent-readiness-overview, machine-readable-formats, llms-txt, link-headers, api-catalog]
 updated: "2026-05-29"
 sources:
   - title: "Model Context Protocol"
@@ -26,7 +26,9 @@ The Model Context Protocol (MCP) is an open protocol, originally proposed by Ant
 
 MCP is built on JSON-RPC over a few transports — stdio for local servers, HTTP plus Server-Sent Events for remote ones. A tool definition includes a name, a description, and a JSON Schema for inputs.
 
-This is relevant when your site exposes actions a user might want an agent to take: search a catalogue, create a ticket, book an appointment, query an account. For static content sites and blogs, MCP adds little — well-cached HTML and a feed are enough.
+This is relevant when your site exposes actions a user might want an agent to take: search a catalogue, create a ticket, book an appointment, query an account. For static content sites and blogs, MCP often adds little — well-cached HTML and a feed are enough. The exception is structured content sites where the data is filterable: a documentation set, a spec, a knowledge base. There an MCP server lets an agent ask "list all required SEO topics" or "give me the canonical CSP page" in a single typed call, instead of crawling and parsing.
+
+This site ships such a server as a worked example. See [mcp.specification.website](https://mcp.specification.website/) for the live endpoint, [`/.well-known/mcp/server-card.json`](/.well-known/mcp/server-card.json) for the discovery document, and the [`mcp/` directory of the source repo](https://github.com/jdevalk/specification.website/tree/main/mcp) for a ~300-line Cloudflare Worker implementation.
 
 ## Why it matters
 
@@ -42,6 +44,7 @@ Adoption is real but uneven. Treat it as an emerging convention worth investing 
 - Decide what you want agents to do. Read-only tools (`search_products`, `get_order_status`) are a safe first step; write tools (`create_ticket`, `update_address`) come with stronger auth requirements.
 - Build an MCP server. The reference SDKs cover TypeScript, Python, and others; see [modelcontextprotocol.io](https://modelcontextprotocol.io/).
 - Host it at a discoverable URL such as `/mcp` or a subdomain like `mcp.example.com`. Document the endpoint in your developer docs and link it from [/llms.txt](/spec/agent-readiness/llms-txt/).
+- **Publish a server card.** Ship `/.well-known/mcp/server-card.json` describing the server's name, version, transport, endpoint URL, capabilities, tools, and prompts. Add a `Link: </.well-known/mcp/server-card.json>; rel="mcp"` header on your main site so the card is discoverable without guessing the path — see [HTTP Link headers](/spec/agent-readiness/link-headers/) and [`/.well-known/api-catalog`](/spec/well-known/api-catalog/).
 - Use OAuth 2.1 (the MCP spec aligns with it) for any tool that touches user data. Never accept long-lived API keys in tool calls.
 - Keep tool descriptions short and precise. Agents pick which tool to call from the description.
 - Version the schema. Renaming a tool or changing its input shape is a breaking change.
