@@ -18,14 +18,15 @@ const accentLight = '#f0fdf4'; // green-50  — OG background tint
 //   M (top-left)  L (valley 1)  L (mid peak)  L (valley 2)  L (check tail)
 const WCheck = (cx, cy, scale, stroke) => {
   const pt = (x, y) => `${cx + (x - 32) * scale},${cy + (y - 32) * scale}`;
-  // Path on 64x64 reference grid:
-  // 8,22 → 20,46 → 30,28 → 40,46 → 58,12
+  // Path on 64x64 reference grid, sized to leave ~9-unit margin on every
+  // side after the stroke radius is accounted for:
+  // 12,26 → 22,46 → 30,31 → 38,46 → 52,18
   const d = [
-    `M${pt(8, 22)}`,
-    `L${pt(20, 46)}`,
-    `L${pt(30, 28)}`,
-    `L${pt(40, 46)}`,
-    `L${pt(58, 12)}`,
+    `M${pt(12, 26)}`,
+    `L${pt(22, 46)}`,
+    `L${pt(30, 31)}`,
+    `L${pt(38, 46)}`,
+    `L${pt(52, 18)}`,
   ].join(' ');
   return `<path d="${d}" fill="none" stroke="#ffffff" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"/>`;
 };
