@@ -1,0 +1,20 @@
+# /.well-known/ai.txt — The Website Specification
+# Reference: https://specification.website/spec/well-known/ai-txt/
+# Status: emerging convention, not yet IETF-standardised.
+#
+# This site is a public, MIT-licensed technical specification. Its purpose is
+# to be read — by humans and by agents — and incorporated into tools that help
+# people build better websites.
+
+User-agent: *
+Allow: training
+Allow: inference
+Allow: search
+Allow: derivative-works
+
+# For machine consumption of the same content as Markdown, see:
+#   https://specification.website/llms.txt
+#   https://specification.website/llms-full.txt
+#
+# Content licence: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+# Attribution: "The Website Specification, https://specification.website".

@@ -45,9 +45,25 @@ const articleJsonLd = {
   dateModified: updated,
   citation: sources.map((s) => ({ '@type': 'CreativeWork', name: s.title, url: s.url })),
 };
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Spec', item: site.url + '/spec/' },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: cat?.title ?? category,
+      item: `${site.url}/spec/${category}/`,
+    },
+    { '@type': 'ListItem', position: 4, name: title, item: canonical },
+  ],
+};
 ---
 
-<BaseLayout title={title} description={summary} canonical={canonical} type="article" jsonLd={articleJsonLd}>
+<BaseLayout title={title} description={summary} canonical={canonical} type="article" jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
   <article class="mx-auto max-w-4xl px-4 py-10">
     <Breadcrumbs
       crumbs={[

@@ -1,0 +1,92 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
+
+const updated = '2026-05-29';
+---
+
+<BaseLayout
+  title="Privacy policy"
+  description="What this site collects, what it sends, and what it stores. The short answer: almost nothing."
+>
+  <div class="mx-auto max-w-3xl px-4 py-10">
+    <Breadcrumbs crumbs={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]} />
+    <article class="prose-spec mt-6">
+      <h1 class="text-4xl font-bold tracking-tight text-ink-900">Privacy policy</h1>
+      <p class="text-sm text-ink-500">Last updated {updated}</p>
+
+      <p>
+        This site is a static, publicly readable reference. There are no user accounts, no comments, no
+        forms, and no transactions. The honest summary is: we do not collect, share, or store personal
+        data. This page exists because the spec lists a privacy policy as <strong>required</strong> — so we
+        publish one. It happens to be very short.
+      </p>
+
+      <h2 id="data-controller">Data controller</h2>
+      <p>
+        Joost de Valk (<a href="https://joost.blog" rel="external">joost.blog</a>) operates this site as a
+        personal open-source project. For privacy questions, email <a href="mailto:privacy@specification.website">privacy@specification.website</a>.
+      </p>
+
+      <h2 id="what-we-collect">What we collect</h2>
+      <p><strong>Nothing about you that we control.</strong> Specifically:</p>
+      <ul>
+        <li>No accounts, no login, no profile data.</li>
+        <li>No cookies. <em>Zero</em>. The site sets no cookie of any kind.</li>
+        <li>No tracking pixels, no fingerprinting, no third-party scripts.</li>
+        <li>No analytics. We have no idea what is popular, and that is fine.</li>
+        <li>No forms — there is nothing to submit.</li>
+      </ul>
+
+      <h2 id="logs-and-hosting">Logs and hosting</h2>
+      <p>
+        The site is hosted on <a href="https://pages.cloudflare.com/" rel="external">Cloudflare Pages</a>.
+        Cloudflare may process request metadata (IP address, user-agent, requested URL, timestamp) as a
+        normal part of serving the site and protecting it from abuse, governed by Cloudflare's own
+        <a href="https://www.cloudflare.com/privacypolicy/" rel="external">privacy policy</a>. We do not
+        receive a copy of that data and do not use it for analytics.
+      </p>
+
+      <h2 id="content-hosting">GitHub</h2>
+      <p>
+        Source content lives on <a href="https://github.com/jdevalk/specification.website" rel="external">GitHub</a>.
+        If you open an issue or pull request, that interaction is governed by
+        <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="external">GitHub's privacy statement</a>,
+        not this one.
+      </p>
+
+      <h2 id="signals-we-respect">Signals we respect</h2>
+      <ul>
+        <li><strong>Do Not Track / <a href="/spec/privacy/global-privacy-control/">Global Privacy Control</a>:</strong> not applicable — we do not track in the first place.</li>
+        <li><strong>Browser content blockers:</strong> nothing to block. The site ships no third-party requests.</li>
+      </ul>
+
+      <h2 id="children">Children</h2>
+      <p>
+        The site is a public technical reference. It is suitable for anyone, including under-13s, because
+        it collects no personal data and has no interactive features.
+      </p>
+
+      <h2 id="changes">Changes to this policy</h2>
+      <p>
+        If the site ever changes in a way that adds data collection (it should not), we will update the
+        date at the top of this page and announce the change in the
+        <a href="https://github.com/jdevalk/specification.website" rel="external">repository</a>.
+      </p>
+
+      <h2 id="your-rights">Your rights</h2>
+      <p>
+        Under the UK GDPR and EU GDPR you have the right to access, correct, delete, restrict, and port any
+        personal data we hold on you. Because we hold none, the practical answer to any such request is
+        “we have nothing on you”. If you believe we are mistaken, email us and we will investigate within
+        30 days.
+      </p>
+
+      <h2 id="related">Related</h2>
+      <ul>
+        <li><a href="/spec/privacy/privacy-policy/">The spec page on privacy policies</a> — what this page is required to cover, and why.</li>
+        <li><a href="/spec/privacy/">All privacy-category spec pages</a>.</li>
+      </ul>
+    </article>
+  </div>
+</BaseLayout>

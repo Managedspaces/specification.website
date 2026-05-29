@@ -16,10 +16,13 @@
   "scripts": {
     "dev": "astro dev --port 31337 --host",
     "start": "astro dev --port 31337 --host",
+    "prebuild": "node scripts/generate-assets.mjs",
     "build": "astro build",
+    "predev": "node scripts/generate-assets.mjs",
     "preview": "astro preview --port 31337 --host",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "assets": "node scripts/generate-assets.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.1",
@@ -28,5 +31,8 @@
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.2",
     "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }
