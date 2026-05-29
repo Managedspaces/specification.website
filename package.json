@@ -17,7 +17,8 @@
     "dev": "astro dev --port 31337 --host",
     "start": "astro dev --port 31337 --host",
     "prebuild": "node scripts/generate-assets.mjs",
-    "build": "astro build",
+    "build": "astro build && pagefind --site dist",
+    "build:astro": "astro build",
     "predev": "node scripts/generate-assets.mjs",
     "preview": "astro preview --port 31337 --host",
     "astro": "astro",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260529.1",
+    "pagefind": "^1.5.2",
     "sharp": "^0.34.5"
   }
 }

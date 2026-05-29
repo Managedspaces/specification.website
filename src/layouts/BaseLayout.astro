@@ -67,6 +67,7 @@ const finalJsonLd = jsonLd
         src={`${site.plausibleHost}/js/script.js`}
       />
     )}
+    <slot name="head" />
   </head>
   <body class="bg-white text-ink-800">
     <a href="#main" class="skip-link">Skip to main content</a>
