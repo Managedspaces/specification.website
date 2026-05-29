@@ -101,7 +101,7 @@ const { pathname } = Astro.url;
   </div>
 
   <div class="hidden border-t border-ink-100 md:block">
-    <nav aria-label="Categories" class="mx-auto max-w-6xl overflow-x-auto px-4">
+    <nav aria-label="Categories" class="mx-auto max-w-6xl overflow-x-auto overflow-y-hidden px-4">
       <ul class="-mb-px flex items-center gap-5 text-sm whitespace-nowrap">
         {categories.map((c) => {
           const active = pathname.startsWith(`/spec/${c.slug}`);
