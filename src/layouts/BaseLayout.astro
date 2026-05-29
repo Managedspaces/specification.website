@@ -71,6 +71,42 @@ const finalJsonLd = jsonLd
         src={`${site.plausibleHost}/js/script.js`}
       />
     )}
+    <script type="speculationrules" is:inline set:html={JSON.stringify({
+      prerender: [
+        {
+          source: 'document',
+          where: {
+            and: [
+              { href_matches: '/*' },
+              { not: { href_matches: '/admin/*' } },
+              { not: { href_matches: '/*.md' } },
+              { not: { href_matches: '/*.xml' } },
+              { not: { href_matches: '/*.txt' } },
+              { not: { href_matches: '/*.jsonld' } },
+              { not: { selector_matches: '[data-no-speculate]' } },
+              { not: { selector_matches: '[rel~=external]' } },
+              { not: { selector_matches: '[rel~=nofollow]' } },
+            ],
+          },
+          eagerness: 'moderate',
+        },
+      ],
+      prefetch: [
+        {
+          source: 'document',
+          where: {
+            and: [
+              { href_matches: '/*' },
+              { not: { href_matches: '/admin/*' } },
+              { not: { selector_matches: '[data-no-speculate]' } },
+              { not: { selector_matches: '[rel~=external]' } },
+              { not: { selector_matches: '[rel~=nofollow]' } },
+            ],
+          },
+          eagerness: 'conservative',
+        },
+      ],
+    })} />
     <slot name="head" />
   </head>
   <body class="bg-white text-ink-800">

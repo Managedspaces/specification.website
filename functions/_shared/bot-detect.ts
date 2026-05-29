@@ -105,6 +105,11 @@ export function logBot(context: { request: Request; env: BotEnv }): void {
     // Skip the local /admin/* dashboard so reading it doesn't pollute the data.
     if (path.startsWith('/admin/')) return;
 
+    // Speculative loads (Speculation Rules: prerender / prefetch) come from a
+    // real browser, not a crawler — and they fire on hover, so they'd vastly
+    // outnumber real visits if we logged them.
+    if ((req.headers.get('sec-purpose') || '').includes('prefetch')) return;
+
     const cf = (req as Request & { cf?: IncomingRequestCfProperties }).cf;
     const sigAgent = req.headers.get('signature-agent') || '';
     const verified = cf?.verifiedBot ? 'verified' : '';
