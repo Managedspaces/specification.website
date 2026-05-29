@@ -6,7 +6,7 @@ summary: "An extended companion to /llms.txt that concatenates the full markdown
 status: optional
 order: 30
 appliesTo: [all]
-relatedSlugs: [llms-txt, agent-readiness-overview, machine-readable-formats]
+relatedSlugs: [llms-txt, markdown-source-endpoints, agent-readiness-overview, machine-readable-formats]
 updated: "2026-05-29"
 sources:
   - title: "The /llms.txt proposal"

@@ -6,7 +6,7 @@ summary: "Offer JSON, RSS, or plain markdown endpoints alongside HTML where it m
 status: recommended
 order: 70
 appliesTo: [all]
-relatedSlugs: [agent-readiness-overview, llms-txt, llms-full-txt, xml-sitemaps]
+relatedSlugs: [agent-readiness-overview, markdown-source-endpoints, llms-txt, llms-full-txt, xml-sitemaps]
 updated: "2026-05-29"
 sources:
   - title: "RSS 2.0 Specification"
@@ -80,8 +80,8 @@ The cost is small and the upside compounds: every consumer that does not have to
   <link rel="alternate" type="application/json" title="Blog" href="/feed.json">
   ```
 
-- **Markdown sources.** For documentation, serve `page.md` alongside `page.html`. This pairs well with [/llms.txt](/spec/agent-readiness/llms-txt/).
-- **Content negotiation (optional).** Some sites serve different representations of the same URL based on the `Accept` header. Powerful, but adds caching complexity. Most sites are better off with distinct URLs per format.
+- **Markdown sources.** For documentation, serve `page.md` alongside `page.html` — see [Per-page Markdown source endpoints](/spec/agent-readiness/markdown-source-endpoints/) for the full pattern, including `Accept: text/markdown` content negotiation done correctly with `Vary: Accept`.
+- **Content negotiation.** Powerful, but easy to misuse. Always set `Vary: Accept` on every representation, otherwise caches will pin the wrong one for every subsequent visitor. When the formats are very different (HTML vs JSON), distinct URLs are usually simpler.
 - **Stable schemas.** Once published, treat the field names as a contract — same rule as URLs.
 
 ## Common mistakes

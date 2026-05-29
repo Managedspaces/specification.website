@@ -6,7 +6,7 @@ summary: "A proposed markdown file at the site root that gives LLMs a curated in
 status: recommended
 order: 20
 appliesTo: [all]
-relatedSlugs: [llms-full-txt, agent-readiness-overview, robots-for-ai-crawlers]
+relatedSlugs: [llms-full-txt, markdown-source-endpoints, agent-readiness-overview, robots-for-ai-crawlers]
 updated: "2026-05-29"
 sources:
   - title: "The /llms.txt proposal"
