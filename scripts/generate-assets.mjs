@@ -44,6 +44,10 @@ const maskableSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 51
   ${WCheck(256, 256, 5, 36)}
 </svg>`;
 
+// OG layout (1200×630):
+//   y  80–168  : icon (88×88) + brand name next to it
+//   y 280–430  : headline + two-line sub
+//   y 560–582  : footer (URL ← / licence →)
 const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img">
   <defs>
     <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
@@ -53,19 +57,29 @@ const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" ro
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect x="0" y="0" width="12" height="630" fill="${accent}"/>
-  <g transform="translate(80,110)">
-    <rect width="92" height="92" rx="16" fill="${accent}"/>
-    ${WCheck(46, 46, 1.35, 8)}
+
+  <!-- Icon + brand -->
+  <g transform="translate(80,80)">
+    <rect width="88" height="88" rx="14" fill="${accent}"/>
+    ${WCheck(44, 44, 1.375, 8)}
   </g>
-  <g transform="translate(80,250)" fill="#0e0e13" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <g transform="translate(184,116)" fill="#0e0e13" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+    <text x="0" y="0" font-size="26" font-weight="700" letter-spacing="-0.5">The Website Specification</text>
+    <text x="0" y="28" font-size="18" font-weight="500" fill="#5b5b66">specification.website</text>
+  </g>
+
+  <!-- Headline + sub -->
+  <g transform="translate(80,280)" fill="#0e0e13" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
     <text x="0" y="0" font-size="72" font-weight="800" letter-spacing="-2">What a good website does.</text>
-    <text x="0" y="100" font-size="32" font-weight="500" fill="#3f3f48">A platform-agnostic spec — SEO, accessibility,</text>
-    <text x="0" y="142" font-size="32" font-weight="500" fill="#3f3f48">security, well-known URIs, agent readiness.</text>
+    <text x="0" y="92" font-size="32" font-weight="500" fill="#3f3f48">A platform-agnostic spec — SEO, accessibility,</text>
+    <text x="0" y="134" font-size="32" font-weight="500" fill="#3f3f48">security, well-known URIs, agent readiness.</text>
   </g>
-  <g transform="translate(80,560)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="22" fill="#5b5b66">
-    <text x="0" y="0">specification.website</text>
+
+  <!-- Footer -->
+  <g transform="translate(80,570)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="22" fill="#5b5b66">
+    <text x="0" y="0">github.com/jdevalk/specification.website</text>
   </g>
-  <g transform="translate(1120,560)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="22" fill="#5b5b66" text-anchor="end">
+  <g transform="translate(1120,570)" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="22" fill="#5b5b66" text-anchor="end">
     <text x="0" y="0">MIT · CC BY 4.0</text>
   </g>
 </svg>`;
