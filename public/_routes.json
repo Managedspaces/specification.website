@@ -6,6 +6,7 @@
     "/fonts/*",
     "/pagefind/*",
     "/og-default.png",
+    "/og/*",
     "/favicon.svg",
     "/favicon.ico",
     "/apple-touch-icon.png",

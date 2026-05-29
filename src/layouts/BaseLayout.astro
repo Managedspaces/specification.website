@@ -18,6 +18,8 @@ interface Props {
   markdownUrl?: string;
   /** Absolute URL of the JSON-LD graph endpoint for this page, if one exists. */
   jsonldUrl?: string;
+  /** Root-relative path to the page's social image. Defaults to /og-default.png. */
+  ogImage?: string;
 }
 
 const {
@@ -30,6 +32,7 @@ const {
   bare = false,
   markdownUrl,
   jsonldUrl,
+  ogImage,
 } = Astro.props;
 
 const websiteJsonLd = {
@@ -63,6 +66,7 @@ const finalJsonLd = jsonLd
       jsonLd={finalJsonLd}
       markdownUrl={markdownUrl}
       jsonldUrl={jsonldUrl}
+      ogImage={ogImage}
     />
     {import.meta.env.PROD && (
       <script

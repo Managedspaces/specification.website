@@ -10,6 +10,8 @@ interface Props {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   markdownUrl?: string;
   jsonldUrl?: string;
+  /** Absolute or root-relative path to the page's social image. Defaults to /og-default.png. */
+  ogImage?: string;
 }
 
 const {
@@ -21,11 +23,12 @@ const {
   jsonLd,
   markdownUrl,
   jsonldUrl,
+  ogImage: ogImageOverride,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site.url).toString();
 const fullTitle = title === site.name ? title : `${title} · ${site.shortName}`;
-const ogImage = new URL('/og-default.png', site.url).toString();
+const ogImage = new URL(ogImageOverride ?? '/og-default.png', site.url).toString();
 ---
 
 <meta charset="utf-8" />
