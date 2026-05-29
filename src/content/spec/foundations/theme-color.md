@@ -6,7 +6,7 @@ summary: "Tints the browser chrome and OS surfaces to match your brand. Use the 
 status: recommended
 order: 90
 appliesTo: [all]
-relatedSlugs: [favicons, meta-viewport, open-graph]
+relatedSlugs: [color-scheme, favicons, meta-viewport, open-graph]
 updated: "2026-05-29"
 sources:
   - title: "MDN — <meta name=\"theme-color\">"
