@@ -55,8 +55,11 @@ const { pathname } = Astro.url;
       </ul>
     </nav>
 
-    {/* Mobile hamburger (< md) — uses native <details> so no JS, no CSP allowance needed. */}
-    <details class="mobile-menu md:hidden">
+    {/* Mobile controls (< md) — theme toggle next to the hamburger. <details>
+        gives the menu a no-JS, no-CSP fallback. */}
+    <div class="flex items-center gap-3 md:hidden">
+      <ThemeToggle />
+    <details class="mobile-menu">
       <summary
         class="grid h-10 w-10 cursor-pointer place-items-center rounded-md border border-ink-200 text-ink-700 hover:border-ink-300"
         aria-label="Open menu"
@@ -96,6 +99,7 @@ const { pathname } = Astro.url;
         </nav>
       </div>
     </details>
+    </div>
   </div>
 
   <div class="hidden border-t border-ink-100 md:block">
