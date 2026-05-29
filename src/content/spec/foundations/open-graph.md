@@ -21,6 +21,9 @@ sources:
   - title: "Google Search Central — Google Discover and your website"
     url: "https://developers.google.com/search/docs/appearance/google-discover"
     publisher: "Google"
+  - title: "WhatsApp — Link previews"
+    url: "https://developers.facebook.com/documentation/business-messaging/whatsapp/link-previews/"
+    publisher: "Meta"
 ---
 
 ## What it is
@@ -62,8 +65,8 @@ For the image, there are two sensible sizes:
 
 Other constraints, regardless of which size you pick:
 
-- File size under 5 MB; under 1 MB is safer.
-- JPEG or PNG. Some platforms accept WebP, many do not.
+- File size under 5 MB across most platforms, but **WhatsApp drops the preview entirely if the image is over 300 KB** — and WhatsApp is one of the most-used unfurlers on the planet. Treat 300 KB as the real ceiling.
+- **Format: PNG or JPEG is the safe universal choice.** WebP is now accepted by virtually every modern unfurler (Facebook, LinkedIn, Discord, iMessage, Slack, Mastodon, Bluesky, X, WhatsApp) and is a good pick when you need to stay under WhatsApp's 300 KB cap on a denser image. AVIF is *not* yet safe — only Facebook, Threads, Pinterest, and WhatsApp render AVIF previews today; the rest will silently drop them. If your CMS auto-converts uploads to AVIF, force the `og:image` URL to stay PNG/JPEG/WebP.
 - No critical content within 60 pixels of any edge — platforms crop differently.
 - Declare `og:image:width` and `og:image:height`. Some platforms refuse to use images they cannot pre-size.
 - Serve over HTTPS. HTTP images are rejected.
@@ -88,6 +91,8 @@ Generate the image per page when you can. A unique illustration or screenshot pe
 - Relative URLs in `og:image` or `og:url`. Always absolute, always HTTPS.
 - Image dimensions that drift from 1.91:1 or 16:9 — cropped badly on every platform.
 - Shipping a 1200 × 630 image *and* wanting Google Discover traffic. Discover wants 16:9 at ≥ 1200 px wide; 1200 × 675 satisfies both worlds.
+- A beautiful 600 KB PNG that WhatsApp silently refuses to preview. Compress, downscale, or switch to WebP until you are under 300 KB.
+- Serving `og:image` as AVIF. Most platforms cannot render it and will skip the card entirely.
 - Missing `og:image:width` and `og:image:height`. Some platforms skip the image entirely without them.
 - One generic OG image reused on every page. Works, but missing an opportunity.
 - `og:url` that does not match the canonical URL. The two should agree.
