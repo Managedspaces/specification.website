@@ -150,21 +150,5 @@ const breadcrumbJsonLd = {
     </div>
   </article>
 
-  <script>
-    const headings = document.querySelectorAll<HTMLHeadingElement>('.prose-spec h2[id], .prose-spec h3[id]');
-    const toc = document.getElementById('toc');
-    if (toc && headings.length) {
-      const frag = document.createDocumentFragment();
-      headings.forEach((h) => {
-        const a = document.createElement('a');
-        a.href = `#${h.id}`;
-        a.textContent = h.textContent ?? '';
-        a.className = h.tagName === 'H3'
-          ? 'block pl-3 text-ink-600 hover:text-accent-700 no-underline'
-          : 'block text-ink-700 hover:text-accent-700 no-underline';
-        frag.appendChild(a);
-      });
-      toc.appendChild(frag);
-    }
-  </script>
+  <script src="/spec-toc.js" type="text/javascript" defer is:inline></script>
 </BaseLayout>
