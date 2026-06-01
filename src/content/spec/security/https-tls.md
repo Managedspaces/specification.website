@@ -48,7 +48,7 @@ HTTP/1.1 301 Moved Permanently
 Location: https://example.com/path
 ```
 
-Serve the same redirect on every hostname you own, including the apex, `www`, and any legacy subdomains. After HTTPS works, add [HSTS](/security/hsts/) so browsers stop trying HTTP at all.
+Serve the same redirect on every hostname you own, including the apex, `www`, and any legacy subdomains. After HTTPS works, add [HSTS](/spec/security/hsts/) so browsers stop trying HTTP at all.
 
 Cipher and protocol checklist:
 

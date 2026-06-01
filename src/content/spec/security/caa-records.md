@@ -63,7 +63,7 @@ example.com.    300    IN    CAA    0 issue "sectigo.com"
 
 Some CAs support extra parameters that pin the policy to a specific account or validation method. Let's Encrypt documents the `accounturi` and `validationmethods` extensions, which let you lock issuance to a specific ACME account.
 
-Pair CAA with [DNSSEC](/security/dnssec/) where possible. CAA without DNSSEC still helps — CAs check it — but DNSSEC stops an attacker from spoofing the DNS response.
+Pair CAA with [DNSSEC](/spec/security/dnssec/) where possible. CAA without DNSSEC still helps — CAs check it — but DNSSEC stops an attacker from spoofing the DNS response.
 
 ## Common mistakes
 

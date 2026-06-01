@@ -59,7 +59,7 @@ Operational hygiene:
 - Automate key rollovers (KSK and ZSK). Manual rollovers fail.
 - Monitor signature expiry. An expired `RRSIG` is an outage.
 - Re-publish `DS` whenever the KSK rotates.
-- Pair with [CAA records](/security/caa-records/) for defence in depth around certificate issuance.
+- Pair with [CAA records](/spec/security/caa-records/) for defence in depth around certificate issuance.
 
 ## Common mistakes
 

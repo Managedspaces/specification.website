@@ -56,7 +56,7 @@ Key directives:
 - **`script-src`** — controls JavaScript. Use a per-response nonce; the `strict-dynamic` keyword lets a trusted script load further trusted scripts.
 - **`style-src`** — controls CSS. Same nonce model where possible.
 - **`img-src`, `font-src`, `connect-src`, `media-src`** — list the third parties you actually use.
-- **`frame-ancestors 'none'`** — replaces `X-Frame-Options`. See [Clickjacking protection](/security/frame-ancestors/).
+- **`frame-ancestors 'none'`** — replaces `X-Frame-Options`. See [Clickjacking protection](/spec/security/frame-ancestors/).
 - **`object-src 'none'`** — kills Flash and plugin embeds.
 - **`base-uri 'none'`** — blocks `<base>` tag injection attacks.
 - **`report-to`** — endpoint that receives violation reports as JSON.

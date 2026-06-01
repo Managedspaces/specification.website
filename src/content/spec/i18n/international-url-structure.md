@@ -58,7 +58,7 @@ Then:
 
 - **Pair every canonical URL with [hreflang](/i18n/hreflang).** The URL pattern identifies the resource; hreflang tells search engines which locale it serves.
 - **Localise the slug where it adds clarity.** `/about/` to `/sobre/` is helpful for Spanish readers; `/api/v1/` is not worth translating. Consistency matters more than translation: localise all slugs in a section, or none.
-- **Keep slug rules from the general [URL structure](/seo/url-structure) page.** Lowercase, hyphenated, ASCII-where-possible, stable.
+- **Keep slug rules from the general [URL structure](/spec/seo/url-structure) page.** Lowercase, hyphenated, ASCII-where-possible, stable.
 - **Set the locale from the URL, not from the `Accept-Language` header.** The W3C recommends against silent language negotiation because it breaks sharing — see [avoid auto geo redirects](/i18n/avoid-auto-geo-redirects).
 
 ## Common mistakes

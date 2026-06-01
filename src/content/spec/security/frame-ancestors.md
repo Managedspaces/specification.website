@@ -72,7 +72,7 @@ Content-Security-Policy: frame-ancestors 'self' https://partner.example.com
 
 Send the headers on every HTML response. Send them even on pages that "wouldn't make sense" framed; attackers will frame anything that performs an authenticated action.
 
-Combine with `SameSite` cookies (see [Cookie attributes](/security/cookie-attributes/)) for defence in depth.
+Combine with `SameSite` cookies (see [Cookie attributes](/spec/security/cookie-attributes/)) for defence in depth.
 
 ## Common mistakes
 
