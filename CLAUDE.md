@@ -95,6 +95,7 @@ npm run assets   # regenerate icons + OG image
 4. Run `npm run dev` and open the page on port 31337.
 5. Verify: it appears on `/spec/`, on `/spec/<category>/`, on `/checklist/`, in `/llms.txt`, in `/sitemap-index.xml`, and is served at `.md` with frontmatter.
 6. Commit. Push to `main`. Cloudflare Pages auto-deploys.
+7. **Redeploy the MCP Worker** with `cd mcp && npm run deploy`. The Worker bundles `mcp/src/data.json` at build time, and that is what `search` / `list_topics` / `get_topic` / `get_checklist` read from. Pages auto-deploy doesn't touch the Worker, so without this step `mcp.specification.website` keeps serving the previous snapshot of the spec.
 
 **Do not** also edit `/checklist/`, `/llms.txt`, or any other derived surface. They will rebuild.
 

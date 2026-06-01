@@ -78,7 +78,11 @@ function handleRpc(req: RpcRequest): RpcResponse | null {
         instructions:
           'Read-only MCP server for The Website Specification at https://specification.website. ' +
           'Use `search` for free-text queries, `list_topics` for filtered lists, `get_topic` to fetch ' +
-          'a single page as Markdown, and `get_checklist` for audit-style output.',
+          'a single page as Markdown, and `get_checklist` for audit-style output. ' +
+          'Spec items have one of four statuses: `required` (platform contract breaks without it), ' +
+          '`recommended` (modern site should do it), `optional` (context-dependent), `avoid` (outdated or harmful). ' +
+          'The `list_topics` and `get_checklist` tools return ALL statuses by default — pass `status` to filter. ' +
+          'The `audit_url` prompt is the exception: with no `focus`, it defaults to `required`-only.',
       });
 
     case 'notifications/initialized':

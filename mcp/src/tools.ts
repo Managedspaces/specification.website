@@ -297,13 +297,13 @@ export const PROMPTS = [
   {
     name: 'audit_url',
     description:
-      'Generate an audit plan for a target URL against this spec — what to fetch, what to check, in what order.',
+      'Generate an audit plan for a target URL against this spec. With no `focus`, the plan covers required-tier items only (the platform-contract baseline, ~35 items). Pass `focus` to audit a single category at recommended + optional depth (capped at 40 items).',
     arguments: [
       { name: 'url', description: 'The website URL to audit.', required: true },
       {
         name: 'focus',
         description:
-          'Optional category to focus on (foundations, seo, accessibility, security, well-known, agent-readiness, performance, privacy, resilience, i18n).',
+          'Optional category to focus on (foundations, seo, accessibility, security, well-known, agent-readiness, performance, privacy, resilience, i18n). If omitted, the plan defaults to required-tier items across all categories.',
         required: false,
       },
     ],
