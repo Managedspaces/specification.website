@@ -6,6 +6,7 @@
 # Records managed (idempotent — created on first run, updated on later runs):
 #   _index._agents.specification.website  HTTPS  1 specification.website. alpn="h3,h2" port=443
 #   _mcp._agents.specification.website    HTTPS  1 mcp.specification.website. alpn="h3,h2" port=443 mandatory="alpn,port"
+#   _a2a._agents.specification.website    HTTPS  1 mcp.specification.website. alpn="h3,h2" port=443 mandatory="alpn,port"
 #
 # Optional (when ENABLE_DNSSEC=1): enable DNSSEC on the zone via API. Note that
 # if specification.website is at an external registrar, the DS record returned
@@ -85,6 +86,7 @@ else:
 
 upsert_record "_index._agents" "specification.website" ""
 upsert_record "_mcp._agents"   "mcp.specification.website" "alpn,port"
+upsert_record "_a2a._agents"   "mcp.specification.website" "alpn,port"
 
 if [[ "${ENABLE_DNSSEC:-0}" == "1" ]]; then
   echo "→ Enabling DNSSEC on the zone…"
@@ -114,6 +116,7 @@ echo
 echo "Done. Verify with:"
 echo "  dig +short HTTPS _index._agents.${ZONE}"
 echo "  dig +short HTTPS _mcp._agents.${ZONE}"
+echo "  dig +short HTTPS _a2a._agents.${ZONE}"
 echo "  dig +short DS ${ZONE}"
 echo
 echo "Then re-run the agent-readiness scan:"
