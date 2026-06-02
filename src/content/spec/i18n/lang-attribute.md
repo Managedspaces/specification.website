@@ -22,7 +22,7 @@ sources:
 
 ## What it is
 
-`lang` is a global HTML attribute that names the natural language of the element's content. The root document language belongs on `<html lang="…">` (covered by [the html lang attribute spec page](/foundations/html-lang)). This page is about the *other* `lang` declarations — the ones you add to spans, paragraphs, quotes, and any inline content whose language differs from the page default.
+`lang` is a global HTML attribute that names the natural language of the element's content. The root document language belongs on `<html lang="…">` (covered by [the html lang attribute spec page](/spec/foundations/html-lang/)). This page is about the *other* `lang` declarations — the ones you add to spans, paragraphs, quotes, and any inline content whose language differs from the page default.
 
 ```html
 <p>The German verb <span lang="de">verschlimmbessern</span> means to make

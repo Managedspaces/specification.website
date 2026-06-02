@@ -46,7 +46,7 @@ Every locale needs its own translated version of:
 - `<meta name="application-name">` and any PWA manifest `name` / `short_name`.
 - The Open Graph image itself when it contains text — render a per-locale variant rather than reusing one English card.
 
-Set the matching [`lang` on `<html>`](/foundations/html-lang) so assistive tech and crawlers know which language the metadata is in. Use BCP 47 in `lang`, `hreflang`, and `inLanguage` (`fr-FR`); the underscored form (`fr_FR`) only applies to `og:locale`.
+Set the matching [`lang` on `<html>`](/spec/foundations/html-lang/) so assistive tech and crawlers know which language the metadata is in. Use BCP 47 in `lang`, `hreflang`, and `inLanguage` (`fr-FR`); the underscored form (`fr_FR`) only applies to `og:locale`.
 
 ```html
 <html lang="fr-FR">
