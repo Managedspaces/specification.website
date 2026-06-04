@@ -1,9 +1,10 @@
 // The Website Specification — MCP server (Cloudflare Worker).
 //
-// Streamable HTTP transport (the modern MCP transport, per the
-// 2025-03-26 spec revision): the client POSTs JSON-RPC 2.0 messages to
-// /mcp and gets back JSON-RPC responses. No sessions, no server-initiated
-// messages, no SSE — this server is stateless and read-only.
+// Streamable HTTP transport (the modern MCP transport): the client POSTs
+// JSON-RPC 2.0 messages to /mcp and gets back JSON-RPC responses. No
+// sessions, no server-initiated messages, no SSE — this server is stateless
+// and read-only. Advertises the 2025-06-18 protocol revision (tool
+// annotations + structured output / outputSchema).
 //
 // All spec content is bundled at build time via scripts/build-data.mjs.
 // The Worker holds the manifest in module scope, so it is parsed once per
@@ -29,7 +30,7 @@ interface Env {
 
 const manifest = data as unknown as Manifest;
 
-const PROTOCOL_VERSION = '2025-03-26';
+const PROTOCOL_VERSION = '2025-06-18';
 const SERVER_INFO = {
   name: 'specification-website',
   version: '0.1.0',

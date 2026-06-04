@@ -79,6 +79,7 @@ export function searchTool(m: Manifest, args: { query: string; limit?: number })
   if (results.length === 0) {
     return {
       content: [{ type: 'text' as const, text: `No spec pages matched "${args.query}".` }],
+      structuredContent: { query: args.query, count: 0, results: [] },
     };
   }
   const lines: string[] = [];
@@ -92,7 +93,25 @@ export function searchTool(m: Manifest, args: { query: string; limit?: number })
     for (const m of matches) lines.push(`  > …${m.snippet}…`);
     lines.push('');
   }
-  return { content: [{ type: 'text' as const, text: lines.join('\n').trimEnd() }] };
+  const structuredContent = {
+    query: args.query,
+    count: results.length,
+    results: results.map(({ page, score, matches }) => ({
+      slug: page.slug,
+      title: page.title,
+      status: page.status,
+      category: page.category,
+      score,
+      url: page.url,
+      mdUrl: page.mdUrl,
+      summary: page.summary,
+      excerpts: matches.map((mm) => mm.snippet),
+    })),
+  };
+  return {
+    content: [{ type: 'text' as const, text: lines.join('\n').trimEnd() }],
+    structuredContent,
+  };
 }
 
 export function listTopicsTool(
@@ -117,7 +136,26 @@ export function listTopicsTool(
     lines.push(`- **[${p.title}](${p.url})** — ${p.status}, ${p.category}`);
     lines.push(`  ${p.summary}`);
   }
-  return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
+  const structuredContent = {
+    total: pages.length,
+    count: items.length,
+    filters: {
+      ...(args.category ? { category: args.category } : {}),
+      ...(args.status ? { status: args.status } : {}),
+    },
+    topics: items.map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      status: p.status,
+      category: p.category,
+      summary: p.summary,
+      url: p.url,
+    })),
+  };
+  return {
+    content: [{ type: 'text' as const, text: lines.join('\n') }],
+    structuredContent,
+  };
 }
 
 export function getTopicTool(m: Manifest, args: { slug: string }) {
@@ -165,7 +203,20 @@ export function getTopicTool(m: Manifest, args: { slug: string }) {
   }
   fm.push('---', '');
   const text = `${fm.join('\n')}# ${page.title}\n\n> ${page.summary}\n\n${page.body}`;
-  return { content: [{ type: 'text' as const, text }] };
+  const structuredContent = {
+    slug: page.slug,
+    title: page.title,
+    category: page.category,
+    status: page.status,
+    url: page.url,
+    mdUrl: page.mdUrl,
+    updated: page.updated,
+    summary: page.summary,
+    sources: page.sources,
+    relatedSlugs: page.relatedSlugs,
+    markdown: text,
+  };
+  return { content: [{ type: 'text' as const, text }], structuredContent };
 }
 
 export function getChecklistTool(
@@ -191,6 +242,11 @@ export function getChecklistTool(
     const ob = m.categories.find((c) => c.slug === b)?.order ?? 99;
     return oa - ob;
   });
+  const structuredCategories: {
+    slug: string;
+    title: string;
+    items: { slug: string; title: string; status: Status; summary: string; url: string }[];
+  }[] = [];
   for (const c of cats) {
     const cat = m.categories.find((x) => x.slug === c);
     lines.push(`## ${cat?.title ?? c}`);
@@ -199,8 +255,30 @@ export function getChecklistTool(
       lines.push(`      ${p.url}`);
     }
     lines.push('');
+    structuredCategories.push({
+      slug: c,
+      title: cat?.title ?? c,
+      items: groups.get(c)!.map((p) => ({
+        slug: p.slug,
+        title: p.title,
+        status: p.status,
+        summary: p.summary,
+        url: p.url,
+      })),
+    });
   }
-  return { content: [{ type: 'text' as const, text: lines.join('\n').trimEnd() }] };
+  const structuredContent = {
+    total: pages.length,
+    filters: {
+      ...(args.category ? { category: args.category } : {}),
+      ...(args.status ? { status: args.status } : {}),
+    },
+    categories: structuredCategories,
+  };
+  return {
+    content: [{ type: 'text' as const, text: lines.join('\n').trimEnd() }],
+    structuredContent,
+  };
 }
 
 export function getCategoriesTool(m: Manifest) {
@@ -211,7 +289,16 @@ export function getCategoriesTool(m: Manifest) {
   for (const c of m.categories) {
     lines.push(`- **${c.title}** (\`${c.slug}\`) — ${counts.get(c.slug) ?? 0} topics. ${c.summary}`);
   }
-  return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
+  const structuredContent = {
+    count: m.categories.length,
+    categories: m.categories.map((c) => ({
+      slug: c.slug,
+      title: c.title,
+      summary: c.summary,
+      topicCount: counts.get(c.slug) ?? 0,
+    })),
+  };
+  return { content: [{ type: 'text' as const, text: lines.join('\n') }], structuredContent };
 }
 
 // --- tool catalogue (advertised via tools/list) -------------------------
@@ -231,65 +318,260 @@ const CATEGORY_ENUM = [
 
 const STATUS_ENUM = ['required', 'recommended', 'optional', 'avoid'];
 
+// Reused inline so the four status tiers are documented at every call site
+// where a `status` filter is accepted.
+const STATUS_PARAM_DESC =
+  'Filter by spec status tier. `required` = the web-platform contract breaks or a clear class of users is harmed without it. `recommended` = a modern site should do it. `optional` = context-dependent. `avoid` = outdated, harmful, or superseded. Omit to include all four tiers.';
+
+const CATEGORY_PARAM_DESC =
+  'Filter to a single top-level category. Call `get_categories` for the list with descriptions and topic counts. Omit to include all ten categories.';
+
+// All five tools are read-only, deterministic, and operate over a corpus
+// bundled into the Worker at build time — never the live web. These
+// annotations declare exactly that, which is the behaviour-transparency
+// signal MCP clients (and registries) read.
+const READ_ONLY_ANNOTATIONS = {
+  readOnlyHint: true,
+  idempotentHint: true,
+  openWorldHint: false,
+} as const;
+
+// Shared output-schema fragment: a topic reference as returned in list/search.
+const TOPIC_REF_PROPERTIES = {
+  slug: { type: 'string', description: 'Kebab-case identifier; pass to `get_topic`.' },
+  title: { type: 'string' },
+  status: { type: 'string', enum: STATUS_ENUM },
+  category: { type: 'string', enum: CATEGORY_ENUM },
+  summary: { type: 'string' },
+  url: { type: 'string', description: 'Canonical HTML URL of the spec page.' },
+};
+
 export const TOOLS = [
   {
     name: 'search',
+    title: 'Search the spec',
     description:
-      'Full-text search across every spec page. Returns ranked results with title, status, category, canonical URL, and a body excerpt. Use this when the user asks about a topic by keyword.',
+      'Read-only, deterministic full-text search across every spec page. Ranks pages by weighted keyword matches in title, slug, summary, and body, and returns the top results with status, category, canonical URL, Markdown URL, and matching body excerpts. No side effects and no live-web access — it queries an in-memory snapshot bundled at build time, so it returns in well under a millisecond. Use this for keyword/topic lookups when you do NOT already know the slug. Prefer `list_topics` when you want the complete, unranked set of pages matching a category/status filter; prefer `get_topic` when you already know the exact slug.',
+    annotations: { ...READ_ONLY_ANNOTATIONS, title: 'Search the spec' },
     inputSchema: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: 'Free-text query.' },
-        limit: { type: 'integer', minimum: 1, maximum: 25, default: 5 },
+        query: {
+          type: 'string',
+          description:
+            'Free-text query. Tokenised on whitespace; each token is matched (substring) against title, slug, summary, and body. Example: `content security policy` or `alt text`.',
+        },
+        limit: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 25,
+          default: 5,
+          description: 'Maximum number of ranked results to return. Defaults to 5; clamped to 1–25.',
+        },
       },
       required: ['query'],
+    },
+    outputSchema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'The query that was run, echoed back.' },
+        count: { type: 'integer', description: 'Number of results returned (0 if no match).' },
+        results: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              ...TOPIC_REF_PROPERTIES,
+              score: { type: 'number', description: 'Relevance score; higher is a closer match.' },
+              mdUrl: { type: 'string', description: 'URL of the raw Markdown for this page.' },
+              excerpts: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Up to two body snippets showing the matched terms in context.',
+              },
+            },
+            required: ['slug', 'title', 'status', 'category', 'score', 'url', 'mdUrl', 'summary'],
+          },
+        },
+      },
+      required: ['query', 'count', 'results'],
     },
   },
   {
     name: 'list_topics',
+    title: 'List spec topics',
     description:
-      'List spec topics, optionally filtered by category and/or status. Returns title, status, category, summary, and URL for each. Use this when the user wants the canonical list of e.g. all required SEO topics.',
+      'Read-only. Return the canonical list of spec topics, optionally narrowed by category and/or status, each with title, status, category, summary, and URL. Returns ALL statuses unless `status` is passed. This is the right tool when you want a complete, unranked index (e.g. "every required SEO topic"). Use `search` instead for relevance-ranked keyword lookup, `get_checklist` for audit-style grouped output, and `get_topic` to fetch one page in full.',
+    annotations: { ...READ_ONLY_ANNOTATIONS, title: 'List spec topics' },
     inputSchema: {
       type: 'object',
       properties: {
-        category: { type: 'string', enum: CATEGORY_ENUM },
-        status: { type: 'string', enum: STATUS_ENUM },
-        limit: { type: 'integer', minimum: 1, maximum: 200 },
+        category: { type: 'string', enum: CATEGORY_ENUM, description: CATEGORY_PARAM_DESC },
+        status: { type: 'string', enum: STATUS_ENUM, description: STATUS_PARAM_DESC },
+        limit: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 200,
+          description:
+            'Maximum number of topics to return after filtering. Omit to return every matching topic; clamped to 1–200 when given.',
+        },
       },
+    },
+    outputSchema: {
+      type: 'object',
+      properties: {
+        total: { type: 'integer', description: 'Total topics matching the filters, before `limit`.' },
+        count: { type: 'integer', description: 'Topics actually returned (after `limit`).' },
+        filters: {
+          type: 'object',
+          properties: {
+            category: { type: 'string', enum: CATEGORY_ENUM },
+            status: { type: 'string', enum: STATUS_ENUM },
+          },
+          description: 'The filters that were applied (omitted keys mean no filter).',
+        },
+        topics: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: TOPIC_REF_PROPERTIES,
+            required: ['slug', 'title', 'status', 'category', 'summary', 'url'],
+          },
+        },
+      },
+      required: ['total', 'count', 'filters', 'topics'],
     },
   },
   {
     name: 'get_topic',
+    title: 'Get one spec page',
     description:
-      'Fetch the full canonical Markdown for a single spec page by its slug. Returns the YAML frontmatter (with title, status, sources) plus the rendered body.',
+      'Read-only. Fetch the full canonical Markdown for a single spec page by its slug: YAML frontmatter (title, status, category, sources, related slugs) plus the rendered body. Use this once you have a slug from `search` or `list_topics`. If you only have keywords, call `search` first.',
+    annotations: { ...READ_ONLY_ANNOTATIONS, title: 'Get one spec page' },
     inputSchema: {
       type: 'object',
       properties: {
         slug: {
           type: 'string',
           description:
-            'Kebab-case slug, as listed by `list_topics` or `search`. Examples: `content-security-policy`, `meta-robots`, `llms-txt`.',
+            'Kebab-case slug, as listed by `list_topics` or `search`. Matched case-insensitively, with close-match suggestions on miss. Examples: `content-security-policy`, `meta-robots`, `llms-txt`.',
         },
       },
       required: ['slug'],
     },
+    outputSchema: {
+      type: 'object',
+      properties: {
+        slug: { type: 'string' },
+        title: { type: 'string' },
+        category: { type: 'string', enum: CATEGORY_ENUM },
+        status: { type: 'string', enum: STATUS_ENUM },
+        url: { type: 'string', description: 'Canonical HTML URL.' },
+        mdUrl: { type: 'string', description: 'Raw Markdown URL.' },
+        updated: {
+          type: ['string', 'null'],
+          description: 'ISO 8601 timestamp of the last content update, or null.',
+        },
+        summary: { type: 'string' },
+        sources: {
+          type: 'array',
+          description: 'Primary-source citations for this page.',
+          items: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              url: { type: 'string' },
+              publisher: { type: 'string' },
+            },
+            required: ['title', 'url'],
+          },
+        },
+        relatedSlugs: { type: 'array', items: { type: 'string' } },
+        markdown: { type: 'string', description: 'The full page as Markdown with YAML frontmatter.' },
+      },
+      required: ['slug', 'title', 'category', 'status', 'url', 'mdUrl', 'summary', 'markdown'],
+    },
   },
   {
     name: 'get_checklist',
+    title: 'Get an audit checklist',
     description:
-      'Return a Markdown checklist of spec items, grouped by category, optionally filtered by category and/or status. Useful for site audits.',
+      'Read-only. Return a Markdown checklist of spec items grouped by category, optionally filtered by category and/or status. Built for site audits — each item is a tickable line with status and canonical URL. Returns all statuses unless `status` is passed. Use `list_topics` instead when you want a flat list rather than grouped checkboxes, or the `audit_url` prompt to drive an actual audit of a target URL.',
+    annotations: { ...READ_ONLY_ANNOTATIONS, title: 'Get an audit checklist' },
     inputSchema: {
       type: 'object',
       properties: {
-        category: { type: 'string', enum: CATEGORY_ENUM },
-        status: { type: 'string', enum: STATUS_ENUM },
+        category: { type: 'string', enum: CATEGORY_ENUM, description: CATEGORY_PARAM_DESC },
+        status: { type: 'string', enum: STATUS_ENUM, description: STATUS_PARAM_DESC },
       },
+    },
+    outputSchema: {
+      type: 'object',
+      properties: {
+        total: { type: 'integer', description: 'Total checklist items across all groups.' },
+        filters: {
+          type: 'object',
+          properties: {
+            category: { type: 'string', enum: CATEGORY_ENUM },
+            status: { type: 'string', enum: STATUS_ENUM },
+          },
+        },
+        categories: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              slug: { type: 'string' },
+              title: { type: 'string' },
+              items: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    slug: { type: 'string' },
+                    title: { type: 'string' },
+                    status: { type: 'string', enum: STATUS_ENUM },
+                    summary: { type: 'string' },
+                    url: { type: 'string' },
+                  },
+                  required: ['slug', 'title', 'status', 'summary', 'url'],
+                },
+              },
+            },
+            required: ['slug', 'title', 'items'],
+          },
+        },
+      },
+      required: ['total', 'filters', 'categories'],
     },
   },
   {
     name: 'get_categories',
-    description: 'List the ten top-level spec categories with their summaries and topic counts.',
+    title: 'List categories',
+    description:
+      'Read-only. List the ten top-level spec categories with their summaries and topic counts. Takes no arguments. Call this first to discover the valid `category` filter values used by `list_topics`, `get_checklist`, and `search` results.',
+    annotations: { ...READ_ONLY_ANNOTATIONS, title: 'List categories' },
     inputSchema: { type: 'object', properties: {} },
+    outputSchema: {
+      type: 'object',
+      properties: {
+        count: { type: 'integer' },
+        categories: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              slug: { type: 'string', description: 'Use as the `category` filter value.' },
+              title: { type: 'string' },
+              summary: { type: 'string' },
+              topicCount: { type: 'integer' },
+            },
+            required: ['slug', 'title', 'summary', 'topicCount'],
+          },
+        },
+      },
+      required: ['count', 'categories'],
+    },
   },
 ];
 

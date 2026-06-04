@@ -14,7 +14,7 @@
   },
   "endpoint": "https://mcp.specification.website/mcp",
   "transport": "http",
-  "protocolVersion": "2025-03-26",
+  "protocolVersion": "2025-06-18",
   "authentication": "none",
   "capabilities": {
     "tools": true,
