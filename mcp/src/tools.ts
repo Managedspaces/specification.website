@@ -339,11 +339,34 @@ const READ_ONLY_ANNOTATIONS = {
 // Shared output-schema fragment: a topic reference as returned in list/search.
 const TOPIC_REF_PROPERTIES = {
   slug: { type: 'string', description: 'Kebab-case identifier; pass to `get_topic`.' },
-  title: { type: 'string' },
-  status: { type: 'string', enum: STATUS_ENUM },
-  category: { type: 'string', enum: CATEGORY_ENUM },
-  summary: { type: 'string' },
+  title: { type: 'string', description: 'Human-readable page title.' },
+  status: {
+    type: 'string',
+    enum: STATUS_ENUM,
+    description: 'Spec status tier: `required`, `recommended`, `optional`, or `avoid`.',
+  },
+  category: {
+    type: 'string',
+    enum: CATEGORY_ENUM,
+    description: 'Top-level category this topic belongs to.',
+  },
+  summary: { type: 'string', description: 'One-sentence summary of the topic.' },
   url: { type: 'string', description: 'Canonical HTML URL of the spec page.' },
+};
+
+// Shared output-schema fragment: the echo of the filters that were applied,
+// returned by list_topics and get_checklist. Omitted keys mean no filter.
+const FILTERS_ECHO_PROPERTIES = {
+  category: {
+    type: 'string',
+    enum: CATEGORY_ENUM,
+    description: 'The category filter that was applied, if any.',
+  },
+  status: {
+    type: 'string',
+    enum: STATUS_ENUM,
+    description: 'The status filter that was applied, if any.',
+  },
 };
 
 export const TOOLS = [
@@ -379,6 +402,7 @@ export const TOOLS = [
         count: { type: 'integer', description: 'Number of results returned (0 if no match).' },
         results: {
           type: 'array',
+          description: 'Ranked matches, most relevant first; empty when `count` is 0.',
           items: {
             type: 'object',
             properties: {
@@ -425,14 +449,12 @@ export const TOOLS = [
         count: { type: 'integer', description: 'Topics actually returned (after `limit`).' },
         filters: {
           type: 'object',
-          properties: {
-            category: { type: 'string', enum: CATEGORY_ENUM },
-            status: { type: 'string', enum: STATUS_ENUM },
-          },
+          properties: FILTERS_ECHO_PROPERTIES,
           description: 'The filters that were applied (omitted keys mean no filter).',
         },
         topics: {
           type: 'array',
+          description: 'Matching topics in canonical spec order (by category, then page order).',
           items: {
             type: 'object',
             properties: TOPIC_REF_PROPERTIES,
@@ -464,31 +486,46 @@ export const TOOLS = [
     outputSchema: {
       type: 'object',
       properties: {
-        slug: { type: 'string' },
-        title: { type: 'string' },
-        category: { type: 'string', enum: CATEGORY_ENUM },
-        status: { type: 'string', enum: STATUS_ENUM },
+        slug: { type: 'string', description: 'Kebab-case identifier of this page.' },
+        title: { type: 'string', description: 'Human-readable page title.' },
+        category: {
+          type: 'string',
+          enum: CATEGORY_ENUM,
+          description: 'Top-level category this topic belongs to.',
+        },
+        status: {
+          type: 'string',
+          enum: STATUS_ENUM,
+          description: 'Spec status tier: `required`, `recommended`, `optional`, or `avoid`.',
+        },
         url: { type: 'string', description: 'Canonical HTML URL.' },
         mdUrl: { type: 'string', description: 'Raw Markdown URL.' },
         updated: {
           type: ['string', 'null'],
           description: 'ISO 8601 timestamp of the last content update, or null.',
         },
-        summary: { type: 'string' },
+        summary: { type: 'string', description: 'One-sentence summary of the topic.' },
         sources: {
           type: 'array',
           description: 'Primary-source citations for this page.',
           items: {
             type: 'object',
             properties: {
-              title: { type: 'string' },
-              url: { type: 'string' },
-              publisher: { type: 'string' },
+              title: { type: 'string', description: 'Title of the cited source.' },
+              url: { type: 'string', description: 'URL of the cited source.' },
+              publisher: {
+                type: 'string',
+                description: 'Publishing body (e.g. WHATWG, W3C, IETF), if known.',
+              },
             },
             required: ['title', 'url'],
           },
         },
-        relatedSlugs: { type: 'array', items: { type: 'string' } },
+        relatedSlugs: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Slugs of related topics; each can be passed to `get_topic`.',
+        },
         markdown: { type: 'string', description: 'The full page as Markdown with YAML frontmatter.' },
       },
       required: ['slug', 'title', 'category', 'status', 'url', 'mdUrl', 'summary', 'markdown'],
@@ -513,28 +550,32 @@ export const TOOLS = [
         total: { type: 'integer', description: 'Total checklist items across all groups.' },
         filters: {
           type: 'object',
-          properties: {
-            category: { type: 'string', enum: CATEGORY_ENUM },
-            status: { type: 'string', enum: STATUS_ENUM },
-          },
+          properties: FILTERS_ECHO_PROPERTIES,
+          description: 'The filters that were applied (omitted keys mean no filter).',
         },
         categories: {
           type: 'array',
+          description: 'Checklist groups in canonical category order, each holding its items.',
           items: {
             type: 'object',
             properties: {
-              slug: { type: 'string' },
-              title: { type: 'string' },
+              slug: { type: 'string', description: 'Kebab-case category identifier.' },
+              title: { type: 'string', description: 'Human-readable category title.' },
               items: {
                 type: 'array',
+                description: 'Checklist entries in this category, in canonical page order.',
                 items: {
                   type: 'object',
                   properties: {
-                    slug: { type: 'string' },
-                    title: { type: 'string' },
-                    status: { type: 'string', enum: STATUS_ENUM },
-                    summary: { type: 'string' },
-                    url: { type: 'string' },
+                    slug: { type: 'string', description: 'Kebab-case identifier; pass to `get_topic`.' },
+                    title: { type: 'string', description: 'Human-readable page title.' },
+                    status: {
+                      type: 'string',
+                      enum: STATUS_ENUM,
+                      description: 'Spec status tier: `required`, `recommended`, `optional`, or `avoid`.',
+                    },
+                    summary: { type: 'string', description: 'One-sentence summary of the item.' },
+                    url: { type: 'string', description: 'Canonical HTML URL of the spec page.' },
                   },
                   required: ['slug', 'title', 'status', 'summary', 'url'],
                 },
@@ -557,16 +598,17 @@ export const TOOLS = [
     outputSchema: {
       type: 'object',
       properties: {
-        count: { type: 'integer' },
+        count: { type: 'integer', description: 'Number of categories returned (always ten).' },
         categories: {
           type: 'array',
+          description: 'All top-level categories in canonical display order.',
           items: {
             type: 'object',
             properties: {
               slug: { type: 'string', description: 'Use as the `category` filter value.' },
-              title: { type: 'string' },
-              summary: { type: 'string' },
-              topicCount: { type: 'integer' },
+              title: { type: 'string', description: 'Human-readable category title.' },
+              summary: { type: 'string', description: 'One-sentence description of the category.' },
+              topicCount: { type: 'integer', description: 'Number of spec topics in this category.' },
             },
             required: ['slug', 'title', 'summary', 'topicCount'],
           },
