@@ -7,11 +7,14 @@ status: recommended
 order: 100
 appliesTo: [all]
 relatedSlugs: [title, meta-description, canonical-url, favicons, localised-metadata]
-updated: "2026-05-29T18:54:03.000Z"
+updated: "2026-06-08T00:00:00.000Z"
 sources:
   - title: "The Open Graph protocol"
     url: "https://ogp.me/"
     publisher: "ogp.me"
+  - title: "A Guide to Sharing for Webmasters"
+    url: "https://developers.facebook.com/docs/sharing/webmasters/"
+    publisher: "Meta"
   - title: "MDN — The Open Graph protocol"
     url: "https://developer.mozilla.org/en-US/docs/Web/OpenGraph"
     publisher: "MDN"
@@ -81,6 +84,7 @@ Other constraints, regardless of which size you pick:
 - Declare `og:image:width` and `og:image:height`. Some platforms refuse to use images they cannot pre-size.
 - Serve over HTTPS. HTTP images are rejected.
 - Use absolute URLs. Relative `og:image` paths are not portable.
+- **Host it on a stable, branded URL you control.** Serve `og:image` from your own domain (or a branded asset subdomain), not a third-party image host or a signed CDN URL that expires. Platforms cache the card and re-fetch the image later, so the URL has to stay put and stay public: the crawler fetches with no cookies, so a login wall, hotlink/referer protection, or bot blocking makes the image silently disappear from the preview.
 
 For X (Twitter), add Twitter Card tags as a fallback. X prefers them when present:
 
@@ -126,6 +130,7 @@ Without `og:locale`, social platforms guess from the crawler's `Accept-Language`
 - Shipping a 1200 × 630 image *and* wanting Google Discover traffic. Discover wants 16:9 at ≥ 1200 px wide; 1200 × 675 satisfies both worlds.
 - A beautiful 600 KB PNG that WhatsApp silently refuses to preview. Compress, downscale, or switch to WebP until you are under 300 KB.
 - Serving `og:image` as AVIF. Most platforms cannot render it and will skip the card entirely.
+- **An `og:image` on an expiring signed URL or a host you do not control.** When the URL rotates, expires, or starts blocking the crawler, the cached preview breaks and there is no fallback. Serve it from a stable, public URL on your own branded domain.
 - Missing `og:image:width` and `og:image:height`. Some platforms skip the image entirely without them.
 - One generic OG image reused on every page. Works, but missing an opportunity.
 - `og:url` that does not match the canonical URL. The two should agree.
@@ -138,4 +143,5 @@ Without `og:locale`, social platforms guess from the crawler's `Accept-Language`
 - View source and check the five core tags are present and absolute.
 - Paste the URL into a debugger (Facebook Sharing Debugger, LinkedIn Post Inspector, Slack's link unfurler, or a direct paste into a chat).
 - Confirm the image renders at full width, the title is correct, and the description matches.
+- Check the image file itself: `curl -sI` the `og:image` URL and confirm it returns HTTPS `200` (not a redirect to a login page), and that its real pixel dimensions match the declared `og:image:width`/`height` and a 1.91:1 or 16:9 ratio.
 - After updating tags, re-scrape on platforms that cache previews aggressively (Facebook, LinkedIn) so they pick up the new values.
