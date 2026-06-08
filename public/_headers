@@ -49,12 +49,12 @@
 # Per-page Markdown source served from /spec/<category>/<slug>.md
 /spec/*.md
   Content-Type: text/markdown; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, stale-if-error=86400
 
 # Per-page JSON-LD graph served from /spec/<category>/<slug>.jsonld
 /spec/*.jsonld
   Content-Type: application/ld+json; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, stale-if-error=86400
   Access-Control-Allow-Origin: *
 
 # Schemamap index — JSON-LD discovery for the whole site
@@ -66,7 +66,7 @@
 # XML sitemaps — index + per-category + general pages
 /sitemap-*.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=3600, stale-if-error=86400
 
 # Sitemap XSL stylesheet — styles the XML when viewed in a browser
 /sitemap.xsl

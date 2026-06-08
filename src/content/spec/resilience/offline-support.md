@@ -6,7 +6,7 @@ summary: "A service worker can serve a cached offline fallback page when the net
 status: optional
 order: 30
 appliesTo: [all]
-relatedSlugs: [pwa-manifest, error-pages]
+relatedSlugs: [pwa-manifest, error-pages, graceful-degradation]
 updated: "2026-05-29T09:13:20.000Z"
 sources:
   - title: "MDN — Service Worker API"

@@ -6,8 +6,8 @@ summary: "Serve every page over HTTPS using TLS 1.2 or 1.3, redirect plain HTTP 
 status: required
 order: 10
 appliesTo: [all]
-relatedSlugs: [hsts, caa-records, content-security-policy]
-updated: "2026-05-29T09:13:20.000Z"
+relatedSlugs: [hsts, caa-records, content-security-policy, mixed-content]
+updated: "2026-06-08T20:15:00.000Z"
 sources:
   - title: "RFC 8446 — The Transport Layer Security (TLS) Protocol Version 1.3"
     url: "https://www.rfc-editor.org/rfc/rfc8446"
@@ -59,7 +59,7 @@ Cipher and protocol checklist:
 
 ## Common mistakes
 
-- Mixed content: an HTTPS page that loads a script, image, or iframe over HTTP. Browsers block it.
+- [Mixed content](/spec/security/mixed-content/): an HTTPS page that loads a script, image, or iframe over HTTP. Browsers block it.
 - Self-signed certificates on production. Use a real CA.
 - A valid certificate on `www.example.com` but not the apex `example.com`, or vice versa.
 - Leaving TLS 1.0 or 1.1 enabled "for old clients" that no longer exist.

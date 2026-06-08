@@ -6,7 +6,7 @@ summary: "Crawlers, social scrapers, and AI agents index the HTML your server re
 status: recommended
 order: 65
 appliesTo: [all]
-relatedSlugs: [meta-robots, structured-data, soft-404, core-web-vitals, agent-readiness-overview]
+relatedSlugs: [meta-robots, structured-data, soft-404, core-web-vitals, agent-readiness-overview, graceful-degradation]
 updated: "2026-06-08T00:00:00.000Z"
 sources:
   - title: "Understand the JavaScript SEO basics"

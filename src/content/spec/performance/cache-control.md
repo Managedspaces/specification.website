@@ -7,10 +7,13 @@ status: required
 order: 50
 appliesTo: [all]
 relatedSlugs: [compression, core-web-vitals, no-vary-search]
-updated: "2026-05-29T12:14:17.000Z"
+updated: "2026-06-08T20:15:00.000Z"
 sources:
   - title: "RFC 9111 — HTTP Caching"
     url: "https://www.rfc-editor.org/rfc/rfc9111"
+    publisher: "IETF"
+  - title: "RFC 5861 — HTTP Cache-Control Extensions for Stale Content"
+    url: "https://www.rfc-editor.org/rfc/rfc5861"
     publisher: "IETF"
   - title: "MDN — Cache-Control"
     url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control"
@@ -41,6 +44,7 @@ Key directives:
 - `s-maxage=<seconds>` — same, but only for shared caches (CDNs).
 - `immutable` — promise that the body will never change, so the browser can skip revalidation.
 - `stale-while-revalidate=<seconds>` — serve stale while fetching a fresh copy in the background.
+- `stale-if-error=<seconds>` — keep serving the cached copy when the origin returns an error or is unreachable.
 
 ## Why it matters
 
@@ -76,6 +80,16 @@ Pair with `ETag` so revalidation is cheap.
 
 **Set `Vary` correctly.** If the response varies by `Accept-Encoding` or `Accept-Language`, set `Vary` accordingly. Missing `Vary` causes a CDN to serve gzip to a client that asked for brotli.
 
+**Survive origin failures — `stale-if-error`.** Defined in RFC 5861, this directive tells shared caches and browsers to keep serving the last good copy when a revalidation request fails — a 5xx from the origin, a timeout, or a connection error. It turns a backend outage into stale-but-working pages instead of error pages:
+
+```http
+Cache-Control: public, max-age=3600, stale-while-revalidate=86400, stale-if-error=604800
+```
+
+Here the edge keeps responding from cache for up to a week while you fix the origin. It is the cheapest resilience measure there is; pair it with [maintenance pages](/spec/resilience/maintenance-pages/) for planned downtime and [graceful degradation](/spec/resilience/graceful-degradation/) so a cached page still works if its scripts do not. This site sends `stale-if-error` on its short-lived content responses — the per-page Markdown mirrors, the JSON-LD graphs, and the sitemaps.
+
+Note that `stale-if-error` is overridden by `must-revalidate` (RFC 9111 forbids serving stale once a `must-revalidate` response is stale), so don't combine the two on the same response.
+
 ## Common mistakes
 
 - No `Cache-Control` at all. Browsers then use heuristic caching, which is unpredictable.
@@ -87,5 +101,6 @@ Pair with `ETag` so revalidation is cheap.
 ## Verification
 
 - `curl -I https://example.com/app.4f3a2b.js` — confirm `Cache-Control` is set.
+- `curl -I https://example.com/sitemap-index.xml` — confirm the responses you rely on carry `stale-if-error`.
 - DevTools → Network → Size column shows "(memory cache)" or "(disk cache)" for cached resources.
 - Webhint and Lighthouse flag inefficient cache policy.

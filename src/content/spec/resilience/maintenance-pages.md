@@ -6,14 +6,17 @@ summary: "When the site is intentionally offline, return HTTP 503 with a Retry-A
 status: recommended
 order: 20
 appliesTo: [all]
-relatedSlugs: [error-pages, monitoring-uptime]
-updated: "2026-05-29T09:13:20.000Z"
+relatedSlugs: [error-pages, monitoring-uptime, graceful-degradation, robots-for-ai-crawlers]
+updated: "2026-06-08T20:15:00.000Z"
 sources:
   - title: "RFC 9110 — HTTP Semantics: 503 Service Unavailable"
     url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-503-service-unavailable"
     publisher: "IETF"
   - title: "RFC 9110 — HTTP Semantics: Retry-After"
     url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-retry-after"
+    publisher: "IETF"
+  - title: "RFC 6585 — Additional HTTP Status Codes: 429 Too Many Requests"
+    url: "https://www.rfc-editor.org/rfc/rfc6585#section-4"
     publisher: "IETF"
   - title: "Google Search Central — How to deal with planned site downtime"
     url: "https://developers.google.com/search/blog/2011/01/how-to-deal-with-planned-site-downtime"
@@ -60,9 +63,23 @@ location @maintenance {
 }
 ```
 
+## Rate limiting: 429, not 503
+
+`503` is for the whole site being down. When you are throttling a *single* client that is sending too many requests, the correct status is `429 Too Many Requests` (RFC 6585), and it takes the same `Retry-After` header:
+
+```
+HTTP/2 429
+Retry-After: 60
+```
+
+The distinction matters for crawlers and AI agents. A 429 with `Retry-After` says "you specifically are going too fast — slow down and come back"; a well-behaved bot backs off to the interval you name and keeps its place. A `503`, a silent connection drop, or a `200` with an error body all teach it the wrong lesson: that the whole site is down, or that the throttled response was real content. If you rate-limit crawlers (see [controlling AI crawlers](/spec/seo/robots-for-ai-crawlers/)), do it with 429 and an honest `Retry-After`, not a block that looks like an outage.
+
+This is an edge or origin behaviour — a static host does not emit it on its own. Configure it where the throttling happens (your CDN's rate-limiting rules, a reverse proxy, or the application).
+
 ## Common mistakes
 
 - Returning `200 OK` with a "we'll be back soon" message. Search engines treat this as the new content of every URL.
+- Throttling a busy client with a `503` or a silent drop instead of a `429` with `Retry-After`.
 - Returning `503` with no `Retry-After`. Clients have to guess.
 - Loading third-party scripts (analytics, chat widgets, fonts) on the maintenance page. Most of them will fail and the page may not render.
 - Forgetting to remove the maintenance flag after the deploy and leaving the site at 503 for hours.
@@ -70,5 +87,6 @@ location @maintenance {
 ## Verification
 
 - `curl -I https://example.com/` returns `HTTP/2 503` and a `Retry-After` header.
+- A rate-limited client receives `HTTP/2 429` with `Retry-After`, not a `503` or a silent drop.
 - The page renders without the application backend running.
 - Status page (if you have one) shows the planned window.
