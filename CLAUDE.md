@@ -94,8 +94,9 @@ npm run assets   # regenerate icons + OG image
 3. Write the body using the canonical section structure.
 4. Run `npm run dev` and open the page on port 31337.
 5. Verify: it appears on `/spec/`, on `/spec/<category>/`, on `/checklist/`, in `/llms.txt`, in `/sitemap-index.xml`, and is served at `.md` with frontmatter.
-6. Commit. Push to `main`. Cloudflare Pages auto-deploys.
-7. **Redeploy the MCP Worker** with `cd mcp && npm run deploy`. The Worker bundles `mcp/src/data.json` at build time, and that is what `search` / `list_topics` / `get_topic` / `get_checklist` read from. Pages auto-deploy doesn't touch the Worker, so without this step `mcp.specification.website` keeps serving the previous snapshot of the spec.
+6. **Keep the Agent Skill in sync.** `public/.well-known/agent-skills/specification-website/SKILL.md` is hand-maintained (not derived) — it is the canonical "how to use this spec" doc for agents. On any change that affects it, update it: the page count on line 8 when you add/remove pages (`ls src/content/spec/**/*.md | wc -l`), the category list/examples when categories change, the tool table when MCP tools change, the status descriptions when the bar moves. Then **recompute its sha256 and update the `digest` in `agent-skills/index.json`** (`shasum -a 256 …/SKILL.md`) — the digest must match or discovery clients reject the file.
+7. Commit. Push to `main`. Cloudflare Pages auto-deploys.
+8. **Redeploy the MCP Worker** with `cd mcp && npm run deploy`. The Worker bundles `mcp/src/data.json` at build time, and that is what `search` / `list_topics` / `get_topic` / `get_checklist` read from. Pages auto-deploy doesn't touch the Worker, so without this step `mcp.specification.website` keeps serving the previous snapshot of the spec.
 
 **Do not** also edit `/checklist/`, `/llms.txt`, or any other derived surface. They will rebuild.
 
