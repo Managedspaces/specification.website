@@ -42,6 +42,19 @@
       excerptLength: 20,
       processTerm: function (term) { return term.toLowerCase(); },
     });
+    // Pagefind renders a plain type=text input with its own clear button. Decorate
+    // it for mobile keyboards — a Search-labelled enter key, the search keyboard
+    // layout, and no autocapitalise/autocorrect on a query. We deliberately leave
+    // it as type=text: type=search would add a *second*, native clear button on top
+    // of Pagefind's. See /spec/accessibility/mobile-form-inputs/.
+    var input = mount.querySelector('input');
+    if (input) {
+      input.setAttribute('inputmode', 'search');
+      input.setAttribute('enterkeyhint', 'search');
+      input.setAttribute('autocapitalize', 'none');
+      input.setAttribute('autocorrect', 'off');
+      input.setAttribute('spellcheck', 'false');
+    }
     initialised = true;
   }
 

@@ -6,7 +6,7 @@ summary: "Use scrollbar-gutter: stable to reserve scrollbar space and stop horiz
 status: recommended
 order: 130
 appliesTo: [all]
-relatedSlugs: [view-transitions, core-web-vitals, color-scheme]
+relatedSlugs: [view-transitions, core-web-vitals, color-scheme, dynamic-viewport-units]
 updated: "2026-05-29T16:40:22.000Z"
 sources:
   - title: "CSS Overflow Module Level 3 — scrollbar-gutter"
