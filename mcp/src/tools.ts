@@ -321,10 +321,10 @@ const STATUS_ENUM = ['required', 'recommended', 'optional', 'avoid'];
 // Reused inline so the four status tiers are documented at every call site
 // where a `status` filter is accepted.
 const STATUS_PARAM_DESC =
-  'Filter by spec status tier. `required` = the web-platform contract breaks or a clear class of users is harmed without it. `recommended` = a modern site should do it. `optional` = context-dependent. `avoid` = outdated, harmful, or superseded. Omit to include all four tiers.';
+  'Filter by spec status tier. `required` = the web-platform contract breaks or a clear class of users is harmed without it. `recommended` = a modern site should do it. `optional` = context-dependent. `avoid` = outdated, harmful, or superseded. Omit to include all four tiers. Example: `required`.';
 
 const CATEGORY_PARAM_DESC =
-  'Filter to a single top-level category. Call `get_categories` for the list with descriptions and topic counts. Omit to include all ten categories.';
+  'Filter to a single top-level category. Call `get_categories` for the list with descriptions and topic counts. Omit to include all ten categories. Example: `seo`.';
 
 // All five tools are read-only, deterministic, and operate over a corpus
 // bundled into the Worker at build time — never the live web. These
@@ -358,8 +358,9 @@ export const TOOLS = [
       properties: {
         query: {
           type: 'string',
+          minLength: 1,
           description:
-            'Free-text query. Tokenised on whitespace; each token is matched (substring) against title, slug, summary, and body. Example: `content security policy` or `alt text`.',
+            'Free-text query, matched case-insensitively as substrings (not whole words). Split on whitespace; tokens shorter than 2 characters are ignored, so single-letter terms match nothing. Punctuation other than / _ . - is treated as a separator. Each token is scored against title, slug, summary, and body. Example: `content security policy` or `alt text`.',
         },
         limit: {
           type: 'integer',
@@ -401,7 +402,7 @@ export const TOOLS = [
     name: 'list_topics',
     title: 'List spec topics',
     description:
-      'Read-only. Return the canonical list of spec topics, optionally narrowed by category and/or status, each with title, status, category, summary, and URL. Returns ALL statuses unless `status` is passed. This is the right tool when you want a complete, unranked index (e.g. "every required SEO topic"). Use `search` instead for relevance-ranked keyword lookup, `get_checklist` for audit-style grouped output, and `get_topic` to fetch one page in full.',
+      'Read-only. Return the canonical list of spec topics, optionally narrowed by category and/or status, each with title, status, category, summary, and URL. Returns ALL statuses unless `status` is passed; omitting `limit` returns every matching topic. No side effects; results are deterministic and returned in canonical spec order (by category, then page order). This is the right tool when you want a complete, unranked index (e.g. "every required SEO topic"). Use `search` instead for relevance-ranked keyword lookup, `get_checklist` for audit-style grouped output, and `get_topic` to fetch one page in full.',
     annotations: { ...READ_ONLY_ANNOTATIONS, title: 'List spec topics' },
     inputSchema: {
       type: 'object',
@@ -453,6 +454,7 @@ export const TOOLS = [
       properties: {
         slug: {
           type: 'string',
+          minLength: 1,
           description:
             'Kebab-case slug, as listed by `list_topics` or `search`. Matched case-insensitively, with close-match suggestions on miss. Examples: `content-security-policy`, `meta-robots`, `llms-txt`.',
         },
@@ -496,7 +498,7 @@ export const TOOLS = [
     name: 'get_checklist',
     title: 'Get an audit checklist',
     description:
-      'Read-only. Return a Markdown checklist of spec items grouped by category, optionally filtered by category and/or status. Built for site audits — each item is a tickable line with status and canonical URL. Returns all statuses unless `status` is passed. Use `list_topics` instead when you want a flat list rather than grouped checkboxes, or the `audit_url` prompt to drive an actual audit of a target URL.',
+      'Read-only. Return a Markdown checklist of spec items grouped by category, optionally filtered by category and/or status. Built for site audits — each item is a tickable line with status and canonical URL. Returns all statuses unless `status` is passed. No side effects; items are grouped by category in canonical order and the output is deterministic. Use `list_topics` instead when you want a flat list rather than grouped checkboxes, or the `audit_url` prompt to drive an actual audit of a target URL.',
     annotations: { ...READ_ONLY_ANNOTATIONS, title: 'Get an audit checklist' },
     inputSchema: {
       type: 'object',
@@ -549,7 +551,7 @@ export const TOOLS = [
     name: 'get_categories',
     title: 'List categories',
     description:
-      'Read-only. List the ten top-level spec categories with their summaries and topic counts. Takes no arguments. Call this first to discover the valid `category` filter values used by `list_topics`, `get_checklist`, and `search` results.',
+      'Read-only. List the ten top-level spec categories with their summaries and topic counts. Takes no arguments. No side effects; categories are returned in canonical display order. Call this first to discover the valid `category` filter values used by `list_topics`, `get_checklist`, and `search` results.',
     annotations: { ...READ_ONLY_ANNOTATIONS, title: 'List categories' },
     inputSchema: { type: 'object', properties: {} },
     outputSchema: {
