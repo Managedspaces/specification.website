@@ -7,6 +7,42 @@
   var dialog = document.getElementById("search-overlay");
   if (!dialog) return;
   var mount = document.getElementById("search-overlay-mount");
+
+  // Report searches to Plausible: the term, the result count Pagefind shows,
+  // and whether it matched anything. Debounced so we log settled queries, not
+  // every keystroke. The count is read from Pagefind's own message, matching
+  // "<n> result(s)" specifically so a numeric query (e.g. "http2") is never
+  // mistaken for a count. Production only — window.plausible is undefined on
+  // the dev server. CSP-safe: lives in this external file.
+  function trackSearch(scope, surface) {
+    var input = scope.querySelector("input");
+    if (!input) return;
+    var timer;
+    input.addEventListener("input", function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        if (typeof window.plausible !== "function") return;
+        var term = input.value.trim().toLowerCase();
+        if (term.length < 2) return;
+        var msg = scope.querySelector(".pagefind-ui__message");
+        if (!msg) return;
+        var text = msg.textContent || "";
+        var count = null;
+        var m = text.match(/([\d,]+)\s+results?\b/i);
+        if (m) count = parseInt(m[1].replace(/,/g, ""), 10);
+        else if (/no results/i.test(text)) count = 0;
+        if (count === null) return; // transient state, e.g. "Searching…"
+        window.plausible("Search", {
+          props: {
+            term: term,
+            results: count,
+            found: count > 0,
+            surface: surface,
+          },
+        });
+      }, 800);
+    });
+  }
   var closeButton = dialog.querySelector("[data-search-close]");
   var triggers = document.querySelectorAll("[data-search-trigger]");
   var loaded = false;
@@ -62,6 +98,7 @@
       input.setAttribute("autocorrect", "off");
       input.setAttribute("spellcheck", "false");
     }
+    trackSearch(mount, "overlay");
     initialised = true;
   }
 

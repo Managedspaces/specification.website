@@ -2,7 +2,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Breadcrumbs from "~/components/Breadcrumbs.astro";
 
-const updated = "2026-05-29";
+const updated = "2026-06-09";
 ---
 
 <BaseLayout
@@ -59,6 +59,32 @@ const updated = "2026-05-29";
           Country, derived from your IP address. <strong
             >Your IP address itself is never stored.</strong
           >
+        </li>
+      </ul>
+      <p>
+        In two situations we also send Plausible a named <a
+          href="https://plausible.io/docs/custom-event-goals"
+          rel="external">custom event</a
+        > (to the same <code>plausible.io</code> endpoint, still with no cookies and
+        no identifier):
+      </p>
+      <ul>
+        <li>
+          <strong>Missing pages.</strong> When you reach a page that does not exist,
+          we send a <code>404</code> event with the path you tried to load, so we
+          can find and fix broken links.
+        </li>
+        <li>
+          <strong>Site search.</strong> When you use the search page or the ⌘K overlay,
+          we send a <code>Search</code> event with <strong
+            >the text you typed</strong
+          >, how many results it returned, and whether anything matched. This
+          shows us what people look for and which topics are missing. The query
+          is sent as aggregate event data — it is not joined to your IP, a
+          cookie, or any identifier, and nothing is stored in your browser. If
+          you would rather not send your search text, block <code
+            >plausible.io</code
+          > (see below) or browse without searching.
         </li>
       </ul>
       <p>What Plausible deliberately does not do:</p>

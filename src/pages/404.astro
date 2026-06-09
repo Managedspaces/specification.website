@@ -36,4 +36,13 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
       >
     </div>
   </section>
+
+  {
+    /* Report the missing path to Plausible (production only). CSP-safe: external 'self' script. */
+  }
+  {
+    import.meta.env.PROD && (
+      <script src="/track-404.js" type="text/javascript" defer />
+    )
+  }
 </BaseLayout>
