@@ -1,6 +1,10 @@
 # The Website Specification
 
 [![CI](https://github.com/jdevalk/specification.website/actions/workflows/ci.yml/badge.svg)](https://github.com/jdevalk/specification.website/actions/workflows/ci.yml)
+[![Lint](https://github.com/jdevalk/specification.website/actions/workflows/lint.yml/badge.svg)](https://github.com/jdevalk/specification.website/actions/workflows/lint.yml)
+[![Format](https://github.com/jdevalk/specification.website/actions/workflows/format.yml/badge.svg)](https://github.com/jdevalk/specification.website/actions/workflows/format.yml)
+[![Links](https://github.com/jdevalk/specification.website/actions/workflows/links.yml/badge.svg)](https://github.com/jdevalk/specification.website/actions/workflows/links.yml)
+[![Security](https://github.com/jdevalk/specification.website/actions/workflows/security.yml/badge.svg)](https://github.com/jdevalk/specification.website/actions/workflows/security.yml)
 [![Code licence: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
 [![Content licence: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![Deployed on Cloudflare Pages](https://img.shields.io/badge/deploy-Cloudflare%20Pages-orange.svg)](https://specification.website)
