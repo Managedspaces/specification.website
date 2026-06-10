@@ -22,7 +22,15 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: "github-light-default",
+      // Dual themes emit per-token --shiki-light / --shiki-dark CSS variables
+      // instead of baking one theme's colours inline. global.css then selects
+      // between them with light-dark(), so code blocks follow the same
+      // OS-default + [data-theme] override mechanism as the rest of the site.
+      themes: {
+        light: "github-light-default",
+        dark: "github-dark-default",
+      },
+      defaultColor: false,
       wrap: true,
     },
   },
