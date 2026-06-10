@@ -433,6 +433,12 @@ body {
     rgb(34 197 94 / 0.4)
   );
 
+  /* Changelog "Changed" badge (blue) — same light-dark() treatment as the
+     status pills so it doesn't stay bright blue-50 in dark mode. */
+  --pill-changed-bg: light-dark(var(--color-blue-50), rgb(37 99 235 / 0.15));
+  --pill-changed-fg: light-dark(var(--color-blue-800), #93c5fd);
+  --pill-changed-border: light-dark(var(--color-blue-200), rgb(37 99 235 / 0.4));
+
   /* Hero / MCP card gradient tint. */
   --gradient-tint-from: light-dark(
     color-mix(in oklch, var(--color-accent-50) 60%, transparent),
@@ -490,6 +496,16 @@ body {
 }
 .ring-accent-200 {
   --tw-ring-color: var(--pill-recommended-ring);
+}
+
+.bg-blue-50 {
+  background-color: var(--pill-changed-bg);
+}
+.text-blue-800 {
+  color: var(--pill-changed-fg);
+}
+.border-blue-200 {
+  border-color: var(--pill-changed-border);
 }
 
 .from-accent-50\/60,
