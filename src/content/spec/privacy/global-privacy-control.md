@@ -7,7 +7,7 @@ status: recommended
 order: 30
 appliesTo: [all]
 relatedSlugs: [cookie-consent, privacy-policy, analytics-privacy]
-updated: "2026-06-09T00:00:00.000Z"
+updated: "2026-06-11T00:00:00.000Z"
 sources:
   - title: "Global Privacy Control specification"
     url: "https://w3c.github.io/gpc/"
@@ -15,9 +15,9 @@ sources:
   - title: "California Attorney General — Frequently Asked Questions: CCPA"
     url: "https://oag.ca.gov/privacy/ccpa"
     publisher: "California Office of the Attorney General"
-  - title: "Colorado Privacy Act Rules — Universal Opt-Out Mechanism"
-    url: "https://coag.gov/resources/colorado-privacy-act/"
-    publisher: "Colorado Attorney General"
+  - title: "Colorado's approach to Universal Opt-Out requirements"
+    url: "https://iapp.org/news/a/colorados-approach-to-universal-opt-out-requirements"
+    publisher: "IAPP"
 ---
 
 ## What it is
