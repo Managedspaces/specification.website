@@ -56,6 +56,10 @@ export const GET: APIRoute = async () => {
       "/.well-known/agent-skills/index.json. Teaches a compatible agent when and how to query the spec.",
   );
   lines.push("");
+  lines.push(
+    "Pairs well with the MDN MCP server (https://mcp.mdn.mozilla.net/). This spec tells you what a good site should do and whether it is required; the MDN MCP tells you how a web feature works and whether it is Baseline / widely supported. Use this spec to decide what to check, then MDN for implementation and browser-support detail.",
+  );
+  lines.push("");
 
   for (const c of categories) {
     const items = grouped[c.slug] ?? [];

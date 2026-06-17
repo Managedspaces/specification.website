@@ -57,7 +57,7 @@ Do **not** log: typo fixes, refactors, CI/tooling, dependency bumps, OG tweaks, 
 
 These mirror `CONTRIBUTING.md`. Enforce them in your own writing and when reviewing.
 
-1. **Cite primary sources.** Every spec page needs 2–4 sources in front matter, weighted toward standards bodies: WHATWG, W3C, IETF RFCs, IANA, WCAG, schema.org, sitemaps.org, llmstxt.org. Then MDN / web.dev / Google Search Central for practical context. Avoid blog posts and vendor marketing.
+1. **Cite primary sources.** Every spec page needs 2–4 sources in front matter, weighted toward standards bodies: WHATWG, W3C, IETF RFCs, IANA, WCAG, schema.org, sitemaps.org, llmstxt.org. Then MDN / web.dev / Google Search Central for practical context. Avoid blog posts and vendor marketing. For any MDN link or browser-support claim, resolve it through the **MDN MCP server** (`https://mcp.mdn.mozilla.net/`, free, no auth) — it returns the current canonical URL (MDN reorganises its reference tree, so hard-coded deep links rot) and Baseline / BCD support data. MDN stays a context source; lead the citation with the standard.
 2. **Stay platform-agnostic.** Describe outcomes, not implementations. "Set `Content-Security-Policy`" is in scope. "Add this to your `next.config.mjs`" is not. Link out to platform docs instead.
 3. **Be honest about status.** If something is shipping as `required` but the platform works without it, downgrade to `recommended`. If the source URL is dead, replace it (Wayback Machine is acceptable) or remove the citation.
 4. **British English.** "colour", "behaviour", "internationalisation", "licence" (noun).

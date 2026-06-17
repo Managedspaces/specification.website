@@ -14,6 +14,8 @@ Every page lists at least one source. If you are adding or changing a claim, lin
 
 Avoid blog posts, vendor marketing pages, and out-of-date Stack Overflow answers.
 
+When an MDN reference or browser-support claim is involved, resolve it through the **MDN MCP server** (`https://mcp.mdn.mozilla.net/`, free, no auth) rather than pasting a deep link from memory or search. It returns the *current* canonical URL — MDN periodically reorganises its reference tree, and hard-coded deep links rot — and exposes Baseline / Browser Compatibility Data so you can sanity-check that a feature is actually shippable before recommending it. MDN stays a context source: the page's primary citation must still be the underlying standard.
+
 ## 2. Stay platform-agnostic
 
 The spec describes _outcomes_, not implementations. "Set `Content-Security-Policy`" is in scope. "Add this to your `next.config.mjs`" is not — link out to platform docs instead.

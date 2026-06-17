@@ -32,15 +32,38 @@ cases and **(b)** send one Slack summary of everything found.
   `developer.chrome.com`, Google Search Central — for emerging conventions worth
   promoting LATER
 
+## Tools — use the MDN MCP server
+
+The MDN MCP server (`https://mcp.mdn.mozilla.net/`, free, no auth) exposes MDN docs **and
+Baseline / Browser Compatibility Data (BCD)**. Prefer it over fetching MDN HTML — it is
+faster and returns the *current* canonical URL and support status, which is exactly what
+this scan needs. Use it for:
+
+- **Resolving MDN citations** (see "dead or stale citations" below): query the MDN MCP for
+  the canonical current URL of a topic instead of trusting a hard-coded deep link that may
+  have moved in an MDN reference reorg. When an existing MDN source 404s or redirects,
+  the MCP's canonical URL is the fix to propose.
+- **Baseline checks** (see "status changes" and "new topics" below): the MCP reports
+  whether a feature is Baseline (and since when). A feature newly reaching Baseline is a
+  strong signal to add a page or revisit a status; a feature still behind a flag or with
+  thin support argues *against* `required` and often against a page at all yet.
+
+This is an MDN-MCP-backed reference check, not a substitute for citing the primary
+standard — the page's `sources` must still lead with WHATWG / W3C / IETF / WCAG; MDN is
+context.
+
 ## Three things to look for
 
 1. **New topics** — a standard/convention/well-known URI we have no page for.
 2. **Status changes** — something we cover that advanced (CR→REC), was obsoleted,
    deprecated, or whose `recommended`/`required`/`avoid` status should now move. Cite the
-   change.
+   change. Cross-check browser-feature topics against **Baseline via the MDN MCP**: a
+   feature that has newly reached Baseline supports promotion; one with thin support
+   argues against `required`.
 3. **Dead or stale citations** — sources on existing pages that 404, moved, or no longer
    say what the page claims. Spot-check a **rotating slice** each run, not every page
-   every day.
+   every day. For MDN sources specifically, resolve the current canonical URL via the
+   **MDN MCP** (see Tools) rather than guessing the new path by hand.
 
 ## Scope & status rules (do not violate)
 

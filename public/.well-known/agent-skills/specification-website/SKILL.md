@@ -87,6 +87,25 @@ The bar for `required` is "the platform breaks", not "we strongly suggest". When
 
 **"Is there a category for Y?"** `get_categories()` first; if nothing fits, `search(query)` across the corpus.
 
+## Pairing with the MDN MCP
+
+This spec answers **what** a good site should do and **whether** it is required. It does
+not document how each web feature works or how widely it is supported. For that, pair it
+with the **MDN MCP server** (`https://mcp.mdn.mozilla.net/` — free, no auth), which serves
+MDN documentation and Baseline / Browser Compatibility Data.
+
+The two compose cleanly in an audit or build:
+
+1. Use this spec to decide **what to check and when it is required** — `get_checklist`,
+   `list_topics`, or the `audit_url` prompt.
+2. For each web-platform feature that surfaces, call the MDN MCP for **how to implement it
+   and whether it is safe to ship** (Baseline status, browser support).
+
+So: *specification.website tells you `Content-Security-Policy` is recommended and why;
+the MDN MCP tells you which directives are Baseline and how to write them.* Keep the roles
+distinct — don't ask this spec for browser-support data, and don't ask MDN whether a
+convention is required for a good site.
+
 ## Sources and licence
 
 Code MIT. Content CC BY 4.0. Site source: <https://github.com/jdevalk/specification.website>.
