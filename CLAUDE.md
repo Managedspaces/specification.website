@@ -162,6 +162,10 @@ The reverse holds too: **do not promote a convention to spec status without us s
 - Functions live in `/functions/` and ship alongside static assets. The Cloudflare build picks them up automatically.
 - The **MCP server** in `/mcp/` is a separate Cloudflare Worker — `cd mcp && npm run deploy`. It registers `mcp.specification.website` as a custom domain on first deploy. When the spec content changes, redeploy the Worker so its bundled data stays in sync (the predeploy hook regenerates `mcp/src/data.json`).
 
+## Automation
+
+- A scheduled agent runs a **daily standards scan** — it sweeps the standards bodies this spec cites for new topics, status changes, and dead/stale citations, then opens draft PRs and DMs a Slack summary. Its full, binding instructions live in [`ops/routines/daily-standards-scan.md`](ops/routines/daily-standards-scan.md), which is the single source of truth: the routine reads that file each run, so **edit the file (not the routine prompt) to change what the scan does**, then commit to `main`.
+
 ## Admin stats dashboard
 
 `/admin/stats` is a server-rendered dashboard for crawler traffic (`sw_agent_log`) and MCP / A2A usage (`sw_mcp_log`). It is **gated by Cloudflare Access**; the function itself does no auth and trusts the edge.
