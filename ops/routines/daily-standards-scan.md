@@ -36,7 +36,7 @@ cases and **(b)** send one Slack summary of everything found.
 
 The MDN MCP server (`https://mcp.mdn.mozilla.net/`, free, no auth) exposes MDN docs **and
 Baseline / Browser Compatibility Data (BCD)**. Prefer it over fetching MDN HTML — it is
-faster and returns the *current* canonical URL and support status, which is exactly what
+faster and returns the _current_ canonical URL and support status, which is exactly what
 this scan needs. Use it for:
 
 - **Resolving MDN citations** (see "dead or stale citations" below): query the MDN MCP for
@@ -46,7 +46,7 @@ this scan needs. Use it for:
 - **Baseline checks** (see "status changes" and "new topics" below): the MCP reports
   whether a feature is Baseline (and since when). A feature newly reaching Baseline is a
   strong signal to add a page or revisit a status; a feature still behind a flag or with
-  thin support argues *against* `required` and often against a page at all yet.
+  thin support argues _against_ `required` and often against a page at all yet.
 
 This is an MDN-MCP-backed reference check, not a substitute for citing the primary
 standard — the page's `sources` must still lead with WHATWG / W3C / IETF / WCAG; MDN is
@@ -73,7 +73,7 @@ context.
   `recommended`/`optional`; `avoid` for outdated/harmful. Default to `recommended`.
 - Primary sources only (WHATWG / W3C / IETF / IANA / WCAG / schema.org first; MDN /
   web.dev for context).
-- **Ship it before you spec it**: a brand-new *convention* that would require the site to
+- **Ship it before you spec it**: a brand-new _convention_ that would require the site to
   implement a new capability does NOT get a PR — flag it in Slack as "needs us to ship X
   first" so the maintainer can decide. PRs are only for documenting standards we can
   honestly describe (and, where applicable, that the site already satisfies).
