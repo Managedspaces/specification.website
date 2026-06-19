@@ -3,7 +3,6 @@
   "host": {
     "displayName": "The Website Specification",
     "identifier": "specification.website",
-    "identityType": "https",
     "documentationUrl": "https://specification.website/spec/agent-readiness/agentic-resource-discovery/",
     "logoUrl": "https://specification.website/icon-512.png",
     "trustManifest": {
