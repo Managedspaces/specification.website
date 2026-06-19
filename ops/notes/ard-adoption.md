@@ -33,10 +33,11 @@ Each entry has a URN `identifier` (`urn:ai:specification.website:mcp:…`), a
 `displayName`, `description`, `tags`, `version`, `updatedAt`. We reference the
 existing cards by `url` rather than duplicating them — single source of truth.
 
-Honesty note for the post: we deliberately left the `trustManifest` minimal
-(HTTPS identity only, no attestations or JWS). We don't have a SPIFFE/DID
-identity to attest, and faking attestations would be the exact dishonesty the
-spec's trust model exists to prevent.
+The `host.trustManifest` is **signed** — a detached ES256 JWS (see §9). We still
+skip `attestations`/`provenance`: we have no honest third-party claims to point
+at, and faking them would be the exact dishonesty the spec's trust model exists
+to prevent. So we shipped the cryptographic tier (a real signature) without the
+decorative tier (claims we can't back).
 
 ### 2. Content-Type + Link header — `public/_headers`
 
@@ -101,8 +102,33 @@ agent-readiness overview.
 - **Status discipline.** Shipping the implementation but rating the spec page
   `optional` is the site's house rule: be an early adopter, stay honest about
   maturity.
-- **Trust we didn't fake.** The `trustManifest` is the most ambitious part of
-  ARD and the part we engaged with least, on purpose — good honesty beat.
+- **Signed, but nothing faked.** We built the cryptographic tier — a detached
+  ES256 JWS over the JCS-canonicalised trust manifest — but skipped
+  `attestations`/`provenance` because we have no honest third-party claims. Ship
+  the crypto, not the theatre.
+- **Offline signing, no key in CI.** The private key never enters Cloudflare or
+  GitHub. We sign locally and commit the signature; the public key is a JWK Set
+  at `/.well-known/jwks.json`. For a near-static manifest that's strictly safer
+  than a build-time secret — and a cleaner story than "we put our signing key in
+  CI". The JCS+detached-JWS dance is ~120 lines of Node with zero dependencies
+  (built-in WebCrypto).
+
+## §9 — How the signature works
+
+- Algorithm: ES256 (P-256), matching the spec's example. `kid` is the RFC 7638
+  JWK thumbprint.
+- Per the AI Catalog spec the signature covers the **trustManifest only**: remove
+  `signature`, JCS-canonicalise (RFC 8785), sign the canonical bytes as a
+  **detached** JWS (RFC 7515) — payload omitted from the compact form.
+- HTTPS identity resolution: `identity` is the JWKS URL; a verifier fetches it
+  and picks the key by the JWS `kid`. (Note the mild circularity of the HTTPS
+  tier — the key signs a manifest that points back at the key. did:web or a
+  third-party attestation would break the circle; worth a sentence in the post.)
+- Tooling: `scripts/sign-ard-catalog.mjs` (`npm run sign:ard` / `check:ard`).
+  The signer self-verifies against the published JWKS after signing.
+- Gotcha: the signature is independent of file formatting (Prettier can reflow
+  ai-catalog.json freely) because verification re-canonicalises. But editing any
+  trustManifest field means re-signing — enforced via a note in CLAUDE.md.
 
 ## Schema gotchas worth flagging
 

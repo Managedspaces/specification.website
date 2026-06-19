@@ -40,14 +40,14 @@ Beyond the well-known file itself, three mechanisms point agents at it: a `<link
 ## Why it matters
 
 - **One fetch, typed answer.** Instead of guessing at well-known paths one by one, an agent reads a single manifest that names every capability and its media type.
-- **Domain-anchored trust.** An optional `trustManifest` (SPIFFE ID, DID, or HTTPS identity, plus attestations and an optional JWS signature) lets a client verify the publisher cryptographically. The domain in the entry's URN must align with the trust identity.
+- **Domain-anchored trust.** An optional `trustManifest` (SPIFFE ID, DID, or HTTPS identity, plus attestations and an optional JWS signature) lets a client verify the publisher cryptographically. The signature is a detached JWS over the JCS-canonicalised ([RFC 8785](https://www.rfc-editor.org/rfc/rfc8785)) trust manifest with the `signature` field removed; for an HTTPS identity, the verifier fetches the JWK Set at the identity URL and selects the key by the JWS `kid`.
 - **Registry-friendly.** Registries crawl published catalogs and make them searchable, so a capability listed once becomes discoverable across the agentic web.
 
 ## How to implement
 
 Publish `/.well-known/ai-catalog.json` with a `specVersion`, a `host` block, and one entry per capability you actually run. Reference your existing MCP and A2A cards by `url` rather than duplicating them. Advertise the manifest with a `link rel`, the `robots.txt` `Agentmap:` directive, and, if you publish DNS, the `_catalog._agents` record. Don't list endpoints you don't offer.
 
-This site ships it: [`/.well-known/ai-catalog.json`](/.well-known/ai-catalog.json) catalogues our MCP server and A2A agent, advertised through the `Link` header, a `link rel`, and `robots.txt`.
+This site ships it: [`/.well-known/ai-catalog.json`](/.well-known/ai-catalog.json) catalogues our MCP server and A2A agent, advertised through the `Link` header, a `link rel`, `robots.txt`, and a `_catalog._agents` DNS record. The host `trustManifest` carries a detached ES256 JWS signature; the public key is published as a JWK Set at [`/.well-known/jwks.json`](/.well-known/jwks.json). We sign offline and commit the signature — the private key never enters CI.
 
 ## Common mistakes
 
@@ -60,3 +60,4 @@ This site ships it: [`/.well-known/ai-catalog.json`](/.well-known/ai-catalog.jso
 - `curl -s https://example.com/.well-known/ai-catalog.json | jq .` returns valid JSON with `specVersion` and `entries`.
 - Each entry `url` resolves to a document of the declared `mediaType`.
 - The `Agentmap:` line is present in `robots.txt` and the `ai-catalog` `Link` rel is on the homepage response.
+- If a `trustManifest.signature` is present, it verifies: fetch the JWK Set at the `identity` URL, JCS-canonicalise the manifest minus `signature`, and check the detached JWS against the key named by its `kid`.
