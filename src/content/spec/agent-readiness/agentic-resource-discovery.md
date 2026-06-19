@@ -6,8 +6,8 @@ summary: "Publish an AI Catalog at /.well-known/ai-catalog.json listing the agen
 status: optional
 order: 86
 appliesTo: [all]
-relatedSlugs: [dns-aid, mcp-and-tool-discovery, a2a-agent-cards, agent-skills-discovery, link-headers, well-known-overview]
-updated: "2026-06-19T00:00:00.000Z"
+relatedSlugs: [dns-aid, mcp-and-tool-discovery, a2a-agent-cards, agent-skills-discovery, okf-bundle, link-headers, well-known-overview]
+updated: "2026-06-19T12:00:00.000Z"
 sources:
   - title: "Agentic Resource Discovery (ARD) specification"
     url: "https://agenticresourcediscovery.org/"
@@ -27,13 +27,16 @@ sources:
 
 Agentic Resource Discovery (ARD) is a draft discovery layer — not a runtime — that lets a domain advertise which agent capabilities it offers and how to verify them. It answers three questions for an agent: where the right capability lives, which one to use, and whether it is safe to connect. It builds on the **AI Catalog** standard, both developed under a Linux Foundation working group and published Apache 2.0.
 
-The core is a manifest at `/.well-known/ai-catalog.json`. Each `entries[]` item has a URN `identifier`, a `displayName`, a `mediaType`, and either an inline `data` object or a `url` pointing at the real artefact. The media types tie ARD to the rest of the agent-readiness graph:
+The core is a manifest at `/.well-known/ai-catalog.json`. Each `entries[]` item has a URN `identifier`, a `displayName`, a media type, and either an inline `data` object or a `url` pointing at the real artefact. The media types tie ARD to the rest of the agent-readiness graph:
 
-| `mediaType` | Points at |
+| Media type | Points at |
 |---|---|
 | `application/mcp-server-card+json` | An [MCP server card](/spec/agent-readiness/mcp-and-tool-discovery/) |
 | `application/a2a-agent-card+json` | An [A2A agent card](/spec/agent-readiness/a2a-agent-cards/) |
+| `application/agentskill+zip` | An [Agent Skill](/spec/agent-readiness/agent-skills-discovery/) |
 | `application/ai-catalog+json` | A nested catalog |
+
+**Two specs, two field names.** The base [ai-catalog](https://github.com/Agent-Card/ai-catalog) spec names the media-type field `mediaType`; the ARD layer that builds on it names it `type` and adds an optional `representativeQueries` array (2–5 natural-language prompts) so a registry can match an entry to a user's intent. The two diverged, so the safe move is to emit **both** field names with the same value plus `representativeQueries` — that validates under either spec, since both require consumers to preserve unknown keys.
 
 Beyond the well-known file itself, three mechanisms point agents at it: a `<link rel="ai-catalog">` (also emittable as an HTTP `Link` header); an `Agentmap:` directive in `robots.txt`; and DNS service-binding records `_catalog._agents.<domain>` and `_search._agents.<domain>` — the same `_agents` namespace as [DNS-AID](/spec/agent-readiness/dns-aid/).
 
@@ -47,11 +50,11 @@ Beyond the well-known file itself, three mechanisms point agents at it: a `<link
 
 Publish `/.well-known/ai-catalog.json` with a `specVersion`, a `host` block, and one entry per capability you actually run. Reference your existing MCP and A2A cards by `url` rather than duplicating them. Advertise the manifest with a `link rel`, the `robots.txt` `Agentmap:` directive, and, if you publish DNS, the `_catalog._agents` record. Don't list endpoints you don't offer.
 
-This site ships it: [`/.well-known/ai-catalog.json`](/.well-known/ai-catalog.json) catalogues our MCP server and A2A agent, advertised through the `Link` header, a `link rel`, `robots.txt`, and a `_catalog._agents` DNS record. The host `trustManifest` carries a detached ES256 JWS signature; the public key is published as a JWK Set at [`/.well-known/jwks.json`](/.well-known/jwks.json). We sign offline and commit the signature — the private key never enters CI.
+This site ships it: [`/.well-known/ai-catalog.json`](/.well-known/ai-catalog.json) catalogues our MCP server, A2A agent, [Agent Skill](/spec/agent-readiness/agent-skills-discovery/), and [OKF bundle](/spec/agent-readiness/okf-bundle/), advertised through the `Link` header, a `link rel`, `robots.txt`, and a `_catalog._agents` DNS record. Each entry carries both `mediaType` and `type` plus `representativeQueries`. The host `trustManifest` carries a detached ES256 JWS signature covering the manifest only (not the entries), so entries can change without re-signing; the public key is published as a JWK Set at [`/.well-known/jwks.json`](/.well-known/jwks.json). We sign offline and commit the signature — the private key never enters CI.
 
 ## Common mistakes
 
-- Inventing fields. The entry schema is small — `identifier`, `displayName`, `mediaType`, and exactly one of `url` or `data`.
+- Inventing fields. The entry schema is small — `identifier`, `displayName`, the media-type field (`mediaType` and/or `type`), and exactly one of `url` or `data`.
 - A URN publisher segment that doesn't match the `trustManifest` identity domain — verification then fails.
 - Listing aspirational capabilities. The catalogue is a contract; only list what resolves.
 

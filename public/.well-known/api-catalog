@@ -92,6 +92,16 @@
           "href": "https://specification.website/llms-full.txt",
           "type": "text/markdown",
           "title": "Every spec page concatenated as Markdown"
+        },
+        {
+          "href": "https://specification.website/okf/index.md",
+          "type": "text/markdown",
+          "title": "OKF bundle index (Open Knowledge Format)"
+        },
+        {
+          "href": "https://specification.website/okf.tar.gz",
+          "type": "application/gzip",
+          "title": "OKF bundle as a single gzipped tar"
         }
       ]
     },

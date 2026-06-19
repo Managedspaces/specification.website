@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import tailwindcss from "@tailwindcss/vite";
+import okfTarball from "./astro-okf-tarball.mjs";
 
 const SITE = "https://specification.website";
 
@@ -12,7 +13,7 @@ const SITE = "https://specification.website";
 // https://astro.build/config
 export default defineConfig({
   site: SITE,
-  integrations: [mdx()],
+  integrations: [mdx(), okfTarball()],
   vite: {
     plugins: [tailwindcss()],
   },

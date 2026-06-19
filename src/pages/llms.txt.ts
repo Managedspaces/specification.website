@@ -76,6 +76,18 @@ export const GET: APIRoute = async () => {
     lines.push("");
   }
 
+  lines.push("## Structured exports");
+  lines.push("");
+  lines.push(
+    "The whole spec is also published as an Open Knowledge Format (OKF) bundle — one Markdown concept per check, plus a mirrored standard per cited source.",
+  );
+  lines.push(
+    `  - [OKF bundle index](${site.url}/okf/index.md): browsable root of the bundle; each category links to its checks.`,
+  );
+  lines.push(
+    `  - [OKF bundle tarball](${site.url}/okf.tar.gz): the entire bundle as a single gzipped tar.`,
+  );
+  lines.push("");
   lines.push("## Project");
   lines.push("");
   lines.push(

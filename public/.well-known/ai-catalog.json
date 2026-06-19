@@ -18,7 +18,13 @@
       "displayName": "The Website Specification — MCP server",
       "description": "Read-only MCP server exposing every spec page as queryable tools — search, list_topics, get_topic, get_checklist, get_categories — plus an audit_url prompt.",
       "mediaType": "application/mcp-server-card+json",
+      "type": "application/mcp-server-card+json",
       "url": "https://specification.website/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "does this site publish a security.txt",
+        "what are the agent readiness checks in the website specification",
+        "is image alt text required or only recommended"
+      ],
       "tags": [
         "mcp",
         "web-standards",
@@ -33,11 +39,59 @@
       "displayName": "The Website Specification — A2A agent",
       "description": "Read-only A2A agent that answers natural-language questions about The Website Specification and returns matching topics with status, canonical URL, and a body excerpt.",
       "mediaType": "application/a2a-agent-card+json",
+      "type": "application/a2a-agent-card+json",
       "url": "https://specification.website/.well-known/agent-card.json",
+      "representativeQueries": [
+        "what does the website specification say about HSTS",
+        "list the well-known URIs a good site should serve",
+        "what is required for a custom 404 page"
+      ],
       "tags": [
         "a2a",
         "web-standards",
         "audit",
+        "discovery"
+      ],
+      "version": "0.1.0",
+      "updatedAt": "2026-06-19T00:00:00Z"
+    },
+    {
+      "identifier": "urn:ai:specification.website:skill:specification-website",
+      "displayName": "The Website Specification — Agent Skill",
+      "description": "Agent Skill teaching a compatible agent when and how to query The Website Specification — the per-page Markdown over HTTP, llms.txt, and the MCP server. Served as SKILL.md (text/markdown, not a packaged zip) and discoverable via /.well-known/agent-skills/index.json.",
+      "mediaType": "text/markdown",
+      "type": "text/markdown",
+      "url": "https://specification.website/.well-known/agent-skills/specification-website/SKILL.md",
+      "representativeQueries": [
+        "how do I audit a URL against the website specification",
+        "when should I use the website specification to check best practice",
+        "what status does the spec assign to a given web feature"
+      ],
+      "tags": [
+        "agent-skill",
+        "web-standards",
+        "audit",
+        "discovery"
+      ],
+      "version": "0.1.0",
+      "updatedAt": "2026-06-19T00:00:00Z"
+    },
+    {
+      "identifier": "urn:ai:specification.website:bundle:okf",
+      "displayName": "The Website Specification — OKF bundle",
+      "description": "The entire specification as an Open Knowledge Format bundle: one Markdown concept per check, a mirrored concept per cited standard, plus index and change-log files. Browsable at /okf/ or downloadable as a single gzipped tar. The media type is interim and unregistered pending a blessed OKF media type.",
+      "mediaType": "application/okf-bundle+gzip",
+      "type": "application/okf-bundle+gzip",
+      "url": "https://specification.website/okf.tar.gz",
+      "representativeQueries": [
+        "give me the whole website specification as a downloadable bundle",
+        "list every check with its conformance level and source standard",
+        "what standards does the website specification cite"
+      ],
+      "tags": [
+        "okf",
+        "knowledge-bundle",
+        "web-standards",
         "discovery"
       ],
       "version": "0.1.0",
