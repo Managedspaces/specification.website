@@ -36,3 +36,7 @@ User-agent: CCBot
 Allow: /
 
 Sitemap: https://specification.website/sitemap-index.xml
+
+# Agentic Resource Discovery (ARD) — points agents at the AI Catalog manifest.
+# https://specification.website/spec/agent-readiness/agentic-resource-discovery/
+Agentmap: https://specification.website/.well-known/ai-catalog.json

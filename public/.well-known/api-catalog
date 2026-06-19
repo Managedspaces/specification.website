@@ -55,6 +55,11 @@
           "href": "https://specification.website/.well-known/agent-card.json",
           "type": "application/json",
           "title": "A2A agent card"
+        },
+        {
+          "href": "https://specification.website/.well-known/ai-catalog.json",
+          "type": "application/ai-catalog+json",
+          "title": "Agentic Resource Discovery (ARD) catalog"
         }
       ],
       "license": [

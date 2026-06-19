@@ -6,7 +6,7 @@ summary: "The Agent-to-Agent (A2A) protocol lets an autonomous agent find anothe
 status: optional
 order: 82
 appliesTo: [all]
-relatedSlugs: [agent-readiness-overview, mcp-and-tool-discovery, agent-skills-discovery, machine-readable-formats, link-headers, api-catalog, dns-aid]
+relatedSlugs: [agent-readiness-overview, mcp-and-tool-discovery, agent-skills-discovery, machine-readable-formats, link-headers, api-catalog, dns-aid, agentic-resource-discovery]
 updated: "2026-05-29T11:27:49.000Z"
 sources:
   - title: "A2A Protocol — Specification"

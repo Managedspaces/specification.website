@@ -1,0 +1,36 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "The Website Specification",
+    "identifier": "specification.website",
+    "identityType": "https",
+    "documentationUrl": "https://specification.website/spec/agent-readiness/agentic-resource-discovery/",
+    "logoUrl": "https://specification.website/icon-512.png",
+    "trustManifest": {
+      "identity": "specification.website",
+      "identityType": "https"
+    }
+  },
+  "entries": [
+    {
+      "identifier": "urn:ai:specification.website:mcp:specification-website",
+      "displayName": "The Website Specification — MCP server",
+      "description": "Read-only MCP server exposing every spec page as queryable tools — search, list_topics, get_topic, get_checklist, get_categories — plus an audit_url prompt.",
+      "mediaType": "application/mcp-server-card+json",
+      "url": "https://specification.website/.well-known/mcp/server-card.json",
+      "tags": ["mcp", "web-standards", "audit", "discovery"],
+      "version": "0.1.0",
+      "updatedAt": "2026-06-19T00:00:00Z"
+    },
+    {
+      "identifier": "urn:ai:specification.website:a2a:specification-website",
+      "displayName": "The Website Specification — A2A agent",
+      "description": "Read-only A2A agent that answers natural-language questions about The Website Specification and returns matching topics with status, canonical URL, and a body excerpt.",
+      "mediaType": "application/a2a-agent-card+json",
+      "url": "https://specification.website/.well-known/agent-card.json",
+      "tags": ["a2a", "web-standards", "audit", "discovery"],
+      "version": "0.1.0",
+      "updatedAt": "2026-06-19T00:00:00Z"
+    }
+  ]
+}

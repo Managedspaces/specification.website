@@ -21,7 +21,7 @@
   Cross-Origin-Resource-Policy: same-site
   X-Frame-Options: DENY
   No-Vary-Search: params=("utm_source" "utm_medium" "utm_campaign" "utm_content" "utm_term" "gclid" "fbclid" "msclkid" "mc_cid" "mc_eid" "ref"), key-order
-  Link: </llms.txt>; rel="describedby"; type="text/markdown"; title="Site index for LLMs", </llms-full.txt>; rel="alternate"; type="text/markdown"; title="Full content as Markdown", </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/mcp/server-card.json>; rel="mcp"; type="application/json"; title="MCP server card", <https://mcp.specification.website/mcp>; rel="related"; title="MCP endpoint", </.well-known/agent-card.json>; rel="service-desc"; type="application/json"; title="A2A agent card", <https://mcp.specification.website/a2a/v1>; rel="related"; title="A2A endpoint", </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"; title="Agent Skills discovery index", </sitemap-index.xml>; rel="sitemap"; type="application/xml", </rss.xml>; rel="alternate"; type="application/rss+xml"; title="Feed of spec changes", </changelog/rss.xml>; rel="alternate"; type="application/rss+xml"; title="Changelog feed", </.well-known/security.txt>; rel="security"; type="text/plain"
+  Link: </llms.txt>; rel="describedby"; type="text/markdown"; title="Site index for LLMs", </llms-full.txt>; rel="alternate"; type="text/markdown"; title="Full content as Markdown", </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/mcp/server-card.json>; rel="mcp"; type="application/json"; title="MCP server card", <https://mcp.specification.website/mcp>; rel="related"; title="MCP endpoint", </.well-known/agent-card.json>; rel="service-desc"; type="application/json"; title="A2A agent card", <https://mcp.specification.website/a2a/v1>; rel="related"; title="A2A endpoint", </.well-known/agent-skills/index.json>; rel="agent-skills"; type="application/json"; title="Agent Skills discovery index", </.well-known/ai-catalog.json>; rel="ai-catalog"; type="application/ai-catalog+json"; title="Agentic Resource Discovery catalog", </sitemap-index.xml>; rel="sitemap"; type="application/xml", </rss.xml>; rel="alternate"; type="application/rss+xml"; title="Feed of spec changes", </changelog/rss.xml>; rel="alternate"; type="application/rss+xml"; title="Changelog feed", </.well-known/security.txt>; rel="security"; type="text/plain"
 
 # Long cache for fingerprinted assets
 /_astro/*
@@ -100,6 +100,12 @@
 # Glama MCP connector ownership claim (glama.ai)
 /.well-known/glama.json
   Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
+
+# Agentic Resource Discovery (ARD) — AI Catalog manifest
+/.well-known/ai-catalog.json
+  Content-Type: application/ai-catalog+json; charset=utf-8
   Cache-Control: public, max-age=3600
   Access-Control-Allow-Origin: *
 
