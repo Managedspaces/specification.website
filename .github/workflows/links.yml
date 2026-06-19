@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: "0 6 * * 1" # Weekly on Monday at 06:00 UTC — catches rotted external links
+    - cron: "0 6 * * *" # Daily at 06:00 UTC — catches rotted external links
   workflow_dispatch: # manual trigger for the external-link sweep
 
 permissions:
@@ -48,14 +48,13 @@ jobs:
           npx --yes linkinator@6 http://localhost:4321 \
             --recurse --skip "^https?://(?!localhost)"
 
-  # Non-blocking: external links break for reasons outside our control (IETF /
-  # W3C / MDN rate-limiting, upstream outages). Runs weekly and on demand so
-  # rot is visible without holding PRs hostage to a flaky upstream.
+  # Blocking: runs daily and on demand. A failed run signals rotted external
+  # links that need fixing. Kept off PRs so a flaky upstream (IETF / W3C / MDN
+  # rate-limiting, upstream outages) can't block merges — only the daily sweep.
   external:
     name: External links
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v6
 
