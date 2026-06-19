@@ -1,8 +1,11 @@
 # Draft proposal: a blessed media type for OKF bundles
 
-Status: **draft — not filed.** Intended for the OKF repo
-(`GoogleCloudPlatform/knowledge-catalog`) and/or the AI Catalog / ARD projects
-(`Agent-Card/ai-catalog`, `ards-project/ard-spec`). Review and file manually.
+Status: **filed.**
+
+- OKF spec (define/register the type): GoogleCloudPlatform/knowledge-catalog#111
+  — <https://github.com/GoogleCloudPlatform/knowledge-catalog/issues/111>
+- ARD layer (recognise it in the AI Catalog): ards-project/ard-spec#27
+  — <https://github.com/ards-project/ard-spec/issues/27>
 
 ## Problem
 
