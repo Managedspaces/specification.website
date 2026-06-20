@@ -16,7 +16,7 @@ const claudeJson = JSON.stringify(desktopConfig, null, 2);
 
 <BaseLayout
   title="MCP server"
-  description="Query The Website Specification from any MCP-aware agent. Tools for search, list, fetch, and audit; no auth; cookieless; CC BY 4.0 content."
+  description="Query The Website Specification from any MCP-aware agent. Tools for search, list, fetch, checklist, change-tracking, and audit; no auth; cookieless; CC BY 4.0 content."
   ogImage="/og/mcp.png"
 >
   <div class="mx-auto max-w-3xl px-4 py-10">
@@ -80,6 +80,13 @@ const claudeJson = JSON.stringify(desktopConfig, null, 2);
           <tr
             ><td><code>get_categories()</code></td><td
               >The ten top-level categories with topic counts.</td
+            ></tr
+          >
+          <tr
+            ><td><code>get_changes({"{ since?, type?, limit? }"})</code></td><td
+              >What changed since a date — new pages, status promotions,
+              rewrites, removals — each resolved to the current topics to
+              re-audit. Re-check only the delta instead of the whole spec.</td
             ></tr
           >
         </tbody>
