@@ -167,14 +167,14 @@ called "AI Catalog," and they disagree:
 
 - **`Agent-Card/ai-catalog`** — the base spec our page cites. Field is
   **`mediaType`**. No `representativeQueries`. Our original catalog was correct
-  against *this*.
+  against _this_.
 - **`ards-project/ard-spec`** + the rendered `agenticresourcediscovery.org` site
   — the **ARD layer** that builds on top. It renamed the field to **`type`** (an
   IANA media type) and added `representativeQueries` (2–5 natural-language
   prompts) and `capabilities`.
 
 So `mediaType` was never a typo — it was faithful to the base spec. But a
-registry validating against *ARD* (the thing we claim to adopt) wants `type`.
+registry validating against _ARD_ (the thing we claim to adopt) wants `type`.
 **Resolution:** emit **both** field names with the same value, plus
 `representativeQueries`, on every entry. Both specs require consumers to preserve
 unknown keys, so the dual-field entry validates under either. This is a genuinely
@@ -205,8 +205,8 @@ The tree:
   `conformance` as an RFC 2119 keyword derived from `status`, `standard`,
   `last_verified`). Body reuses the same Markdown the `.md` negotiation serves,
   with `# Source` and `# Citations` appended.
-- **445 Reference concepts** at `okf/references/<slug>.md` — one per *distinct
-  cited source URL* across all pages (`type: Reference`). Each check's `standard`
+- **445 Reference concepts** at `okf/references/<slug>.md` — one per _distinct
+  cited source URL_ across all pages (`type: Reference`). Each check's `standard`
   field and citations link to these. (Decision: one-per-URL, not per-publisher
   and not inline-only. Heaviest option, but it's the most faithful OKF "mirror
   external material as first-class concepts" reading.)
@@ -229,7 +229,7 @@ hand-rolls a POSIX **ustar** archive (~60 lines: 512-byte header blocks, octal
 fields, the checksum dance) and gzips with built-in `zlib`. Fixed mtime + sorted
 file order → **byte-reproducible** tarball. This is the same no-extra-dependency
 stance as the JWS signer in Part 1 — a recurring theme worth naming in the post:
-*the agentic-web plumbing is smaller than it looks; most of it is built-ins.*
+_the agentic-web plumbing is smaller than it looks; most of it is built-ins._
 
 ### 3. ARD catalog — finally complete (4 entries)
 
@@ -237,12 +237,12 @@ Part 1's catalog listed MCP + A2A. This session added the **Agent Skill** and th
 **OKF bundle**, and added the dual `type`/`mediaType` + `representativeQueries`
 shape to all four:
 
-| Entry      | media type                         | url                              |
-| ---------- | ---------------------------------- | -------------------------------- |
-| MCP server | `application/mcp-server-card+json` | `/.well-known/mcp/server-card.json` |
-| A2A agent  | `application/a2a-agent-card+json`  | `/.well-known/agent-card.json`   |
-| Agent Skill| `text/markdown`                    | `…/agent-skills/specification-website/SKILL.md` |
-| OKF bundle | `application/okf-bundle+gzip` *(interim)* | `/okf.tar.gz`             |
+| Entry       | media type                                | url                                             |
+| ----------- | ----------------------------------------- | ----------------------------------------------- |
+| MCP server  | `application/mcp-server-card+json`        | `/.well-known/mcp/server-card.json`             |
+| A2A agent   | `application/a2a-agent-card+json`         | `/.well-known/agent-card.json`                  |
+| Agent Skill | `text/markdown`                           | `…/agent-skills/specification-website/SKILL.md` |
+| OKF bundle  | `application/okf-bundle+gzip` _(interim)_ | `/okf.tar.gz`                                   |
 
 The Skill entry honestly uses `text/markdown` — our skill is a served `SKILL.md`,
 not a packaged `application/agentskill+zip`. Don't claim the zip type for a file.
@@ -262,8 +262,8 @@ not a packaged `application/agentskill+zip`. Don't claim the zip type for a file
 ## The interesting interim-media-type angle (and the issues we filed)
 
 The OKF bundle entry can only use an **unregistered** media type, because there
-*is* no blessed one. That's the durable gap: a catalog can list a bundle, but a
-consumer can't *recognise* it as OKF without sniffing — so every publisher
+_is_ no blessed one. That's the durable gap: a catalog can list a bundle, but a
+consumer can't _recognise_ it as OKF without sniffing — so every publisher
 invents a different interim string and they never converge. We shipped
 `application/okf-bundle+gzip` as a single named constant, documented as interim,
 so swapping it later is a one-line change.
@@ -276,9 +276,9 @@ live bundle as the reference adopter:
 - **ARD layer** (recognise it in the AI Catalog, + flagged the `type`/`mediaType`
   divergence): ards-project/ard-spec#27 — <https://github.com/ards-project/ard-spec/issues/27>
 
-This is a nice closing beat for the post: *being an early adopter isn't just
+This is a nice closing beat for the post: _being an early adopter isn't just
 implementing the draft — it's finding the gap the draft left and pushing it back
-upstream.*
+upstream._
 
 ## Extra angles for the post (Part 2)
 

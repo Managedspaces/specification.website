@@ -9,11 +9,11 @@ Status: **filed.**
 
 ## Problem
 
-OKF defines a bundle's *structure* but deliberately leaves *serving and
-discovery* out of scope. ARD's AI Catalog solves discovery — a publisher lists
+OKF defines a bundle's _structure_ but deliberately leaves _serving and
+discovery_ out of scope. ARD's AI Catalog solves discovery — a publisher lists
 an entry pointing at the bundle artefact — but an entry is keyed by an **IANA
 media type** (`mediaType` / `type`). There is no registered media type for an
-OKF bundle, so a consumer can *find* the artefact but cannot *recognise* it as
+OKF bundle, so a consumer can _find_ the artefact but cannot _recognise_ it as
 OKF without sniffing the contents. Every publisher therefore invents an interim
 type, and they will not agree.
 

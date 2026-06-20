@@ -5,9 +5,19 @@ import globals from "globals";
 
 export default [
   // Ignore generated output and the MCP worker (separate package with its own
-  // toolchain — lint it from inside mcp/, not from the repo root).
+  // toolchain — lint it from inside mcp/, not from the repo root). Vendored
+  // agent skills (.github/skills, mirrored into the git-ignored .claude/) are
+  // owned upstream and not ours to lint — same exclusion as .prettierignore.
   {
-    ignores: ["dist/", ".astro/", "node_modules/", "public/pagefind/", "mcp/"],
+    ignores: [
+      "dist/",
+      ".astro/",
+      "node_modules/",
+      "public/pagefind/",
+      "mcp/",
+      ".github/skills/",
+      ".claude/",
+    ],
   },
 
   js.configs.recommended,
@@ -35,9 +45,14 @@ export default [
     },
   },
 
-  // Build + maintenance scripts run under Node as ES modules.
+  // Build + maintenance scripts run under Node as ES modules. Includes the
+  // root-level Astro integration that packages the OKF bundle at build time.
   {
-    files: ["scripts/**/*.{js,mjs}", "*.config.{js,mjs,ts}"],
+    files: [
+      "scripts/**/*.{js,mjs}",
+      "*.config.{js,mjs,ts}",
+      "astro-okf-tarball.mjs",
+    ],
     languageOptions: {
       sourceType: "module",
       globals: globals.node,

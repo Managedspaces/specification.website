@@ -93,7 +93,9 @@ export default function okfTarball() {
         const tar = Buffer.concat(chunks);
         const gz = gzipSync(tar, { level: 9 });
         await writeFile(join(outDir, "okf.tar.gz"), gz);
-        logger.info(`wrote okf.tar.gz (${records.length} files, ${gz.length} bytes)`);
+        logger.info(
+          `wrote okf.tar.gz (${records.length} files, ${gz.length} bytes)`,
+        );
       },
     },
   };

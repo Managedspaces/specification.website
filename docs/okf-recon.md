@@ -5,13 +5,13 @@ No source files were changed to produce this. Read this before Phase 1.
 
 ## State reconciliation (what the plan assumed vs. what is already shipped)
 
-| Plan phase | Status today | Notes |
-|---|---|---|
-| Phase 1 — OKF bundle generator | **Not started** | No `/okf/` tree, no generator. |
-| Phase 2 — package + serve + llms.txt pointer | **Not started** | No `/okf.tar.gz`, no `## Structured exports` in `llms.txt`. |
-| Phase 3 — ARD `ai-catalog.json` | **Already shipped & signed** | `public/.well-known/ai-catalog.json` exists, served at the well-known path with CORS + `application/ai-catalog+json`, host `trustManifest` signed with a detached ES256 JWS (`scripts/sign-ard-catalog.mjs`, public key at `jwks.json`). Advertised via `Link` header, robots, DNS. **But it advertises only 2 entries (MCP server, A2A agent) — not the Agent Skill, not an OKF bundle.** |
-| Phase 4 — dogfood spec pages | **Half done** | The ARD / `ai-catalog.json` topic already exists: `src/content/spec/agent-readiness/agentic-resource-discovery.md` (status `optional`). The **OKF bundle** spec page does *not* exist yet. |
-| Phase 5 — propose media type | Not started (optional). |
+| Plan phase                                   | Status today                 | Notes                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Phase 1 — OKF bundle generator               | **Not started**              | No `/okf/` tree, no generator.                                                                                                                                                                                                                                                                                                                                                             |
+| Phase 2 — package + serve + llms.txt pointer | **Not started**              | No `/okf.tar.gz`, no `## Structured exports` in `llms.txt`.                                                                                                                                                                                                                                                                                                                                |
+| Phase 3 — ARD `ai-catalog.json`              | **Already shipped & signed** | `public/.well-known/ai-catalog.json` exists, served at the well-known path with CORS + `application/ai-catalog+json`, host `trustManifest` signed with a detached ES256 JWS (`scripts/sign-ard-catalog.mjs`, public key at `jwks.json`). Advertised via `Link` header, robots, DNS. **But it advertises only 2 entries (MCP server, A2A agent) — not the Agent Skill, not an OKF bundle.** |
+| Phase 4 — dogfood spec pages                 | **Half done**                | The ARD / `ai-catalog.json` topic already exists: `src/content/spec/agent-readiness/agentic-resource-discovery.md` (status `optional`). The **OKF bundle** spec page does _not_ exist yet.                                                                                                                                                                                                 |
+| Phase 5 — propose media type                 | Not started (optional).      |
 
 **Topic count is 143, not ~141.** Per-category: foundations 14, seo 14, accessibility 23,
 security 15, well-known 10, agent-readiness 19, performance 23, privacy 6, resilience 6, i18n 13.
@@ -23,18 +23,18 @@ Schema: `src/content.config.ts`. Every topic frontmatter has: `title`, `slug?`, 
 `relatedSlugs[]`, `sources[]` (`{title, url, publisher?}`), `order`, `draft`, `updated` (ISO).
 **All 143 topics carry `updated`** — usable directly as the OKF `timestamp` (no git calls needed).
 
-| OKF concept field (§4) | Source |
-|---|---|
-| `type` (required) | constant `Check` for topics, `Reference` for mirrored standards |
-| `title` | `data.title` |
-| `description` | `data.summary` |
-| `resource` | canonical URL `https://specification.website/spec/<category>/<slug>/` |
-| `tags` | `[category, status, ...appliesTo]` |
-| `timestamp` | `data.updated` (ISO 8601) |
-| `category` (producer key) | `data.category` |
-| `conformance` (producer key) | derived from `data.status` (`required`→MUST, `recommended`→SHOULD, `optional`→MAY, `avoid`→MUST NOT) |
-| `standard` (producer key) | bundle-relative link to the primary source's `references/` concept |
-| `last_verified` (producer key) | `data.updated` |
+| OKF concept field (§4)         | Source                                                                                               |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `type` (required)              | constant `Check` for topics, `Reference` for mirrored standards                                      |
+| `title`                        | `data.title`                                                                                         |
+| `description`                  | `data.summary`                                                                                       |
+| `resource`                     | canonical URL `https://specification.website/spec/<category>/<slug>/`                                |
+| `tags`                         | `[category, status, ...appliesTo]`                                                                   |
+| `timestamp`                    | `data.updated` (ISO 8601)                                                                            |
+| `category` (producer key)      | `data.category`                                                                                      |
+| `conformance` (producer key)   | derived from `data.status` (`required`→MUST, `recommended`→SHOULD, `optional`→MAY, `avoid`→MUST NOT) |
+| `standard` (producer key)      | bundle-relative link to the primary source's `references/` concept                                   |
+| `last_verified` (producer key) | `data.updated`                                                                                       |
 
 Body reuses the same Markdown the `.md` negotiation already emits
 (`src/pages/spec/[category]/[slug].md.ts` is the reference implementation), plus an appended
@@ -67,9 +67,9 @@ faithful to the base spec we cite. Confirmed by reading both source specs direct
   `application/a2a-agent-card+json`, `application/ai-catalog+json`,
   `application/agentskill+zip`. **No `representativeQueries`.** Our shipped file is **conformant**.
 - **`ards-project/ard-spec`** + the rendered `agenticresourcediscovery.org/ai_catalog_spec/`
-  (the ARD discovery *layer*, "built on top of ai-catalog", which the plan cites). Renamed the
+  (the ARD discovery _layer_, "built on top of ai-catalog", which the plan cites). Renamed the
   field to **`type`** (still an IANA media type), added `representativeQueries` (`minItems: 2,
-  maxItems: 5`) and `capabilities`; example MCP media type is `application/mcp-server+json`.
+maxItems: 5`) and `capabilities`; example MCP media type is `application/mcp-server+json`.
 
 `mediaType` entered today in commit `d22b710` (initial ARD adoption), following the base spec.
 It is correct against that spec; it is **not** conformant against the ARD-layer schema the plan
@@ -78,7 +78,7 @@ way** — the JWS covers only `host.trustManifest`, not `entries`.
 
 **Recommended:** emit **both** `type` and `mediaType` (identical media-type value) plus
 `representativeQueries` on every entry. Both specs say consumers must preserve unknown keys, so
-this validates under the base ai-catalog schema *and* the ARD-layer schema simultaneously. The
+this validates under the base ai-catalog schema _and_ the ARD-layer schema simultaneously. The
 new Skill + OKF entries follow the same dual-field shape.
 
 ## Serving / build mechanics

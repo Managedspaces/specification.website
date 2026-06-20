@@ -91,7 +91,7 @@ export async function getOkfData(): Promise<OkfData> {
   const refByUrl = new Map<string, OkfReference>();
   for (const url of sortedUrls) {
     const src = distinct.get(url)!;
-    let base = slugify(src.title);
+    const base = slugify(src.title);
     let slug = base;
     let n = 2;
     while (usedSlugs.has(slug)) slug = `${base}-${n++}`;
@@ -131,7 +131,8 @@ export async function getOkfData(): Promise<OkfData> {
   );
 
   const byCategory = new Map<string, OkfConcept[]>();
-  for (const c of concepts) (byCategory.get(c.category) ?? setGet(byCategory, c.category)).push(c);
+  for (const c of concepts)
+    (byCategory.get(c.category) ?? setGet(byCategory, c.category)).push(c);
 
   const references = [...refByUrl.values()].sort((a, b) =>
     a.slug.localeCompare(b.slug),
@@ -166,8 +167,7 @@ export function renderConcept(c: OkfConcept): string {
   fm.push(`category: ${c.category}`);
   fm.push(`status: ${c.status}`);
   fm.push(`conformance: ${yamlString(c.conformance)}`);
-  if (c.refSlugs.length)
-    fm.push(`standard: ../references/${c.refSlugs[0]}.md`);
+  if (c.refSlugs.length) fm.push(`standard: ../references/${c.refSlugs[0]}.md`);
   if (c.timestamp) fm.push(`last_verified: ${yamlString(c.timestamp)}`);
   fm.push("---");
 
@@ -280,7 +280,9 @@ export function renderRootIndex(data: OkfData): string {
   lines.push("");
   lines.push("## Bundle");
   lines.push("");
-  lines.push("* [References](references/index.md) - Mirrored external standards.");
+  lines.push(
+    "* [References](references/index.md) - Mirrored external standards.",
+  );
   lines.push("* [Change log](log.md) - History of the spec, newest first.");
   lines.push("");
   return lines.join("\n");
