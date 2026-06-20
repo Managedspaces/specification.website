@@ -6,8 +6,8 @@ summary: "Serve over HTTP/2 at minimum and HTTP/3 where you can. Multiplexing el
 status: recommended
 order: 90
 appliesTo: [all]
-relatedSlugs: [cache-control, compression, preload-prefetch-preconnect, compression-dictionary-transport]
-updated: "2026-05-29T09:13:20.000Z"
+relatedSlugs: [http1-workarounds, cache-control, compression, preload-prefetch-preconnect, compression-dictionary-transport]
+updated: "2026-06-20T00:00:00.000Z"
 sources:
   - title: "RFC 9114 — HTTP/3"
     url: "https://www.rfc-editor.org/rfc/rfc9114"
@@ -16,7 +16,7 @@ sources:
     url: "https://www.rfc-editor.org/rfc/rfc9113"
     publisher: "IETF"
   - title: "MDN — Evolution of HTTP"
-    url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Evolution_of_HTTP"
+    url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP"
     publisher: "MDN"
   - title: "MDN — Alt-Svc"
     url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Alt-Svc"
@@ -51,7 +51,7 @@ For users on flaky networks — the majority of mobile users globally — the di
 
 **Require TLS.** HTTP/2 and HTTP/3 are HTTPS-only in browsers. There is no path forward without a valid certificate.
 
-**Drop HTTP/1.1 optimisations.** Domain sharding, image sprites, and CSS concatenation were workarounds for HTTP/1.1's 6-connection limit. Under HTTP/2 they hurt: they break caching, prevent prioritisation, and inflate transfer sizes.
+**Drop HTTP/1.1 optimisations.** Domain sharding, image sprites, and CSS concatenation were workarounds for HTTP/1.1's 6-connection limit. Under HTTP/2 they hurt: they break caching, prevent prioritisation, and inflate transfer sizes. See [HTTP/1.1 workarounds](/spec/performance/http1-workarounds/) for what to drop and why.
 
 **Keep one origin.** HTTP/2 and HTTP/3 reward consolidation. Splitting assets across `cdn1`, `cdn2`, `assets.` forces new connections; on a single origin everything reuses the same one.
 
