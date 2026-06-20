@@ -1,0 +1,18 @@
+#!/bin/sh
+# Pre-commit gate: lint + formatting must pass before a commit lands.
+#
+# Tracked in the repo and wired via `core.hooksPath` (see scripts: the
+# `prepare` npm script sets it on install). Dependency-free — no husky.
+# Mirrors the CI checks so failures surface locally, not on push.
+#
+# Bypass in a genuine emergency with `git commit --no-verify`.
+
+set -e
+
+echo "pre-commit: eslint…"
+npm run --silent lint
+
+echo "pre-commit: prettier…"
+npm run --silent format:check
+
+echo "pre-commit: ok"

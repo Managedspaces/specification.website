@@ -14,6 +14,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
     "dev": "astro dev --port 31337 --host",
     "start": "astro dev --port 31337 --host",
     "prebuild": "node scripts/generate-assets.mjs",

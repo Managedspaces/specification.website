@@ -104,10 +104,14 @@ npm run dev      # http://localhost:31337
 npm run build    # astro build && pagefind --site dist
 npm run preview  # serve dist on 31337
 npm run check    # astro check
+npm run lint     # eslint .
+npm run format:check  # prettier --check .
 npm run assets   # regenerate icons + OG image
 ```
 
 `predev` and `prebuild` run `scripts/generate-assets.mjs` automatically.
+
+**Pre-commit gate.** A tracked git hook at `.githooks/pre-commit` runs `npm run lint` and `npm run format:check` on every `git commit`; `core.hooksPath` is pointed at `.githooks/` by the `prepare` script on `npm install` (no husky). The same two checks run in CI (`ci.yml`). Run them before committing so the hook passes; `prettier --write .` fixes formatting. Bypass only in a genuine emergency with `git commit --no-verify`.
 
 ## Workflow when adding or changing a spec page
 
