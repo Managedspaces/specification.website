@@ -17,6 +17,18 @@ const AGENT = "sw_agent_log";
 const MCP = "sw_mcp_log";
 const REPORT = "sw_report_log";
 
+// Deprecation/intervention reports fire for any in-page script, including
+// browser-extension content scripts. functions/reports.ts now drops those at
+// write time, but Analytics Engine is append-only — historical extension noise
+// lingers until it ages out of retention. Exclude it from every report query
+// the same way the collector does: keep a deprecation/intervention row only
+// when its sourceFile (blob4) is served from this site. CSP / COOP / COEP /
+// crash rows are unaffected.
+const REPORT_FIRST_PARTY =
+  "NOT (index1 IN ('deprecation','intervention') " +
+  "AND blob4 NOT LIKE 'https://specification.website/%' " +
+  "AND blob4 NOT LIKE 'https://specification-website.pages.dev/%')";
+
 interface AeRow {
   [key: string]: string | number | null;
 }
@@ -141,31 +153,31 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     report_hourly: `
       SELECT toStartOfHour(timestamp) AS hour, SUM(_sample_interval) AS count
       FROM ${REPORT}
-      WHERE timestamp > NOW() - INTERVAL '1' DAY
+      WHERE ${REPORT_FIRST_PARTY} AND timestamp > NOW() - INTERVAL '1' DAY
       GROUP BY hour ORDER BY hour ASC
     `,
     report_types24h: `
       SELECT index1 AS type, SUM(_sample_interval) AS count
       FROM ${REPORT}
-      WHERE timestamp > NOW() - INTERVAL '1' DAY
+      WHERE ${REPORT_FIRST_PARTY} AND timestamp > NOW() - INTERVAL '1' DAY
       GROUP BY type ORDER BY count DESC LIMIT 50
     `,
     report_types7d: `
       SELECT index1 AS type, SUM(_sample_interval) AS count
       FROM ${REPORT}
-      WHERE timestamp > NOW() - INTERVAL '7' DAY
+      WHERE ${REPORT_FIRST_PARTY} AND timestamp > NOW() - INTERVAL '7' DAY
       GROUP BY type ORDER BY count DESC LIMIT 50
     `,
     report_directives7d: `
       SELECT blob3 AS directive, SUM(_sample_interval) AS count
       FROM ${REPORT}
-      WHERE blob3 != '' AND timestamp > NOW() - INTERVAL '7' DAY
+      WHERE ${REPORT_FIRST_PARTY} AND blob3 != '' AND timestamp > NOW() - INTERVAL '7' DAY
       GROUP BY directive ORDER BY count DESC LIMIT 50
     `,
     report_recent: `
       SELECT timestamp AS time, index1 AS type, blob2 AS path, blob3 AS directive, blob4 AS blocked, blob5 AS disposition
       FROM ${REPORT}
-      WHERE timestamp > NOW() - INTERVAL '30' DAY
+      WHERE ${REPORT_FIRST_PARTY} AND timestamp > NOW() - INTERVAL '30' DAY
       ORDER BY time DESC LIMIT 100
     `,
   };
