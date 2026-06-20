@@ -132,8 +132,174 @@ agent-readiness overview.
 
 ## Schema gotchas worth flagging
 
-- The entry field is `mediaType`, not `type`.
+- The entry field is `mediaType`, not `type`. **(Update — this turned out to be
+  only half true. See "Part 2" below: there are two competing specs and they
+  disagree on this exact field name.)**
 - MCP media type is `application/mcp-server-card+json` (note `-card`), not
   `application/mcp-server+json`.
 - Exactly one of `url` or `data` per entry.
 - The URN publisher segment must align with the `trustManifest` identity domain.
+
+---
+
+# Part 2 — OKF bundle + finishing the ARD catalog (2026-06-20)
+
+Second session. Two threads: (a) publish the whole spec as an **Open Knowledge
+Format (OKF)** bundle, and (b) use ARD to fix the thing OKF deliberately leaves
+unsolved — **discovery**. Plus a real-world plot twist about the `mediaType`
+field above.
+
+## The thesis for this part
+
+OKF and ARD are two halves of one idea. **OKF says how to package a knowledge
+base** (a tree of typed Markdown "concept" files). **OKF explicitly makes
+serving and discovery non-goals** — a conformant bundle sitting on a server is
+undiscoverable by design. **ARD is exactly the missing half**: a catalog entry
+that points an agent at the bundle. So the post writes itself as "here are two
+specs that only become useful when you compose them, and here's the worked
+example."
+
+## The `mediaType` vs `type` plot twist (correct the Part 1 note)
+
+Part 1 confidently said "the entry field is `mediaType`, not `type`." Digging in
+for this session, that's because there are **two different specifications** both
+called "AI Catalog," and they disagree:
+
+- **`Agent-Card/ai-catalog`** — the base spec our page cites. Field is
+  **`mediaType`**. No `representativeQueries`. Our original catalog was correct
+  against *this*.
+- **`ards-project/ard-spec`** + the rendered `agenticresourcediscovery.org` site
+  — the **ARD layer** that builds on top. It renamed the field to **`type`** (an
+  IANA media type) and added `representativeQueries` (2–5 natural-language
+  prompts) and `capabilities`.
+
+So `mediaType` was never a typo — it was faithful to the base spec. But a
+registry validating against *ARD* (the thing we claim to adopt) wants `type`.
+**Resolution:** emit **both** field names with the same value, plus
+`representativeQueries`, on every entry. Both specs require consumers to preserve
+unknown keys, so the dual-field entry validates under either. This is a genuinely
+good "the standards are still settling" anecdote for the post — early adoption
+means you sometimes implement two specs at once and let them disagree politely.
+
+(Bonus: the JWS only covers `host.trustManifest`, not `entries`. So renaming
+fields and adding two entries needed **no re-signing**. The signature design from
+Part 1 paid off — the contract you sign is separate from the catalog you edit.)
+
+## What we shipped this session
+
+### 1. The OKF bundle — generated, never hand-written
+
+The whole site is already derived from one content collection; the bundle is just
+one more derived surface.
+
+- `src/lib/okf.ts` — reads the `spec` collection and renders concepts.
+- `src/pages/okf/**` — Astro endpoints that emit the `/okf/` tree as
+  `text/markdown`, the same way `/llms.txt` and the per-page `.md` mirror work.
+
+The tree:
+
+- **144 Check concepts** at `okf/<category>/<slug>.md` — concept path mirrors the
+  canonical URL, so OKF concept IDs line up with `/spec/<category>/<slug>/`. Each
+  carries OKF's blessed fields (`type: Check`, `title`, `description`, `resource`,
+  `tags`, `timestamp`) plus producer-defined keys (`category`, `status`,
+  `conformance` as an RFC 2119 keyword derived from `status`, `standard`,
+  `last_verified`). Body reuses the same Markdown the `.md` negotiation serves,
+  with `# Source` and `# Citations` appended.
+- **445 Reference concepts** at `okf/references/<slug>.md` — one per *distinct
+  cited source URL* across all pages (`type: Reference`). Each check's `standard`
+  field and citations link to these. (Decision: one-per-URL, not per-publisher
+  and not inline-only. Heaviest option, but it's the most faithful OKF "mirror
+  external material as first-class concepts" reading.)
+- **Index files** (`index.md`) per directory — no front matter, per OKF §6,
+  except the **root `index.md`** which carries `okf_version: "0.1"` (the one place
+  §11 permits it).
+- **`log.md`** — derived from the hand-curated `/changelog/` collection,
+  date-grouped newest-first with the conventional `**Creation**`/`**Update**`
+  lead words.
+
+601 files total (later 604 after the new spec page). Conformance check (every
+non-index `.md` has parseable YAML front matter with a non-empty `type`, OKF §9):
+**0 failures**.
+
+### 2. Packaging — `/okf.tar.gz` with zero dependencies
+
+`astro-okf-tarball.mjs` is an Astro integration that, in `astro:build:done`,
+walks `dist/okf/` and writes a gzipped tar. **Node ships no tar library**, so it
+hand-rolls a POSIX **ustar** archive (~60 lines: 512-byte header blocks, octal
+fields, the checksum dance) and gzips with built-in `zlib`. Fixed mtime + sorted
+file order → **byte-reproducible** tarball. This is the same no-extra-dependency
+stance as the JWS signer in Part 1 — a recurring theme worth naming in the post:
+*the agentic-web plumbing is smaller than it looks; most of it is built-ins.*
+
+### 3. ARD catalog — finally complete (4 entries)
+
+Part 1's catalog listed MCP + A2A. This session added the **Agent Skill** and the
+**OKF bundle**, and added the dual `type`/`mediaType` + `representativeQueries`
+shape to all four:
+
+| Entry      | media type                         | url                              |
+| ---------- | ---------------------------------- | -------------------------------- |
+| MCP server | `application/mcp-server-card+json` | `/.well-known/mcp/server-card.json` |
+| A2A agent  | `application/a2a-agent-card+json`  | `/.well-known/agent-card.json`   |
+| Agent Skill| `text/markdown`                    | `…/agent-skills/specification-website/SKILL.md` |
+| OKF bundle | `application/okf-bundle+gzip` *(interim)* | `/okf.tar.gz`             |
+
+The Skill entry honestly uses `text/markdown` — our skill is a served `SKILL.md`,
+not a packaged `application/agentskill+zip`. Don't claim the zip type for a file.
+
+### 4. Discovery pointers + the dogfood page
+
+- `llms.txt` gained a `## Structured exports` section linking the bundle index and
+  tarball.
+- `public/_headers`: `/okf/*` → `text/markdown`, `/okf.tar.gz` →
+  `application/gzip`, both with CORS. `_routes.json` excludes them from the
+  Functions worker.
+- api-catalog Linkset: the bundle added to the `/spec/` anchor's `alternate`.
+- New spec page **"Open Knowledge Format (OKF) bundle"** (`agent-readiness`,
+  status `optional` — same house rule as ARD: adopt early, rate honestly). The
+  ARD page was updated to document the dual-field reality and the two new entries.
+
+## The interesting interim-media-type angle (and the issues we filed)
+
+The OKF bundle entry can only use an **unregistered** media type, because there
+*is* no blessed one. That's the durable gap: a catalog can list a bundle, but a
+consumer can't *recognise* it as OKF without sniffing — so every publisher
+invents a different interim string and they never converge. We shipped
+`application/okf-bundle+gzip` as a single named constant, documented as interim,
+so swapping it later is a one-line change.
+
+Then we did the ecosystem-citizen thing and filed the fix upstream, offering our
+live bundle as the reference adopter:
+
+- **OKF spec** (define/register the type): GoogleCloudPlatform/knowledge-catalog#111
+  — <https://github.com/GoogleCloudPlatform/knowledge-catalog/issues/111>
+- **ARD layer** (recognise it in the AI Catalog, + flagged the `type`/`mediaType`
+  divergence): ards-project/ard-spec#27 — <https://github.com/ards-project/ard-spec/issues/27>
+
+This is a nice closing beat for the post: *being an early adopter isn't just
+implementing the draft — it's finding the gap the draft left and pushing it back
+upstream.*
+
+## Extra angles for the post (Part 2)
+
+- **OKF + ARD are complementary halves.** Packaging spec with a stated
+  non-goal (discovery) + a discovery spec = a complete story only when composed.
+- **Everything stays derived.** The bundle is generated from the same content
+  collection as the HTML, the `.md` mirror, llms.txt, and the MCP data. No
+  hand-maintained second copy that can drift — the whole site's design philosophy
+  applied to one more output.
+- **Two specs, one field, polite disagreement.** The `type`/`mediaType` split is
+  a concrete, honest illustration of standards-in-flux. Emitting both is the
+  pragmatic move.
+- **The plumbing is built-ins.** A reproducible tar writer and an ES256 detached
+  JWS, both in plain Node with no dependencies. Demystifies the agentic web.
+- **Sign the contract, not the catalog.** Because the JWS covers only the trust
+  manifest, the catalog's entries stay editable without re-signing — a deliberate
+  separation that paid off the moment we extended the catalog.
+
+## Deploy / status
+
+- Committed straight to `main` (`756ea03`, then `e548930` for the proposal-doc
+  link update). Cloudflare Pages auto-deploys.
+- MCP worker redeployed (`cd mcp && npm run deploy`) — now serves 144 pages
+  including the new OKF page; `data.json` is gitignored, regenerated by predeploy.
