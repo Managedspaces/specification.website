@@ -19,6 +19,7 @@ import {
   getTopicTool,
   getChecklistTool,
   getCategoriesTool,
+  getChangesTool,
   buildAuditPrompt,
 } from './tools';
 import { handleA2aRpc, AGENT_CARD } from './a2a';
@@ -120,6 +121,8 @@ function handleRpc(req: RpcRequest): RpcResponse | null {
             return ok(id, getChecklistTool(manifest, args as any));
           case 'get_categories':
             return ok(id, getCategoriesTool(manifest));
+          case 'get_changes':
+            return ok(id, getChangesTool(manifest, args as { since?: string; type?: string; limit?: number }));
           default:
             return err(id, -32602, `Unknown tool: ${name}`);
         }

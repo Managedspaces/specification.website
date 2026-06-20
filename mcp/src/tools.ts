@@ -1,4 +1,4 @@
-import type { Category, Page, Manifest, Status } from './types';
+import type { Category, Page, Manifest, Status, ChangelogEntry } from './types';
 
 // --- helpers ------------------------------------------------------------
 
@@ -301,6 +301,79 @@ export function getCategoriesTool(m: Manifest) {
   return { content: [{ type: 'text' as const, text: lines.join('\n') }], structuredContent };
 }
 
+export function getChangesTool(
+  m: Manifest,
+  args: { since?: string; type?: string; limit?: number },
+) {
+  const bySlug = new Map(m.pages.map((p) => [p.slug, p]));
+  // Normalise `since` to a YYYY-MM-DD prefix; entry dates are ISO dates, so a
+  // lexicographic compare is a correct date compare.
+  const since = args.since ? args.since.slice(0, 10) : undefined;
+  let entries: ChangelogEntry[] = m.changelog;
+  if (since) entries = entries.filter((e) => e.date >= since);
+  if (args.type) entries = entries.filter((e) => e.type === args.type);
+  // changelog is already newest-first; apply limit only when no `since` window,
+  // or always as a safety cap.
+  const limit = args.limit ? Math.min(Math.max(args.limit, 1), 100) : since ? 100 : 20;
+  const windowed = entries.slice(0, limit);
+
+  const resolved = windowed.map((e) => {
+    const topics = e.relatedSlugs
+      .map((s) => bySlug.get(s))
+      .filter((p): p is Page => Boolean(p))
+      .map((p) => ({
+        slug: p.slug,
+        title: p.title,
+        status: p.status,
+        category: p.category,
+        url: p.url,
+      }));
+    // Slugs named in the entry but no longer present (e.g. a removed page).
+    const unresolvedSlugs = e.relatedSlugs.filter((s) => !bySlug.has(s));
+    return {
+      date: e.date,
+      type: e.type,
+      title: e.title,
+      summary: e.body.replace(/\s+/g, ' ').trim(),
+      topics,
+      unresolvedSlugs,
+    };
+  });
+
+  const sinceDesc = since ? `since ${since}` : `most recent ${windowed.length}`;
+  const typeDesc = args.type ? `, type=${args.type}` : '';
+  const lines: string[] = [];
+  if (resolved.length === 0) {
+    lines.push(`No spec changes ${sinceDesc}${typeDesc}.`);
+  } else {
+    lines.push(`${resolved.length} spec change entr${resolved.length === 1 ? 'y' : 'ies'} (${sinceDesc}${typeDesc}), newest first:\n`);
+    for (const e of resolved) {
+      lines.push(`### ${e.date} — ${e.title} _(${e.type})_`);
+      lines.push(e.summary);
+      for (const t of e.topics) {
+        lines.push(`- **[${t.title}](${t.url})** — now \`${t.status}\`, ${t.category} (re-audit this)`);
+      }
+      for (const s of e.unresolvedSlugs) {
+        lines.push(`- \`${s}\` — no longer a live page (removed)`);
+      }
+      lines.push('');
+    }
+    lines.push('To re-audit only what moved: call `get_topic` on each topic above, then re-check the target site against its current guidance.');
+  }
+
+  const structuredContent = {
+    since: since ?? null,
+    type: args.type ?? null,
+    count: resolved.length,
+    latest: m.changelog[0]?.date ?? null,
+    changes: resolved,
+  };
+  return {
+    content: [{ type: 'text' as const, text: lines.join('\n').trimEnd() }],
+    structuredContent,
+  };
+}
+
 // --- tool catalogue (advertised via tools/list) -------------------------
 
 const CATEGORY_ENUM = [
@@ -317,6 +390,8 @@ const CATEGORY_ENUM = [
 ];
 
 const STATUS_ENUM = ['required', 'recommended', 'optional', 'avoid'];
+
+const CHANGE_TYPE_ENUM = ['added', 'changed', 'status', 'removed'];
 
 // Reused inline so the four status tiers are documented at every call site
 // where a `status` filter is accepted.
@@ -615,6 +690,89 @@ export const TOOLS = [
         },
       },
       required: ['count', 'categories'],
+    },
+  },
+  {
+    name: 'get_changes',
+    title: 'Get spec changes since a date',
+    description:
+      'Read-only. Return the spec\'s change history — new pages, status promotions/downgrades, substantive rewrites, and removals — newest first, each resolved to the current topics it affects (slug, title, current status, category, URL). This is the delta tool for a returning agent: pass `since` (the date you last audited a site) to get only what has changed, then re-audit just those topics instead of the whole spec. Omit `since` to get the most recent entries. The spec is hand-curated and typed (added/changed/status/removed), so this is a precise signal, not a raw timestamp diff. The same history is published as an RSS feed at https://specification.website/changelog/rss.xml for out-of-band polling. A sensible re-check cadence is monthly, or whenever you start a fresh audit.',
+    annotations: { ...READ_ONLY_ANNOTATIONS, title: 'Get spec changes since a date' },
+    inputSchema: {
+      type: 'object',
+      properties: {
+        since: {
+          type: 'string',
+          description:
+            'Return only changes on or after this date (ISO `YYYY-MM-DD`; longer ISO datetimes are accepted and truncated to the day). Typically the date of your last audit. Omit to get the most recent changes regardless of date. Example: `2026-05-01`.',
+        },
+        type: {
+          type: 'string',
+          enum: CHANGE_TYPE_ENUM,
+          description:
+            'Filter to one kind of change. `added` = a new spec page or category. `status` = a topic promoted or downgraded between tiers. `changed` = a substantive rewrite of an existing page. `removed` = a page that was live and has been deleted. Omit to include all four kinds.',
+        },
+        limit: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 100,
+          description:
+            'Maximum number of change entries to return, newest first. Defaults to 20 when `since` is omitted, or up to 100 within a `since` window; clamped to 1–100.',
+        },
+      },
+    },
+    outputSchema: {
+      type: 'object',
+      properties: {
+        since: {
+          type: ['string', 'null'],
+          description: 'The `since` date that was applied (truncated to YYYY-MM-DD), or null.',
+        },
+        type: {
+          type: ['string', 'null'],
+          enum: [...CHANGE_TYPE_ENUM, null],
+          description: 'The `type` filter that was applied, or null.',
+        },
+        count: { type: 'integer', description: 'Number of change entries returned.' },
+        latest: {
+          type: ['string', 'null'],
+          description:
+            'Date of the most recent change in the whole spec (independent of filters). Store this and pass it back as `since` next time.',
+        },
+        changes: {
+          type: 'array',
+          description: 'Matching change entries, newest first.',
+          items: {
+            type: 'object',
+            properties: {
+              date: { type: 'string', description: 'ISO `YYYY-MM-DD` date of the change.' },
+              type: {
+                type: 'string',
+                enum: CHANGE_TYPE_ENUM,
+                description: 'Kind of change: added, changed, status, or removed.',
+              },
+              title: { type: 'string', description: 'Headline of the change entry.' },
+              summary: { type: 'string', description: 'One-to-three-sentence description of the change.' },
+              topics: {
+                type: 'array',
+                description: 'Current spec topics this change affects — re-audit these.',
+                items: {
+                  type: 'object',
+                  properties: TOPIC_REF_PROPERTIES,
+                  required: ['slug', 'title', 'status', 'category', 'url'],
+                },
+              },
+              unresolvedSlugs: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Slugs named by the entry that are no longer live pages (e.g. removed topics).',
+              },
+            },
+            required: ['date', 'type', 'title', 'summary', 'topics', 'unresolvedSlugs'],
+          },
+        },
+      },
+      required: ['since', 'type', 'count', 'latest', 'changes'],
     },
   },
 ];

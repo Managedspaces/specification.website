@@ -8,6 +8,7 @@ import { parse as parseYaml } from 'yaml';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const specRoot = join(here, '..', '..', 'src', 'content', 'spec');
+const changelogRoot = join(here, '..', '..', 'src', 'content', 'changelog');
 const out = join(here, '..', 'src', 'data.json');
 const siteRoot = 'https://specification.website';
 
@@ -55,6 +56,27 @@ pages.sort((a, b) =>
   a.title.localeCompare(b.title),
 );
 
+// Changelog — the hand-curated, typed record of what the spec content changed.
+// This is the source `get_changes` reads so a returning agent can re-audit only
+// the delta (new pages, status promotions, rewrites) since it last looked.
+const changelog = [];
+for await (const file of walk(changelogRoot)) {
+  const text = await readFile(file, 'utf8');
+  const { data, body } = parseFrontmatter(text);
+  if (data.draft) continue;
+  changelog.push({
+    title: data.title,
+    date: data.date,
+    type: data.type ?? 'changed',
+    relatedSlugs: data.relatedSlugs ?? [],
+    body,
+  });
+}
+// Newest first; tie-break by title for a deterministic order within a day.
+changelog.sort((a, b) =>
+  a.date < b.date ? 1 : a.date > b.date ? -1 : a.title.localeCompare(b.title),
+);
+
 const categories = [
   { slug: 'foundations', title: 'Foundations', summary: 'HTML, head, document basics.', order: 1 },
   { slug: 'seo', title: 'SEO', summary: 'Search visibility.', order: 2 },
@@ -73,6 +95,7 @@ const manifest = {
   site: siteRoot,
   categories,
   pages,
+  changelog,
 };
 
 // Stamp with a deterministic build time on disk only.
@@ -81,4 +104,6 @@ manifest.generatedAt = process.env.SOURCE_DATE_EPOCH
   : new Date().toISOString();
 
 await writeFile(out, JSON.stringify(manifest, null, 2));
-console.log(`✓ wrote ${relative(here, out)} — ${pages.length} pages across ${categories.length} categories`);
+console.log(
+  `✓ wrote ${relative(here, out)} — ${pages.length} pages across ${categories.length} categories, ${changelog.length} changelog entries`,
+);

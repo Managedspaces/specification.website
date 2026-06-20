@@ -31,11 +31,22 @@ export interface Category {
   order: number;
 }
 
+export type ChangeType = 'added' | 'changed' | 'status' | 'removed';
+
+export interface ChangelogEntry {
+  title: string;
+  date: string; // ISO YYYY-MM-DD
+  type: ChangeType;
+  relatedSlugs: string[];
+  body: string;
+}
+
 export interface Manifest {
   generatedAt: string;
   site: string;
   categories: Category[];
   pages: Page[];
+  changelog: ChangelogEntry[];
 }
 
 // JSON-RPC 2.0

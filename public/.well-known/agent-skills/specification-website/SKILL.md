@@ -30,6 +30,7 @@ Tools:
 | `get_topic({ slug })` | Full canonical Markdown for one page, including its cited sources. |
 | `get_checklist({ category?, status? })` | Tickable Markdown checklist. |
 | `get_categories()` | The ten categories with counts and summaries. |
+| `get_changes({ since?, type?, limit? })` | What changed since a date — new pages, status promotions, rewrites, removals — each resolved to the current topics to re-audit. |
 
 Prompt: `audit_url(url, focus?)` — generates an audit plan for a target URL against the spec, optionally narrowed to one category.
 
@@ -106,8 +107,30 @@ the MDN MCP tells you which directives are Baseline and how to write them.* Keep
 distinct — don't ask this spec for browser-support data, and don't ask MDN whether a
 convention is required for a good site.
 
+## Staying current — re-audit only what moved
+
+The spec changes often, especially **agent-readiness**. Don't re-audit a site from
+scratch every time, and don't trust a cached copy of the spec — check the delta:
+
+1. After an audit, store the spec's latest change date. With MCP, `get_changes()`
+   returns it as `latest`; otherwise note the date you ran.
+2. Next time, call `get_changes({ since: <that date> })`. It returns only the new
+   pages, status promotions/downgrades, rewrites, and removals since then, each
+   already resolved to the current topics (with their current status and URL).
+3. Re-audit just those topics — `get_topic` each, then re-check the target site.
+
+Without MCP, the same typed history is the changelog RSS feed at
+`https://specification.website/changelog/rss.xml` (entries tagged
+added / changed / status / removed, with the affected slugs). Poll it and act on
+new entries.
+
+A sensible default cadence is **monthly**, or at the start of any fresh audit. A
+status promotion (e.g. a topic moving to `required`) can change a previously
+passing site into a failing one, so a delta check is worth doing even when no new
+pages were added.
+
 ## Sources and licence
 
 Code MIT. Content CC BY 4.0. Site source: <https://github.com/jdevalk/specification.website>.
 
-When citing, use the page's canonical URL and the `updated` frontmatter field as the as-of date. The spec changes — re-fetch rather than relying on a cached copy more than a few weeks old.
+When citing, use the page's canonical URL and the `updated` frontmatter field as the as-of date.
