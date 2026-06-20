@@ -64,6 +64,12 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       GROUP BY hour, bot
       ORDER BY hour ASC
     `,
+    agent_daily: `
+      SELECT toStartOfDay(timestamp) AS day, SUM(_sample_interval) AS count
+      FROM ${AGENT}
+      WHERE timestamp > NOW() - INTERVAL '14' DAY
+      GROUP BY day ORDER BY day ASC
+    `,
     agent_top24h: `
       SELECT index1 AS bot, blob10 AS mime, SUM(_sample_interval) AS count
       FROM ${AGENT}
@@ -472,6 +478,75 @@ function renderHourLineChart(
   return `<svg class="line-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(ariaLabel)}">${gridLines}<polyline points="${linePts}" fill="none" stroke="${colour}" stroke-width="1.5" stroke-linejoin="round" />${dots}${xLabels}</svg>`;
 }
 
+// Daily counterpart of renderHourLineChart: a 14-day line, one point per UTC
+// day. Rows are { day, count } from a toStartOfDay() query.
+function renderDayLineChart(
+  rows: AeRow[],
+  colour: string,
+  ariaLabel: string,
+): string {
+  if (rows.length === 0) return `<p class="empty">No data yet.</p>`;
+
+  const totals = new Map<string, number>();
+  for (const r of rows) {
+    const k = String(r.day);
+    totals.set(k, (totals.get(k) || 0) + (Number(r.count) || 0));
+  }
+
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+  const grid: Array<{ time: Date; value: number }> = [];
+  for (let i = 13; i >= 0; i--) {
+    const t = new Date(today);
+    t.setUTCDate(t.getUTCDate() - i);
+    const key = t.toISOString().slice(0, 19).replace("T", " ");
+    grid.push({ time: t, value: totals.get(key) || 0 });
+  }
+
+  const max = Math.max(...grid.map((p) => p.value), 1);
+  const W = 600,
+    H = 200,
+    padL = 40,
+    padR = 8,
+    padT = 12,
+    padB = 26;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  const xFor = (i: number) => padL + (plotW * i) / Math.max(1, grid.length - 1);
+  const yFor = (v: number) => padT + plotH - (plotH * v) / max;
+
+  const linePts = grid
+    .map((p, i) => `${xFor(i).toFixed(1)},${yFor(p.value).toFixed(1)}`)
+    .join(" ");
+
+  const yTicks = max <= 4 ? [0, max] : [0, Math.round(max / 2), max];
+  const gridLines = yTicks
+    .map(
+      (v) =>
+        `<line x1="${padL}" x2="${W - padR}" y1="${yFor(v).toFixed(1)}" y2="${yFor(v).toFixed(1)}" stroke="#1c2025" />` +
+        `<text x="${padL - 6}" y="${(yFor(v) + 3).toFixed(1)}" text-anchor="end" fill="#9bb" font-size="10" font-family="ui-monospace,monospace">${fmtNum(v)}</text>`,
+    )
+    .join("");
+
+  const xLabels = grid
+    .map((p, i) => ({ i, t: p.time }))
+    .filter(({ i }) => i % 2 === 0 || i === grid.length - 1)
+    .map(
+      ({ i, t }) =>
+        `<text x="${xFor(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" fill="#9bb" font-size="10" font-family="ui-monospace,monospace">${t.toISOString().slice(5, 10)}</text>`,
+    )
+    .join("");
+
+  const dots = grid
+    .map(
+      (p, i) =>
+        `<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(p.value).toFixed(1)}" r="2.5" fill="${colour}"><title>${esc(p.time.toISOString().slice(0, 10))} UTC: ${fmtNum(p.value)}</title></circle>`,
+    )
+    .join("");
+
+  return `<svg class="line-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${esc(ariaLabel)}">${gridLines}<polyline points="${linePts}" fill="none" stroke="${colour}" stroke-width="1.5" stroke-linejoin="round" />${dots}${xLabels}</svg>`;
+}
+
 function statCard(label: string, value: number): string {
   return `<div class="stat"><span class="stat-num">${fmtNum(value)}</span><span class="stat-label">${esc(label)}</span></div>`;
 }
@@ -584,6 +659,8 @@ function renderDashboard(results: QueryResults, errors: QueryErrors): string {
       <div>
         <h2>Crawls per hour — last 24h</h2>
         ${renderHourLineChart(rowsOrEmpty(results.agent_hourly), "#3b82f6", "Crawls per hour, last 24h")}
+        <h2>Crawls per day — last 14d</h2>
+        ${renderDayLineChart(rowsOrEmpty(results.agent_daily), "#3b82f6", "Crawls per day, last 14d")}
       </div>
       <div>
         <div class="panel-head">
