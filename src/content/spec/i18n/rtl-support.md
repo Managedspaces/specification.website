@@ -7,7 +7,7 @@ status: recommended
 order: 30
 appliesTo: [all]
 relatedSlugs: [lang-attribute, hreflang, locale-content, writing-modes]
-updated: "2026-05-29T18:54:03.000Z"
+updated: "2026-06-22T00:00:00.000Z"
 sources:
   - title: "W3C i18n — Structural markup and right-to-left text in HTML"
     url: "https://www.w3.org/International/questions/qa-html-dir"
@@ -37,6 +37,8 @@ For roughly half a billion readers, an LTR-only layout looks broken: cramped, mi
 ## How to implement
 
 **Set direction on `<html>`.** Use `dir="rtl"` on the root for RTL locales. Set `dir="auto"` on user-generated content (comments, messages) so the browser picks direction from the first strong character.
+
+This matters even when the interface itself is English-only and never localised. A reader on an `en-US` system can still type Arabic into a comment box, chat field, or note editor; `dir="auto"` on every free-form text input and `<textarea>` lets each value flow correctly regardless of the surrounding UI. Leave constrained fields (email, telephone, URL, numeric) alone.
 
 ```html
 <html lang="ar" dir="rtl">
@@ -83,3 +85,4 @@ For vertical scripts (Japanese, Mongolian) and CJK line breaking, see [writing-m
 - Setting `dir="rtl"` only on `<body>` — flexbox, grid, and form widgets read it from `<html>`.
 - Reversing numbers manually; the bidi algorithm handles them when `dir` is correct.
 - Mirroring logos, code snippets, or telephone numbers, which should stay LTR.
+- Inferring a text field's direction from `navigator.language` or the system locale. What the user types is not what their OS is set to — use `dir="auto"` and let the content decide.
