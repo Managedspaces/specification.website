@@ -29,9 +29,18 @@ const {
 const canonicalUrl =
   canonical ?? new URL(Astro.url.pathname, site.url).toString();
 const fullTitle = title === site.name ? title : `${title} · ${site.shortName}`;
+// On a Cloudflare Pages preview build the production OG images don't exist yet
+// (they ship with the PR that's still in preview), so point the social image at
+// the deployment's own origin. Production (the `main` branch) keeps site.url so
+// the card stays on the canonical domain. Canonical itself never changes.
+const cfBranch = process.env.CF_PAGES_BRANCH;
+const ogBase =
+  cfBranch && cfBranch !== "main"
+    ? (process.env.CF_PAGES_URL ?? site.url)
+    : site.url;
 const ogImage = new URL(
   ogImageOverride ?? "/og-default.png",
-  site.url,
+  ogBase,
 ).toString();
 ---
 
