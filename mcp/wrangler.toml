@@ -8,6 +8,11 @@
 name = "specification-website-mcp"
 main = "src/index.ts"
 account_id = "c53e64d218c83cb220b523a637ffd079"
+# Pin bundling to this Worker's own self-contained tsconfig. Without it,
+# esbuild walks up to the repo-root tsconfig (which extends
+# astro/tsconfigs/strict); in the deploy CI job only mcp/ deps are installed,
+# so astro is absent and esbuild warns it can't find that base config.
+tsconfig = "tsconfig.json"
 compatibility_date = "2026-05-29"
 compatibility_flags = ["nodejs_compat"]
 
