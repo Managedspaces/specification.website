@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { categories, site } from "~/lib/site";
+import { categories, changeTypeColor, changeTypeLabel, site } from "~/lib/site";
 import { getCollection } from "astro:content";
 
 const allSpec = await getCollection("spec", ({ data }) => !data.draft);
@@ -8,130 +8,254 @@ const counts: Record<string, number> = {};
 for (const e of allSpec)
   counts[e.data.category] = (counts[e.data.category] ?? 0) + 1;
 const total = allSpec.length;
+
+// Three newest changelog entries — a freshness signal that the spec is living.
+const changelog = await getCollection("changelog", ({ data }) => !data.draft);
+changelog.sort((a, b) => b.data.date.localeCompare(a.data.date));
+const recent = changelog.slice(0, 3);
+const dayFmt = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+// GitHub star count for real social proof. Build-time, best-effort: a failed
+// or rate-limited fetch just falls back to a label with no number.
+let stars: number | null = null;
+try {
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), 4000);
+  const res = await fetch(
+    site.repo.replace("https://github.com/", "https://api.github.com/repos/"),
+    {
+      headers: {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "specification.website",
+      },
+      signal: ac.signal,
+    },
+  );
+  clearTimeout(timer);
+  if (res.ok) {
+    const json = await res.json();
+    if (typeof json.stargazers_count === "number")
+      stars = json.stargazers_count;
+  }
+} catch {
+  // Network error or GitHub rate limit during build — show the button without a count.
+}
+const starsLabel =
+  stars != null ? new Intl.NumberFormat("en-GB").format(stars) : null;
+
+const steps = [
+  {
+    n: "01",
+    title: "Audit",
+    body: "Run the checklist against your site, or let your agent do it. Each item is a yes/no.",
+  },
+  {
+    n: "02",
+    title: "Learn",
+    body: "Open any item for what it is, why it matters, and how to implement it.",
+  },
+  {
+    n: "03",
+    title: "Improve",
+    body: "Fix what's missing on your site, then re-check.",
+  },
+];
 ---
 
 <BaseLayout title={site.name} description={site.description} bare={false}>
   <section
-    class="border-b border-ink-200 bg-gradient-to-b from-accent-50/60 to-ink-50"
+    class="border-b border-ink-200 bg-gradient-to-b from-accent-100/70 to-ink-50"
   >
     <div class="mx-auto max-w-6xl px-4 py-16 sm:py-24">
-      <h1
-        class="max-w-4xl text-balance text-4xl font-bold tracking-tight text-ink-900 sm:text-5xl lg:text-6xl"
-      >
-        What a good website does.
-      </h1>
-      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-700 sm:text-xl">
-        A platform-agnostic specification of the technical features every decent
-        website should have — from <code
-          class="rounded bg-ink-50 px-1.5 py-0.5 text-base text-accent-800 ring-1 ring-inset ring-ink-200"
-          >&lt;title&gt;</code
-        >
-        to <code
-          class="rounded bg-ink-50 px-1.5 py-0.5 text-base text-accent-800 ring-1 ring-inset ring-ink-200"
-          >/.well-known/security.txt</code
-        >, from WCAG contrast to <code
-          class="rounded bg-ink-50 px-1.5 py-0.5 text-base text-accent-800 ring-1 ring-inset ring-ink-200"
-          >llms.txt</code
-        >. Written for humans and agents.
-      </p>
-      <div class="mt-7 flex flex-wrap items-center gap-3">
-        <a
-          href="/spec/"
-          class="inline-flex items-center gap-1.5 rounded-md bg-accent-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-800"
-        >
-          Browse all {total} topics →
-        </a>
-        <a
-          href="/checklist/"
-          class="inline-flex items-center gap-1.5 rounded-md border border-ink-300 bg-ink-50 px-4 py-2.5 text-sm font-medium text-ink-800 hover:border-ink-400"
-        >
-          Get the checklist
-        </a>
-        <a
-          href={site.repo}
-          rel="external"
-          class="inline-flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-ink-700 hover:text-accent-700"
-        >
-          ★ on GitHub
-        </a>
+      <div class="grid items-center gap-12 lg:grid-cols-[1fr_20rem]">
+        <div>
+          <h1
+            class="max-w-4xl text-balance text-4xl font-bold tracking-tight text-ink-900 sm:text-5xl lg:text-6xl"
+          >
+            What a good website does.
+          </h1>
+          <p
+            class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-700 sm:text-xl"
+          >
+            A platform-agnostic specification of all the technical details that
+            matter for a website, from <code
+              class="rounded bg-ink-50 px-1.5 py-0.5 text-base text-accent-800 ring-1 ring-inset ring-ink-200"
+              >&lt;title&gt;</code
+            >
+            to <code
+              class="rounded bg-ink-50 px-1.5 py-0.5 text-base text-accent-800 ring-1 ring-inset ring-ink-200"
+              >/.well-known/security.txt</code
+            > to WCAG contrast. Written for humans and agents.
+          </p>
+          <div class="mt-7 flex flex-wrap items-center gap-3">
+            <a
+              href="/spec/"
+              class="inline-flex items-center gap-1.5 rounded-md bg-accent-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-800"
+            >
+              Browse all {total} topics →
+            </a>
+            <a
+              href="/checklist/"
+              class="inline-flex items-center gap-1.5 rounded-md border border-ink-300 bg-ink-50 px-4 py-2.5 text-sm font-medium text-ink-800 hover:border-ink-400"
+            >
+              Get the checklist
+            </a>
+            <a
+              href={site.repo}
+              rel="external"
+              class="inline-flex items-center gap-1.5 rounded-md border border-ink-300 bg-ink-50 px-4 py-2.5 text-sm font-medium text-ink-800 hover:border-ink-400"
+            >
+              <span aria-hidden="true">★</span>
+              {starsLabel ? `${starsLabel} on GitHub` : "Star on GitHub"}
+            </a>
+          </div>
+        </div>
+
+        <!-- How to use this site — sits beside the hero on large screens, stacks beneath it on mobile. -->
+        <div class="rounded-xl border border-ink-200 bg-ink-50 p-6 shadow-sm">
+          <h2
+            class="text-xs font-semibold tracking-wide text-ink-500 uppercase"
+          >
+            How to use this site
+          </h2>
+          <ol class="mt-4 space-y-4">
+            {
+              steps.map((s) => (
+                <li class="flex gap-3">
+                  <span class="mt-0.5 font-mono text-xs text-ink-500">
+                    {s.n}
+                  </span>
+                  <div>
+                    <h3 class="font-semibold text-ink-900">{s.title}</h3>
+                    <p class="mt-0.5 text-sm leading-relaxed text-ink-600">
+                      {s.title === "Audit" ? (
+                        <>
+                          Run the{" "}
+                          <a class="underline" href="/checklist/">
+                            checklist
+                          </a>{" "}
+                          against your site, or{" "}
+                          <a class="underline" href="#mcp">
+                            let your agent
+                          </a>{" "}
+                          do it. Each item is a yes/no.
+                        </>
+                      ) : (
+                        s.body
+                      )}
+                    </p>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="mx-auto max-w-6xl px-4 py-14">
-    <div class="mb-8 flex items-end justify-between gap-4">
-      <div>
-        <h2 class="text-2xl font-bold text-ink-900 sm:text-3xl">Categories</h2>
-        <p class="mt-1 text-ink-600">
-          Ten areas, mapped to widely-accepted standards.
-        </p>
-      </div>
+    <div class="flex items-end justify-between gap-4">
+      <h2 class="text-2xl font-bold text-ink-900 sm:text-3xl">
+        Recently changed
+      </h2>
       <a
-        href="/spec/"
-        class="hidden text-sm text-accent-700 hover:text-accent-800 sm:inline"
-        >All topics →</a
+        href="/changelog/"
+        class="text-sm text-accent-700 hover:text-accent-800"
+        >Full changelog →</a
       >
     </div>
-    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <ol class="mt-8 max-w-3xl space-y-7 border-l border-ink-200 pl-6">
       {
-        categories.map((c) => (
-          <li>
-            <a
-              href={`/spec/${c.slug}/`}
-              class="group block h-full rounded-xl border border-ink-200 bg-ink-50 p-5 transition hover:border-accent-300 hover:shadow-sm"
-            >
-              <div class="flex items-baseline justify-between gap-2">
-                <h3 class="text-lg font-semibold text-ink-900 group-hover:text-accent-700">
-                  {c.title}
-                </h3>
-                <span class="font-mono text-xs text-ink-500">
-                  {counts[c.slug] ?? 0}
+        recent.map((entry) => (
+          <li class="relative">
+            <span
+              class="absolute top-1.5 -left-[1.6875rem] h-2.5 w-2.5 rounded-full border-2 border-ink-50 bg-accent-600"
+              aria-hidden="true"
+            />
+            <a href={`/changelog/#${entry.id}`} class="group block">
+              <div class="flex items-center gap-2">
+                <span
+                  class:list={[
+                    "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
+                    changeTypeColor[entry.data.type],
+                  ]}
+                >
+                  {changeTypeLabel[entry.data.type]}
                 </span>
+                <time class="text-xs text-ink-500" datetime={entry.data.date}>
+                  {dayFmt.format(new Date(entry.data.date))}
+                </time>
               </div>
-              <p class="mt-1.5 text-sm leading-relaxed text-ink-600">
-                {c.summary}
-              </p>
+              <h3 class="mt-1.5 font-semibold text-ink-900 group-hover:text-accent-700">
+                {entry.data.title}
+              </h3>
             </a>
           </li>
         ))
       }
-    </ul>
+    </ol>
   </section>
 
-  <section class="bg-ink-50 py-14">
-    <div class="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-3">
-      <div>
-        <h3 class="text-base font-semibold text-ink-900">
-          Standards, not opinions
-        </h3>
-        <p class="mt-2 text-sm text-ink-600">
-          Each topic links back to the source standard — WHATWG, W3C, IETF RFCs,
-          WCAG, MDN, and the organisations defining the modern web.
-        </p>
-      </div>
-      <div>
-        <h3 class="text-base font-semibold text-ink-900">Platform agnostic</h3>
-        <p class="mt-2 text-sm text-ink-600">
-          Whether you ship WordPress, Drupal, TYPO3, Next.js, Astro, Hugo, a
-          Django app, or plain HTML, the spec is the spec. Implementation hints
-          follow it, not the other way round.
-        </p>
-      </div>
-      <div>
-        <h3 class="text-base font-semibold text-ink-900">Built in the open</h3>
-        <p class="mt-2 text-sm text-ink-600">
-          Every page has an <a class="underline" href={site.repo}
-            >Edit on GitHub</a
-          > link. PRs welcome. Sources credited on every page.
-        </p>
+  <section class="border-y border-ink-200 bg-ink-100 py-14">
+    <div class="mx-auto max-w-6xl px-4">
+      <h2 class="text-2xl font-bold text-ink-900 sm:text-3xl">Principles</h2>
+      <p class="mt-1 text-ink-600">What every page here is built on.</p>
+      <div class="mt-8 grid gap-x-8 gap-y-10 md:grid-cols-3">
+        <div class="flex gap-4">
+          <span class="font-mono text-sm font-semibold text-accent-700">01</span
+          >
+          <div>
+            <h3 class="text-base font-semibold text-ink-900">
+              Standards, not opinions
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-600">
+              Each topic links back to the source standard: WHATWG, W3C, IETF
+              RFCs, WCAG, MDN, and the organisations defining the modern web.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="font-mono text-sm font-semibold text-accent-700">02</span
+          >
+          <div>
+            <h3 class="text-base font-semibold text-ink-900">
+              Platform agnostic
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-600">
+              Whether you ship WordPress, Drupal, TYPO3, Next.js, Astro, Hugo, a
+              Django app, or plain HTML, the spec is the spec. Implementation
+              hints follow it, not the other way round.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="font-mono text-sm font-semibold text-accent-700">03</span
+          >
+          <div>
+            <h3 class="text-base font-semibold text-ink-900">
+              Built in the open
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-600">
+              Every page has an <a class="underline" href={site.repo}
+                >Edit on GitHub</a
+              > link. PRs welcome. Sources credited on every page.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="mcp" class="mx-auto max-w-6xl scroll-mt-28 px-4 py-14">
-    <div
-      class="rounded-2xl border border-ink-200 bg-gradient-to-br from-accent-50/70 to-ink-50 p-6 sm:p-10"
-    >
+  <section
+    id="mcp"
+    class="scroll-mt-28 border-b border-ink-200 bg-gradient-to-br from-accent-50/70 to-ink-50 py-14"
+  >
+    <div class="mx-auto max-w-6xl px-4">
       <div class="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
         <div>
           <h2 class="text-2xl font-bold text-ink-900 sm:text-3xl">
@@ -142,7 +266,7 @@ const total = allSpec.length;
               class="underline"
               href="https://modelcontextprotocol.io/"
               rel="external">MCP</a
-            > server — read-only, no auth — plus a published <a
+            > server (read-only, no auth), plus a published <a
               class="underline"
               href="/.well-known/agent-skills/specification-website/SKILL.md"
               >Agent Skill</a
@@ -191,35 +315,70 @@ const total = allSpec.length;
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-4 pb-14">
-    <h2 class="text-2xl font-bold text-ink-900 sm:text-3xl">
-      How to use this site
-    </h2>
-    <ol class="mt-6 grid gap-5 md:grid-cols-3">
-      <li class="rounded-lg border border-ink-200 bg-ink-50 p-5">
-        <span class="font-mono text-xs text-ink-500">01</span>
-        <h3 class="mt-1 font-semibold text-ink-900">Audit</h3>
-        <p class="mt-2 text-sm text-ink-600">
-          Run through the <a class="underline" href="/checklist/">checklist</a>.
-          Each item is a “does the site do this — yes or no.”
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <div class="mb-8 flex items-end justify-between gap-4">
+      <div>
+        <h2 class="text-2xl font-bold text-ink-900 sm:text-3xl">Categories</h2>
+        <p class="mt-1 text-ink-600">
+          Ten areas, mapped to widely-accepted standards.
         </p>
+      </div>
+      <a
+        href="/spec/"
+        class="hidden text-sm text-accent-700 hover:text-accent-800 sm:inline"
+        >All topics →</a
+      >
+    </div>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        categories.map((c) => (
+          <li>
+            <a
+              href={`/spec/${c.slug}/`}
+              class="group block h-full rounded-xl border border-ink-200 bg-ink-50 p-5 transition hover:border-accent-300 hover:shadow-sm"
+            >
+              <div class="flex items-baseline justify-between gap-2">
+                <h3 class="text-lg font-semibold text-ink-900 group-hover:text-accent-700">
+                  {c.title}
+                </h3>
+                <span class="font-mono text-xs whitespace-nowrap text-ink-500">
+                  {counts[c.slug] ?? 0} topics
+                </span>
+              </div>
+              <p class="mt-1.5 text-sm leading-relaxed text-ink-600">
+                {c.summary}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+      <!-- Two action cells keep the grid evenly filled (12 cells) and give the scroll a next step. -->
+      <li>
+        <a
+          href="/checklist/"
+          class="group flex h-full flex-col justify-between rounded-xl border border-dashed border-ink-300 bg-ink-50 p-5 transition hover:border-accent-400"
+        >
+          <h3 class="text-lg font-semibold text-accent-700">
+            Run the full checklist
+          </h3>
+          <p class="mt-1.5 text-sm leading-relaxed text-ink-600">
+            Every topic as a tickable yes/no audit →
+          </p>
+        </a>
       </li>
-      <li class="rounded-lg border border-ink-200 bg-ink-50 p-5">
-        <span class="font-mono text-xs text-ink-500">02</span>
-        <h3 class="mt-1 font-semibold text-ink-900">Learn</h3>
-        <p class="mt-2 text-sm text-ink-600">
-          Click into any item for what it is, why it matters, and how to
-          implement it.
-        </p>
+      <li>
+        <a
+          href="/spec/"
+          class="group flex h-full flex-col justify-between rounded-xl border border-dashed border-ink-300 bg-ink-50 p-5 transition hover:border-accent-400"
+        >
+          <h3 class="text-lg font-semibold text-accent-700">
+            Browse every topic
+          </h3>
+          <p class="mt-1.5 text-sm leading-relaxed text-ink-600">
+            All {total} entries across the ten categories →
+          </p>
+        </a>
       </li>
-      <li class="rounded-lg border border-ink-200 bg-ink-50 p-5">
-        <span class="font-mono text-xs text-ink-500">03</span>
-        <h3 class="mt-1 font-semibold text-ink-900">Improve</h3>
-        <p class="mt-2 text-sm text-ink-600">
-          Found a gap, a stale fact, or a missing topic? Open a PR. Sources
-          required.
-        </p>
-      </li>
-    </ol>
+    </ul>
   </section>
 </BaseLayout>
