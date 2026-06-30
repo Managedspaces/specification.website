@@ -7,7 +7,7 @@ status: recommended
 order: 95
 appliesTo: [all]
 relatedSlugs: [theme-color, favicons, pwa-manifest, forced-colors, text-wrap]
-updated: "2026-05-29T17:40:31.000Z"
+updated: "2026-06-30T00:00:00.000Z"
 sources:
   - title: "HTML Living Standard — Standard metadata names: color-scheme"
     url: "https://html.spec.whatwg.org/multipage/semantics.html#meta-color-scheme"
@@ -41,7 +41,7 @@ The CSS property sets it on any element (and is the only form that participates 
 
 Ship both. The meta tag takes effect before any stylesheet parses, so it prevents the white flash dark-mode users would otherwise see during page load. The CSS property is the authoritative source once styles arrive, and lets you scope schemes to subtrees if you ever need to.
 
-**This site ships it.** [`HeadMeta.astro`](https://github.com/jdevalk/specification.website/blob/main/src/components/HeadMeta.astro) emits `<meta name="color-scheme" content="light dark">` plus a matched pair of `theme-color` tags with `media="(prefers-color-scheme: ...)"`, and [`global.css`](https://github.com/jdevalk/specification.website/blob/main/src/styles/global.css) flips the `--color-ink-*` token scale inside `@media (prefers-color-scheme: dark)` so every utility that references those tokens — backgrounds, borders, body text, code blocks — switches with the user's OS preference. Accent green is held constant and lifted for text contrast on dark surfaces.
+**This site ships it.** [`HeadMeta.astro`](https://github.com/jdevalk/specification.website/blob/main/src/components/HeadMeta.astro) emits `<meta name="color-scheme" content="light dark">` plus a matched pair of `theme-color` tags with `media="(prefers-color-scheme: ...)"`, and [`global.css`](https://github.com/jdevalk/specification.website/blob/main/src/styles/global.css) defines its `--color-ink-*` token scale with `light-dark()` so every utility that references those tokens — backgrounds, borders, body text, even the dual-theme code blocks — resolves against the *used* colour scheme with no `prefers-color-scheme` media query at all. Setting `color-scheme` on `:root` follows the user's OS preference; the in-page theme toggle pins it to `light` or `dark` via a `[data-theme]` attribute, which re-resolves every `light-dark()` value in one go. Accent green is held constant and lifted for text contrast on dark surfaces.
 
 ## Why it matters
 
