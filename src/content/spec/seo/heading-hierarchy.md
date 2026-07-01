@@ -7,7 +7,7 @@ status: required
 order: 80
 appliesTo: [all]
 relatedSlugs: [internal-linking, breadcrumbs, structured-data]
-updated: "2026-05-29T09:13:20.000Z"
+updated: "2026-07-01T00:00:00.000Z"
 sources:
   - title: "HTML Living Standard — Headings and sections"
     url: "https://html.spec.whatwg.org/multipage/sections.html#headings-and-sections"
@@ -49,12 +49,13 @@ WCAG 2.4.6 (Level AA) requires headings and labels to describe the topic or purp
 
 The rules are simple and rarely controversial:
 
-- **One `<h1>` per page.** The HTML spec technically allows multiple in sectioning roots, but no major screen reader or search engine implements the document-outline algorithm. Stick to one `<h1>` per page — it should match the page title.
+- **One `<h1>` per page.** HTML5 once described a document-outline algorithm in which each nested sectioning element (`<section>`, `<article>`) reset the heading scope, so `<h1>` could be reused everywhere. No browser or screen reader ever implemented it, nesting multiple `<h1>`s that way is now non-conforming, and the browser default that shrank a sectioned `<h1>` was removed from the spec in 2025. Use a single `<h1>` that matches the page title.
 - **Do not skip levels.** Go `h1 → h2 → h3`, never `h1 → h3`. Levels can decrease by any amount on the way back up (`h3 → h2` is fine).
 - **Headings describe sections, not styling.** If you want bigger text, use CSS. Never pick a heading level for its font size.
 - **No heading without a section under it.** Every heading should have content. An `<h2>` followed immediately by another `<h2>` with nothing between them is a smell.
 - **Keep headings short.** They are anchors, not paragraphs. Aim for under 70 characters.
-- **Headings are unique within a page.** Two `<h2>` elements with the same text are confusing in a screen-reader rotor.
+- **Distinguish sibling headings.** The same heading text under different parent sections ("Overview", "Examples") is fine, because the rotor shows each nested under its parent. Two headings with identical text in the same branch are the confusing case; disambiguate those.
+- **A title and its subtitle are one heading, not two.** Marking up a strapline as a second heading (`<h1>` followed by an `<h2>` tagline) adds a phantom level to the outline. Wrap the single `<h1>`–`<h6>` and one or more `<p>` subtitles in `<hgroup>`, which groups them without contributing a heading of its own.
 - **Visual headings need real heading tags.** A `<div class="heading">` is invisible to assistive tech. A `<p>` styled to look like an `<h2>` is invisible to search engines.
 
 For component-driven design systems, expose the heading level as a prop (`<Heading level={2}>...</Heading>`) so the same component can render at the right level for its context.
