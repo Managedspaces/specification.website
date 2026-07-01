@@ -97,7 +97,7 @@ export const GET: APIRoute = async () => {
     `- [Contribute](${site.url}/contribute/): How to propose changes.`,
   );
   lines.push(
-    `- [Checklist](${site.url}/checklist/): The whole spec as a flat checklist.`,
+    `- [Checklist](${site.url}/checklist/): The whole spec as a flat checklist. Also as a copy-and-paste [Markdown task list](${site.url}/checklist.md).`,
   );
   lines.push(
     `- [MCP server](${site.url}/mcp/): How to connect an MCP client to the spec.`,

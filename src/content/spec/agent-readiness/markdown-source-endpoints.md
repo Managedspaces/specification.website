@@ -7,7 +7,7 @@ status: recommended
 order: 35
 appliesTo: [all]
 relatedSlugs: [llms-txt, llms-full-txt, machine-readable-formats, structured-data-for-agents, agent-readiness-overview, agent-skills-discovery, schemamap, conditional-requests]
-updated: "2026-05-29T14:13:42.000Z"
+updated: "2026-07-01T00:00:00.000Z"
 sources:
   - title: "RFC 9110 — HTTP Semantics §12 (Content Negotiation), §8.7 (Vary), §8.7.1 (Content-Location)"
     url: "https://www.rfc-editor.org/rfc/rfc9110.html#name-content-negotiation"
@@ -97,6 +97,8 @@ Include a YAML frontmatter block with the page's metadata so agents get structur
 3. Otherwise serves HTML, but still appends `Vary: Accept` so caches don't conflate the two representations of the same URL.
 
 **Mention it in `llms.txt`.** Document both modes near the top of the file so agents can opt in on first read.
+
+**Extend it to aggregate views, not just individual pages.** The same `Accept: text/markdown` negotiation works for any HTML view backed by Markdown. This site ships all three modes on every spec page and also negotiates two aggregate URLs: `/` returns [llms.txt](/spec/agent-readiness/llms-txt/), and [`/checklist/`](/checklist/) returns a copy-and-paste [Markdown task list](/checklist.md).
 
 ## Common mistakes
 

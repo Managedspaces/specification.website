@@ -5,7 +5,8 @@
  * /spec/<category>/<slug>.md (Markdown source). If a client sends
  * Accept: text/markdown, we serve the Markdown body from the canonical
  * (slash-terminated) URL with Content-Location and Vary: Accept set
- * correctly, so caches handle it right. Everything else passes through
+ * correctly, so caches handle it right. The same negotiation applies to
+ * `/` (→ /llms.txt) and `/checklist/` (→ /checklist.md). Everything else passes through
  * to the static asset pipeline unchanged, with Vary: Accept appended to
  * spec-page HTML responses so caches don't conflate the two
  * representations.
@@ -104,6 +105,15 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   if (url.pathname === "/" || url.pathname === "") {
     if (wantsMarkdown) {
       response = await serveAsMarkdown(env, url, "/llms.txt");
+      repr = "markdown";
+    } else {
+      response = withVaryAccept(await next());
+      repr = "html";
+    }
+  } else if (url.pathname === "/checklist" || url.pathname === "/checklist/") {
+    // The checklist: agents get the Markdown task-list mirror.
+    if (wantsMarkdown) {
+      response = await serveAsMarkdown(env, url, "/checklist.md");
       repr = "markdown";
     } else {
       response = withVaryAccept(await next());

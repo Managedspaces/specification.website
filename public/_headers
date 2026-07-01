@@ -53,6 +53,11 @@
   Content-Type: text/markdown; charset=utf-8
   Cache-Control: public, max-age=3600, stale-if-error=86400
 
+# Checklist as a copy-and-paste Markdown task list
+/checklist.md
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=3600, stale-if-error=86400
+
 # OKF bundle — Markdown concept tree served as text/markdown
 /okf/*
   Content-Type: text/markdown; charset=utf-8
