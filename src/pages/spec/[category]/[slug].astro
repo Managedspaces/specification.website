@@ -29,7 +29,7 @@ const related = entry.data.relatedSlugs
       status: found.data.status,
     };
   })
-  .filter(Boolean);
+  .filter((r): r is NonNullable<typeof r> => r !== null);
 
 const slug = entry.data.slug ?? entry.id.split("/").pop()!;
 ---
@@ -40,7 +40,7 @@ const slug = entry.data.slug ?? entry.id.split("/").pop()!;
   category={entry.data.category}
   status={entry.data.status}
   sources={entry.data.sources}
-  related={related as any}
+  related={related}
   updated={entry.data.updated}
   appliesTo={entry.data.appliesTo}
   slug={slug}
