@@ -4,7 +4,7 @@ slug: field-sizing
 category: foundations
 summary: "Let text inputs, textareas, and selects shrink-wrap and grow with their content using field-sizing: content — one line of CSS that replaces the JavaScript auto-grow hack."
 status: optional
-order: 180
+order: 190
 appliesTo: [all]
 relatedSlugs: [mobile-form-inputs, form-labels, touch-target-size, text-wrap, container-queries]
 updated: "2026-07-01T00:00:00.000Z"
