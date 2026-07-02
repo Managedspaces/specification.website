@@ -6,14 +6,17 @@ summary: "SRI adds a cryptographic hash to every third-party script and styleshe
 status: recommended
 order: 90
 appliesTo: [all]
-relatedSlugs: [content-security-policy, https-tls, x-content-type-options, trusted-types]
-updated: "2026-05-29T09:13:20.000Z"
+relatedSlugs: [content-security-policy, https-tls, x-content-type-options, trusted-types, reporting-endpoints]
+updated: "2026-07-02T00:00:00.000Z"
 sources:
   - title: "Subresource Integrity (W3C Recommendation)"
     url: "https://www.w3.org/TR/SRI/"
     publisher: "W3C"
-  - title: "MDN — Subresource Integrity"
-    url: "https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity"
+  - title: "Subresource Integrity — §3.8 Integrity-Policy (W3C Editor's Draft)"
+    url: "https://w3c.github.io/webappsec-subresource-integrity/#integrity-policy-section"
+    publisher: "W3C"
+  - title: "MDN — Integrity-Policy header"
+    url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Integrity-Policy"
     publisher: "MDN"
   - title: "OWASP — Third Party JavaScript Management Cheat Sheet"
     url: "https://cheatsheetseries.owasp.org/cheatsheets/Third_Party_Javascript_Management_Cheat_Sheet.html"
@@ -62,6 +65,19 @@ curl -s https://cdn.example.com/widget.js | openssl dgst -sha384 -binary | opens
 SRI supports `sha256`, `sha384`, and `sha512`. SHA-384 is the recommended default. You may list multiple hashes separated by spaces; the browser passes the resource if any one matches — useful for a graceful version rollover.
 
 Pair SRI with a strict CSP. CSP says "only load scripts from these hosts"; SRI says "and only this exact file from that host".
+
+## Enforce it site-wide with Integrity-Policy
+
+A per-element `integrity` attribute is easy to forget on the next script someone adds. The `Integrity-Policy` response header closes that gap: it tells the browser to block any script (or, behind a flag, stylesheet) that loads without integrity metadata, so a missing hash fails loudly instead of silently. It also blocks any script requested in `no-cors` mode, so every `<script>` the policy governs — including same-origin ones — needs a `crossorigin` attribute alongside `integrity`, or it is blocked even when its hash is correct.
+
+```
+Integrity-Policy: blocked-destinations=(script)
+Integrity-Policy-Report-Only: blocked-destinations=(script), endpoints=(integrity-endpoint)
+```
+
+Start in report-only mode. `Integrity-Policy-Report-Only` enforces nothing but sends an `IntegrityViolationReport` to a named [Reporting API](/spec/security/reporting-endpoints/) endpoint for every resource that _would_ be blocked, so you can find un-hashed scripts before you turn enforcement on. The header is supported across Chromium, Firefox, and Safari, though Firefox currently logs violations to the console rather than delivering them to the endpoint.
+
+This site ships `Integrity-Policy-Report-Only: blocked-destinations=(script)` (see its `_headers`) as a regression tripwire: every first-party script carries integrity — computed at build time — so a clean report stream is the signal that enforcing `Integrity-Policy` is safe. Because a script served from a mutable third-party URL cannot be pinned, the analytics loader here is self-hosted as a frozen, hashed copy (refreshed daily) rather than loaded live; anything you truly cannot pin must be dropped before you enforce.
 
 ## Common mistakes
 
