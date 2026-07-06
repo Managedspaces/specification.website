@@ -25,6 +25,12 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    ignore:
+      # wrangler's peer range only accepts workers-types v4; a v5 bump
+      # breaks `npm ci` in the Deploy MCP workflow. Re-allow once
+      # wrangler's peerDependencies accept v5.
+      - dependency-name: "@cloudflare/workers-types"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
