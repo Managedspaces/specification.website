@@ -69,6 +69,17 @@ context.
 
 - Platform-agnostic only: describe outcomes and standards, never "add this to
   `next.config`".
+- **Auditable website outcome, not build technique.** Before proposing a page, ask: is
+  this a property of a good website that could in principle be checked from outside
+  (a header, an element, a behaviour, a well-known URI), or is it a way of _building_ a
+  website? A CSS/JS feature whose benefit is developer convenience — easier alignment,
+  less code, nicer authoring — does not get a page, however well-supported it is
+  (example: CSS subgrid, rejected in PR #82; a flexbox-built site is no worse, and
+  there is nothing to audit). Platform features earn a page only when they map to a
+  user-facing outcome: container queries → components adapt to the space they are
+  given; Popover API → native semantics, focus and dismissal users can rely on. If you
+  cannot phrase the page's "Why it matters" in terms of visitors, crawlers, or agents
+  — rather than the developer — skip it and mention it in Slack instead.
 - Status bar: `required` only if the web platform contract breaks without it; otherwise
   `recommended`/`optional`; `avoid` for outdated/harmful. Default to `recommended`.
 - Primary sources only (WHATWG / W3C / IETF / IANA / WCAG / schema.org first; MDN /
