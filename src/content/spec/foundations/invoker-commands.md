@@ -3,11 +3,11 @@ title: "Invoker commands"
 slug: invoker-commands
 category: foundations
 summary: "Wire a button to open a popover, close a dialog, or run a custom action declaratively with command and commandfor — no click handler, no ARIA plumbing."
-status: recommended
+status: optional
 order: 170
 appliesTo: [all]
-relatedSlugs: [popover-api, native-interactive-elements, semantic-html, inert-attribute, keyboard-navigation, entry-exit-animations]
-updated: "2026-06-30T00:00:00.000Z"
+relatedSlugs: [popover-api, native-interactive-elements, semantic-html, inert-attribute, keyboard-navigation]
+updated: "2026-07-06T00:00:00.000Z"
 sources:
   - title: "HTML Standard — The button element (command, commandfor)"
     url: "https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command"

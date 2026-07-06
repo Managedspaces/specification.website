@@ -3,11 +3,11 @@ title: "Visibility-aware rendering"
 slug: visibility-aware-rendering
 category: performance
 summary: "Use `content-visibility` with `contain-intrinsic-size` to skip layout and paint for off-screen content, and Intersection Observer to drive lazy behaviour, instead of scroll and resize listeners."
-status: recommended
+status: optional
 order: 115
 appliesTo: [all]
 relatedSlugs: [core-web-vitals, lazy-loading, image-optimization, script-loading]
-updated: "2026-05-29T16:40:22.000Z"
+updated: "2026-07-06T00:00:00.000Z"
 sources:
   - title: "CSS Containment Module Level 2"
     url: "https://drafts.csswg.org/css-contain-2/"

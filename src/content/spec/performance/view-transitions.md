@@ -3,11 +3,11 @@ title: "View Transitions"
 slug: view-transitions
 category: performance
 summary: "Animate between states (same-document) or between pages (cross-document) with a single CSS opt-in. Replaces ad-hoc SPA animation libraries with a platform primitive."
-status: recommended
+status: optional
 order: 105
 appliesTo: [all]
 relatedSlugs: [speculation-rules, core-web-vitals, critical-css]
-updated: "2026-05-29T17:40:31.000Z"
+updated: "2026-07-06T00:00:00.000Z"
 sources:
   - title: "MDN — View Transition API"
     url: "https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API"
