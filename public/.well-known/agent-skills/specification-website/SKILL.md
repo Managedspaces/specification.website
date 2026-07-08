@@ -5,7 +5,7 @@ description: Query and apply The Website Specification — a platform-agnostic s
 
 # specification.website
 
-The Website Specification is a single source of truth for what a good website does. Ten categories, 159 pages, every item tagged with a status. It ships in three machine-readable forms: per-page Markdown, llms.txt / llms-full.txt, and an MCP server.
+The Website Specification is a single source of truth for what a good website does. Ten categories, 160 pages, every item tagged with a status. It ships in three machine-readable forms: per-page Markdown, llms.txt / llms-full.txt, and an MCP server.
 
 ## When to use this skill
 
@@ -41,6 +41,15 @@ Every spec page has a canonical HTML URL and a Markdown variant.
 - HTML: `https://specification.website/spec/<category>/<slug>/`
 - Markdown (file extension): `https://specification.website/spec/<category>/<slug>.md`
 - Markdown (content negotiation): set `Accept: text/markdown` on the HTML URL. Middleware serves the Markdown body from that same URL with `200`, `Content-Location` pointing at the `.md` variant, and `Vary: Accept`. There is no redirect to follow.
+
+Every Markdown response carries RFC 9530 integrity fields, so you can verify what you fetched:
+
+```
+Content-Digest: sha-256=:<base64>:
+Repr-Digest:    sha-256=:<base64>:
+```
+
+Both cover the exact bytes you received. Send `Want-Content-Digest: sha-512=10` to get SHA-512 instead. HTML responses carry no digest. This applies to the per-page `.md` endpoints, `llms.txt`, and `checklist.md`.
 
 Site-wide indexes:
 
