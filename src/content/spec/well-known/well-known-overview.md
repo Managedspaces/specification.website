@@ -27,6 +27,8 @@ https://example.com/.well-known/security.txt
 https://example.com/.well-known/webfinger?resource=acct:user@example.com
 ```
 
+`/.well-known/` is a URL namespace, not a directory you have to fill with files. Some well-known resources are static documents, but others are produced on demand: `/.well-known/change-password` is a redirect, and `/.well-known/webfinger` answers a query string. A client only cares about the path and the response, never whether a file sits on disk behind it, so any of these can be a dynamic route.
+
 The names allowed under `/.well-known/` are not arbitrary. IANA maintains a public registry; new names go through a review process. If you publish at a name that is not registered, you are claiming a path that may later be assigned to someone else.
 
 ## Why it matters
