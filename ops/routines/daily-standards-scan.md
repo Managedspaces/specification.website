@@ -28,6 +28,15 @@ cases and **(b)** send one Slack summary of everything found.
 - schema.org releases (new/changed types relevant to sites)
 - Agent-protocol sources: `llmstxt.org`, `modelcontextprotocol.io`, `a2a-protocol.org`
 - `sitemaps.org`, JSON Feed, RSS board
+- **Baseline status — webstatus.dev public API** (the push-signal for browser-feature
+  movement): `https://api.webstatus.dev/v1/features?q=baseline_status:newly` (public, no
+  auth, JSON) lists features that have _newly_ reached Baseline; add
+  `baseline_date:<START>..<END>` to scope to this run's window — use a trailing ~8-day
+  window so a skipped run never drops a feature. `baseline_status:widely` catches the
+  newly-Baseline → Widely transition (a feature now safe to rely on everywhere). This is
+  the discovery step for section #2's Baseline check; the MDN MCP then corroborates each
+  hit and supplies the canonical primary-source URL. It is derived data, not editorial —
+  trustworthy as a signal, but a page still cites the primary standard, not webstatus.dev.
 - Adjacent (watch, don't blindly trust): `web.dev` — especially <https://web.dev/blog> —
   `developer.chrome.com`, Google Search Central — for emerging conventions worth
   promoting LATER
@@ -57,9 +66,14 @@ context.
 1. **New topics** — a standard/convention/well-known URI we have no page for.
 2. **Status changes** — something we cover that advanced (CR→REC), was obsoleted,
    deprecated, or whose `recommended`/`required`/`avoid` status should now move. Cite the
-   change. Cross-check browser-feature topics against **Baseline via the MDN MCP**: a
-   feature that has newly reached Baseline supports promotion; one with thin support
-   argues against `required`.
+   change. **Discover** browser-feature movement via the webstatus.dev Baseline API (see
+   Sources); **corroborate** each hit against **Baseline in the MDN MCP** for the support
+   detail and the canonical URL. A feature newly reaching Baseline supports a promotion or
+   a new page; thin support argues against `required`. But most newly-Baseline features are
+   CSS/JS authoring conveniences with no auditable website outcome — those do **not** earn a
+   page or a PR (the subgrid/PR #82 rule under "Scope & status rules"). Note them in Slack
+   under "skipped, and why" so the Baseline firehose stays visible without generating PR
+   spam.
 3. **Dead or stale citations** — sources on existing pages that 404, moved, or no longer
    say what the page claims. Spot-check a **rotating slice** each run, not every page
    every day. For MDN sources specifically, resolve the current canonical URL via the
